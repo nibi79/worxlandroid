@@ -13,6 +13,10 @@
 package org.openhab.binding.worxlandroid.internal.webapi;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.ProductsResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificateResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
 
 /**
  * The {@link WorxLandroidApi} is an interface for the Worx Landroid API
@@ -33,30 +37,36 @@ public interface WorxLandroidApi {
 
     /**
      * Retrieve AWS certificate
-     *
+     * 
+     * /**
+     * 
+     * @return
      * @throws WebApiException
      */
-    public void retrieveAwsCertificate() throws WebApiException;
+    public UsersCertificateResponse retrieveAwsCertificate() throws WebApiException;
 
     /**
      * Retrieve Info
      *
+     * @return
      * @throws WebApiException
      */
-    public void retrieveWebInfo() throws WebApiException;
+    public UsersMeResponse retrieveWebInfo() throws WebApiException;
 
     /**
      * Retrieve user devices
      *
+     * @return
      * @throws WebApiException
      */
-    public void retrieveUserDevices() throws WebApiException;
+    public ProductItemsResponse retrieveUserDevices() throws WebApiException;
 
     /**
      * Reterieve product information
      *
+     * @return
      * @throws WebApiException
      */
-    public void retrieveDevices() throws WebApiException;
+    public ProductsResponse retrieveDevices() throws WebApiException;
 
 }

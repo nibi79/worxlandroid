@@ -67,50 +67,50 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
     }
 
     @Override
-    public void retrieveAwsCertificate() throws WebApiException {
+    public UsersCertificateResponse retrieveAwsCertificate() throws WebApiException {
 
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         UsersCertificateRequest awsCertificateRequest = new UsersCertificateRequest(httpClient);
-        UsersCertificateResponse awsCertificateResponse = awsCertificateRequest.call(apiAuth);
+        return awsCertificateRequest.call(apiAuth);
 
     }
 
     @Override
-    public void retrieveWebInfo() throws WebApiException {
+    public UsersMeResponse retrieveWebInfo() throws WebApiException {
 
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         UsersMeRequest webInfoRequest = new UsersMeRequest(httpClient);
-        UsersMeResponse webInfoResponse = webInfoRequest.call(apiAuth);
+        return webInfoRequest.call(apiAuth);
 
     }
 
     @Override
-    public void retrieveUserDevices() throws WebApiException {
+    public ProductItemsResponse retrieveUserDevices() throws WebApiException {
 
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         ProductItemsRequest productItemsRequest = new ProductItemsRequest(httpClient);
-        ProductItemsResponse productItemsResponse = productItemsRequest.call(apiAuth);
+        return productItemsRequest.call(apiAuth);
 
     }
 
     @Override
-    public void retrieveDevices() throws WebApiException {
+    public ProductsResponse retrieveDevices() throws WebApiException {
 
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         ProductsRequest productsRequest = new ProductsRequest(httpClient);
-        ProductsResponse productsResponse = productsRequest.call(apiAuth);
+        return productsRequest.call(apiAuth);
 
     }
 
