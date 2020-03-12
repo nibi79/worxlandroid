@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="org.openhab.binding.worxlandroid.internal.WorxLandroidHandlerFactory" configuration-pid="binding.worxlandroid">
-  <service>
-    <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
-  </service>
-  <reference name="HttpClientFactory" interface="org.eclipse.smarthome.io.net.http.HttpClientFactory" bind="setHttpClientFactory" unbind="unsetHttpClientFactory"/>
-  <implementation class="org.openhab.binding.worxlandroid.internal.WorxLandroidHandlerFactory"/>
-</scr:component>

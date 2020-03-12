@@ -1,7 +1,0 @@
-<ruleset name="Default Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
-  <description>Rule set that contains custom rules created for checking all bundles in the Eclipse SmartHome project </description>
-  <rule class="org.openhab.tools.analysis.pmd.UseSLF4JLoggerRule" name ="UseSLF4J" message="The org.slf4j Logger should be used">
-    <priority>3</priority>
-  </rule>
-</ruleset>
