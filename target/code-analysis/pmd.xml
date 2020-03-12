@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd xmlns="http://pmd.sourceforge.net/report/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/report/2.0.0 http://pmd.sourceforge.net/report_2_0_0.xsd"
+    version="6.7.0" timestamp="2020-03-12T11:33:40.423">
+<file name="D:\Programme\oh-dev\openhab-2-5-x4\git\openhab-addons\bundles\org.openhab.binding.worxlandoid\src\main\java\org\openhab\binding\worxlandroid\internal\WorxLandroidBridgeHandler.java">
+<violation beginline="55" endline="57" begincolumn="49" endcolumn="13" rule="EmptyIfStmt" ruleset="Error Prone" package="org.openhab.binding.worxlandroid.internal" class="WorxLandroidBridgeHandler" method="handleCommand" externalInfoUrl="https://pmd.github.io/pmd-6.7.0/pmd_rules_java_errorprone.html#emptyifstmt" priority="3">
+Avoid empty if statements
+</violation>
+</file>
+</pmd>

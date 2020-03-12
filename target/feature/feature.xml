@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="org.openhab.binding.worxlandroid-2.5.3-SNAPSHOT">
+    <repository>mvn:org.openhab.core.features.karaf/org.openhab.core.features.karaf.openhab-core/2.5.0/xml/features</repository>
+    <feature name="openhab-binding-worxlandroid" description="WorxLandroid Binding" version="2.5.3.SNAPSHOT">
+        <feature>openhab-runtime-base</feature>
+        <bundle start-level="80">mvn:org.openhab.addons.bundles/org.openhab.binding.worxlandroid/2.5.3-SNAPSHOT</bundle>
+    </feature>
+    <feature name="org.openhab.binding.worxlandroid" description="openHAB Add-ons :: Bundles :: WorxLandroid Binding" version="2.5.3.SNAPSHOT">
+        <details>This project contains the official add-ons of openHAB</details>
+        <bundle start-level="80">mvn:com.fasterxml.jackson.core/jackson-core/2.9.9</bundle>
+        <bundle start-level="80">mvn:com.fasterxml.jackson.core/jackson-databind/2.9.9.3</bundle>
+        <bundle start-level="80">mvn:com.fasterxml.jackson.core/jackson-annotations/2.9.0</bundle>
+        <bundle start-level="80">mvn:org.eclipse.paho/org.eclipse.paho.client.mqttv3/1.2.2</bundle>
+    </feature>
+</features>

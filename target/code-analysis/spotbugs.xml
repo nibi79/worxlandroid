@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<BugCollection version='3.1.12' threshold='high' effort='min'><Error></Error><Project><SrcDir>D:\Programme\oh-dev\openhab-2-5-x4\git\openhab-addons\bundles\org.openhab.binding.worxlandoid\src\main\java</SrcDir><SrcDir>D:\Programme\oh-dev\openhab-2-5-x4\git\openhab-addons\bundles\org.openhab.binding.worxlandoid\target\generated-sources\annotations</SrcDir><SrcDir>D:\Programme\oh-dev\openhab-2-5-x4\git\openhab-addons\bundles\org.openhab.binding.worxlandoid\src\test\java</SrcDir></Project></BugCollection>
