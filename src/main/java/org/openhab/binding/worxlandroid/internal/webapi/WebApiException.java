@@ -41,12 +41,6 @@ public class WebApiException extends Exception {
         this.errorMsg = errorMsg;
     }
 
-    // public WebApiException(ErrorCode errorCode) {
-    // super();
-    // this.errorCode = errorCode.getCode();
-    // this.errorMsg = errorCode.getMsg();
-    // }
-
     public WebApiException(String errorMsg, Throwable cause) {
         super(errorMsg);
         this.errorCode = UNKNOWN;

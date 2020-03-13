@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.worxlandroid.internal;
 
+import static org.openhab.binding.worxlandroid.internal.webapi.response.ApiResponse.MN_MQTTENDPOINT;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
@@ -19,6 +21,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -36,7 +39,7 @@ import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificateResponse;
-import org.openhab.binding.worxlandroid.internal.webapi.response.WebApiResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,39 +103,33 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
             if (connected) {
 
-                WebApiResponse webApiResponse = apiHandler.retrieveWebInfo();
-                awsMqttEndpoint = webApiResponse.getMqttEndpoint();
+                UsersMeResponse usersMeResponse = apiHandler.retrieveWebInfo();
+                awsMqttEndpoint = usersMeResponse.getMemberDataAsString(MN_MQTTENDPOINT);
+                Map<String, String> props = usersMeResponse.getDataAsPropertyList();
+
+                updateThing(editThing().withProperties(props).build());
 
                 UsersCertificateResponse usersCertificateResponse = apiHandler.retrieveAwsCertificate();
-
                 byte[] p12 = Base64.getDecoder().decode(usersCertificateResponse.getPkcs12().getBytes());
+                KeyStore keystore = KeyStore.getInstance("PKCS12");
+                keystore.load(new ByteArrayInputStream(p12), EMPTY_PASSWORD.toCharArray());
 
-                try {
-                    KeyStore keystore = KeyStore.getInstance("PKCS12");
-                    keystore.load(new ByteArrayInputStream(p12), EMPTY_PASSWORD.toCharArray());
-
-                    awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint,
-                            "android-" + MqttAsyncClient.generateClientId(), keystore, EMPTY_PASSWORD);
-                    awsMqttClient.connect();
-
-                    logger.info("AWS connected");
-
-                    updateStatus(ThingStatus.ONLINE);
-
-                } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
-                        | AWSIotException e) {
-                    // TODO Auto-generated catch block
-                    logger.error("error: {}", e.getLocalizedMessage());
-                }
+                awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint, "android-" + MqttAsyncClient.generateClientId(),
+                        keystore, EMPTY_PASSWORD);
+                awsMqttClient.connect();
+                logger.info("AWS connected");
 
                 updateStatus(ThingStatus.ONLINE);
+
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                         "Error connecting to Worx Landroid WebApi!");
             }
-        } catch (WebApiException e) {
+        } catch (WebApiException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
+                | AWSIotException e) {
             logger.error("error: {}", e.getLocalizedMessage());
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Errorcode: " + e.getErrorCode());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                    "Error: " + e.getLocalizedMessage());
         }
 
     }

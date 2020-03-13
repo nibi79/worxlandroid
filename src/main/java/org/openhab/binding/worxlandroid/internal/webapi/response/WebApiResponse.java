@@ -13,11 +13,11 @@
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -28,7 +28,7 @@ import com.google.gson.JsonSyntaxException;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public abstract class WebApiResponse {
+public abstract class WebApiResponse implements ApiResponse {
 
     private final Logger logger = LoggerFactory.getLogger(WebApiResponse.class);
 
@@ -63,17 +63,18 @@ public abstract class WebApiResponse {
         return jsonResponse.getAsJsonObject();
     }
 
+    /**
+     * @param memberName
+     * @return
+     */
+    public String getMemberDataAsString(String memberName) {
+        JsonElement json = getJsonResponseAsJsonObject().get(memberName);
+        return json == null || json instanceof JsonNull ? "" : json.getAsString();
+    }
+
     @Override
     public String toString() {
         return jsonResponse.toString();
-    }
-
-    /**
-     * @return "mqtt_endpoint" from api response
-     */
-    public @Nullable String getMqttEndpoint() {
-
-        return getJsonResponseAsJsonObject().get("mqtt_endpoint").getAsString();
     }
 
 }
