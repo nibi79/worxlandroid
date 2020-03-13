@@ -39,6 +39,7 @@ public class AWSTopic extends AWSIotTopic {
     public void onMessage(@Nullable AWSIotMessage message) {
         // called when a message is received
 
-        logger.info("onMessage");
+        logger.info("onMessage: " + message.getStringPayload());
+
     }
 }

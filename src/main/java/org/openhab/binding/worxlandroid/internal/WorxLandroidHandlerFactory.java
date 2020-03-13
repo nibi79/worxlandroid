@@ -19,10 +19,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
+import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
@@ -45,7 +48,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(configurationPid = "binding.worxlandroid", service = ThingHandlerFactory.class)
 public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_BRIDGE);
+    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections
+            .unmodifiableSet(Stream.of(THING_TYPE_MOWER, THING_TYPE_BRIDGE).collect(Collectors.toSet()));
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private HttpClient httpClient;
 
@@ -68,7 +72,7 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_BRIDGE)) {
-            WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler(thing, httpClient);
+            WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler((Bridge) thing, httpClient);
             MowerDiscoveryService discoveryService = new MowerDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
             this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(

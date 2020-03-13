@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,14 @@ public abstract class WebApiResponse {
     @Override
     public String toString() {
         return jsonResponse.toString();
+    }
+
+    /**
+     * @return "mqtt_endpoint" from api response
+     */
+    public @Nullable String getMqttEndpoint() {
+
+        return getJsonResponseAsJsonObject().get("mqtt_endpoint").getAsString();
     }
 
 }

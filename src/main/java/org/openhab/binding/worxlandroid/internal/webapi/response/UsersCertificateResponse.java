@@ -30,4 +30,12 @@ public class UsersCertificateResponse extends WebApiResponse {
         super(jsonResponse);
     }
 
+    /**
+     * @return "pkcs12" from api response
+     */
+    public String getPkcs12() {
+
+        return getJsonResponseAsJsonObject().get("pkcs12").getAsString();
+    }
+
 }

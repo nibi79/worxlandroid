@@ -13,6 +13,11 @@
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * The {@link ProductItemsResponse} class
@@ -28,6 +33,36 @@ public class ProductItemsResponse extends WebApiResponse {
      */
     public ProductItemsResponse(String jsonResponse) {
         super(jsonResponse);
+    }
+
+    /**
+     * Return mower data by id from response.
+     *
+     * @param mowerId
+     * @return
+     */
+    public @Nullable JsonObject getMowerDataById(@Nullable String mowerId) {
+
+        if (mowerId != null) {
+
+            JsonElement jsonResponse = getJsonResponse();
+
+            if (jsonResponse.isJsonArray()) {
+
+                JsonArray jsonArray = jsonResponse.getAsJsonArray();
+                for (JsonElement jsonElement : jsonArray) {
+
+                    if (jsonElement.isJsonObject()) {
+                        JsonObject jsonObject = jsonElement.getAsJsonObject();
+                        String id = jsonObject.get("id").getAsString();
+                        if (id != null && id.equals(mowerId)) {
+                            return jsonObject;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

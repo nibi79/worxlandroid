@@ -12,23 +12,36 @@
  */
 package org.openhab.binding.worxlandroid.internal;
 
-import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.CHANNEL_1;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.Base64;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
+import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
+import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
-import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
+import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificateResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.WebApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.amazonaws.services.iot.client.AWSIotException;
+import com.amazonaws.services.iot.client.AWSIotMqttClient;
 
 /**
  * The {@link WorxLandroidBridgeHandler} is responsible for handling commands, which are
@@ -37,35 +50,43 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public class WorxLandroidBridgeHandler extends BaseThingHandler {
+public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidBridgeHandler.class);
+
+    private static final String EMPTY_PASSWORD = "";
 
     private @Nullable WorxLandroidConfiguration config;
     private WorxLandroidWebApiImpl apiHandler;
     private @Nullable MowerDiscoveryService discoveryService;
 
-    public WorxLandroidBridgeHandler(Thing thing, HttpClient httpClient) {
-        super(thing);
-        apiHandler = new WorxLandroidWebApiImpl(httpClient);
+    private @Nullable String awsMqttEndpoint;
+    private @Nullable AWSIotMqttClient awsMqttClient;
 
+    /**
+     * @param bridge
+     * @param httpClient
+     */
+    public WorxLandroidBridgeHandler(Bridge bridge, HttpClient httpClient) {
+        super(bridge);
+        apiHandler = new WorxLandroidWebApiImpl(httpClient);
     }
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        if (CHANNEL_1.equals(channelUID.getId())) {
-            if (command instanceof RefreshType) {
-                // TODO: handle data refresh
-            }
-
-            // TODO: handle command
-
-            // Note: if communication with thing fails for some reason,
-            // indicate that by setting the status with detail information:
-            // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-            // "Could not control device at IP address x.x.x.x");
-
-        }
+        // if (CHANNEL_1.equals(channelUID.getId())) {
+        // if (command instanceof RefreshType) {
+        // // TODO: handle data refresh
+        // }
+        //
+        // // TODO: handle command
+        //
+        // // Note: if communication with thing fails for some reason,
+        // // indicate that by setting the status with detail information:
+        // // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+        // // "Could not control device at IP address x.x.x.x");
+        //
+        // }
     }
 
     @Override
@@ -76,11 +97,33 @@ public class WorxLandroidBridgeHandler extends BaseThingHandler {
         try {
 
             boolean connected = apiHandler.connect(config.getWebapiUsername(), config.getWebapiPassword());
+
             if (connected) {
-                apiHandler.retrieveWebInfo();
-                apiHandler.retrieveAwsCertificate();
-                apiHandler.retrieveUserDevices();
-                apiHandler.retrieveDevices();
+
+                WebApiResponse webApiResponse = apiHandler.retrieveWebInfo();
+                awsMqttEndpoint = webApiResponse.getMqttEndpoint();
+
+                UsersCertificateResponse usersCertificateResponse = apiHandler.retrieveAwsCertificate();
+
+                byte[] p12 = Base64.getDecoder().decode(usersCertificateResponse.getPkcs12().getBytes());
+
+                try {
+                    KeyStore keystore = KeyStore.getInstance("PKCS12");
+                    keystore.load(new ByteArrayInputStream(p12), EMPTY_PASSWORD.toCharArray());
+
+                    awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint,
+                            "android-" + MqttAsyncClient.generateClientId(), keystore, EMPTY_PASSWORD);
+                    awsMqttClient.connect();
+
+                    logger.info("AWS connected");
+
+                    updateStatus(ThingStatus.ONLINE);
+
+                } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
+                        | AWSIotException e) {
+                    // TODO Auto-generated catch block
+                    logger.error("error: {}", e.getLocalizedMessage());
+                }
 
                 updateStatus(ThingStatus.ONLINE);
             } else {
@@ -88,7 +131,7 @@ public class WorxLandroidBridgeHandler extends BaseThingHandler {
                         "Error connecting to Worx Landroid WebApi!");
             }
         } catch (WebApiException e) {
-            logger.error(e.getErrorMsg());
+            logger.error("error: {}", e.getLocalizedMessage());
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Errorcode: " + e.getErrorCode());
         }
 
@@ -107,5 +150,20 @@ public class WorxLandroidBridgeHandler extends BaseThingHandler {
      */
     public void setDiscovery(MowerDiscoveryService discoveryService) {
         this.discoveryService = discoveryService;
+    }
+
+    /**
+     * @param awsTopic
+     * @throws AWSIotException
+     */
+    public void subcribeTopic(AWSTopic awsTopic) throws AWSIotException {
+        logger.debug("subsribe to topic -> {}", awsTopic.getTopic());
+        awsMqttClient.subscribe(awsTopic);
+    }
+
+    public void publishMessage(AWSMessage awsMessage) throws AWSIotException {
+        logger.debug("publish topic -> {}", awsMessage.getTopic());
+        logger.debug("publish message -> {}", awsMessage.getStringPayload());
+        awsMqttClient.publish(awsMessage);
     }
 }

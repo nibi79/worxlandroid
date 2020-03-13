@@ -36,6 +36,6 @@ public class WorxLandroidBindingConstants {
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_MOWER);
 
     // List of all Channel ids
-    public static final String CHANNEL_1 = "channel1";
+    public static final String CHANNEL_ACTION = "common#action";
 
 }

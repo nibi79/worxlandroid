@@ -5,7 +5,7 @@
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
 	<!-- Sample Thing Type -->
-	<thing-type id="worxlandroidBridge">
+	<bridge-type id="worxlandroidBridge">
 		<label>WorxLandroid Binding Thing</label>
 		<description>Sample thing for WorxLandroid Binding</description>
 
@@ -15,7 +15,7 @@
 
 		<config-description-ref uri="binding:worxlandroid:worxlandroidBridge" />
 		
-	</thing-type>
+	</bridge-type>
 
 	<!-- Sample Channel Type -->
 	<channel-type id="sample-channel">

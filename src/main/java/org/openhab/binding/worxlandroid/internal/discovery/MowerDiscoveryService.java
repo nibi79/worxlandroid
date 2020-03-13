@@ -12,18 +12,29 @@
  */
 package org.openhab.binding.worxlandroid.internal.discovery;
 
+import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.THING_TYPE_MOWER;
+
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
+import org.eclipse.smarthome.config.discovery.DiscoveryResult;
+import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBridgeHandler;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
+import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * The {@link MowerDiscoveryService} is a service for discovering your mowers through Worx Landroid API
@@ -81,48 +92,34 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
                 return;
             }
 
-            // CameraResponse response = apiHandler.getApiCamera().listCameras();
-            //
-            // if (response.isSuccess()) {
-            // JsonArray cameras = response.getCameras();
-            //
-            // ThingUID bridgeUID = bridgeHandler.getThing().getUID();
-            //
-            // if (cameras != null) {
-            // for (JsonElement camera : cameras) {
-            //
-            // if (camera.isJsonObject()) {
-            // JsonObject cam = camera.getAsJsonObject();
-            //
-            // String cameraId = cam.get("id").getAsString();
-            //
-            // CameraResponse cameraDetails = apiHandler.getApiCamera().getInfo(cameraId);
-            //
-            // ThingUID thingUID = new ThingUID(THING_TYPE_CAMERA, bridgeUID, cameraId);
-            //
-            // Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
-            //
-            // DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-            // .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
-            // .withLabel(cam.get("name").getAsString()).build();
-            //
-            // thingDiscovered(discoveryResult);
-            //
-            // logger.debug("Discovered a camera thing with ID '{}'", cameraId);
-            // }
-            // }
-            // }
-            // }
-            //
-            // } catch (WebApiException e) {
-            // if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
-            // logger.debug("Discovery Thread; Wrong/expired credentials");
-            // try {
-            // bridgeHandler.reconnect(false);
-            // } catch (WebApiException ee) {
-            // logger.error("Discovery Thread; Attempt to reconnect failed");
-            // }
-            // }
+            ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
+
+            if (productItemsResponse.getJsonResponse().isJsonArray()) {
+                JsonArray mowers = productItemsResponse.getJsonResponse().getAsJsonArray();
+                ThingUID bridgeUID = bridgeHandler.getThing().getUID();
+
+                if (mowers != null) {
+                    for (JsonElement mowerElement : mowers) {
+                        if (mowerElement.isJsonObject()) {
+                            JsonObject mower = mowerElement.getAsJsonObject();
+
+                            String mowerId = mower.get("id").getAsString();
+
+                            ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, mowerId);
+
+                            Map<String, Object> properties = null;
+
+                            DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                                    .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
+                                    .withLabel(mower.get("name").getAsString()).build();
+
+                            thingDiscovered(discoveryResult);
+
+                            logger.debug("Discovered a mower thing with ID '{}'", mowerId);
+                        }
+                    }
+                }
+            }
         } catch (Exception npe) {
             logger.error("Error in WebApiException", npe);
         }
