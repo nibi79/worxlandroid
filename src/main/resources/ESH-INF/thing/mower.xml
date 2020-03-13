@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="worxlandroid"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- Sample Thing Type -->
+	<thing-type id="mower">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="worxlandroidBridge" />
+		</supported-bridge-type-refs>
+		<label>Worx Landroid Mower</label>
+		<description>Worx Landroid Mower</description>
+
+		<channel-groups>
+			<channel-group id="common" typeId="common-type" />
+		</channel-groups>
+
+		<config-description>
+			<parameter-group name="pg-common">
+				<label>Common settings</label>
+				<description>Common settings</description>
+				<advanced>false</advanced>
+			</parameter-group>
+
+		</config-description>
+
+	</thing-type>
+
+	<channel-group-type id="common-type">
+		<label>Common channels</label>
+		<description>Common channels of your mower</description>
+		<channels>
+			<channel id="batteryVoltage" typeId="chBatteryVoltage" />
+			<channel id="action" typeId="chAction" />
+		</channels>
+	</channel-group-type>
+
+	<channel-type id="chBatteryVoltage">
+		<item-type>Number</item-type>
+		<label>Battery Voltage</label>
+		<category>info</category>
+		<state readOnly="true" pattern="%.2f V" />
+	</channel-type>
+
+	<channel-type id="chAction">
+		<item-type>String</item-type>
+		<label>Action</label>
+		<description>Action	channel	for	your	mower</description>
+		<state>
+			<options>
+				<option value="1">start</option>
+				<option value="2">stop</option>
+				<option value="3">home</option>
+			</options>
+		</state>
+	</channel-type>
+
+</thing:thing-descriptions>
