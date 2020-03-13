@@ -94,20 +94,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler {
                                 .getAsString();
                         props.put("command_out", mqttCommandOut);
 
-                        // updateThing(editThing().withProperties(props).withChannels(channels).build());
                         updateThing(editThing().withProperties(props).build());
-                        // bridgeHandler.subscribe(bridgeHandler.getTopicHandler().getTopicDevice(deviceId), this);
 
                         AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0);
                         bridgeHandler.subcribeTopic(awsTopic);
-                        logger.debug("subsribed");
 
                         String payload = "{}";
-                        long timeout = 3000; // milliseconds
-
                         AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, payload);
                         bridgeHandler.publishMessage(message);
-                        logger.debug("publish");
 
                         updateStatus(ThingStatus.ONLINE);
 
