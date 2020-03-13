@@ -96,7 +96,12 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
                 // String encoding = response.getEncoding().replaceAll("\"", "").trim();
                 String result = new String(rawResponse);// , encoding);
 
-                logger.debug("Worx Landroid WebApi Response: {}", result);
+                // TODO hide some data by replace with regex
+                if (request instanceof OauthTokenRequest) {
+                    logger.debug("Worx Landroid WebApi ResponseOauthToken!");
+                } else {
+                    logger.debug("Worx Landroid WebApi Response: {}", result);
+                }
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
 
