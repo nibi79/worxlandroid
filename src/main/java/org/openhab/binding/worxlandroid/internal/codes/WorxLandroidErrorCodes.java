@@ -13,7 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.codes;
 
 /**
- * The {@link WorxLandroidErrorCodes} hosts errorCodes for SYNO.API.Auth.
+ * The {@link WorxLandroidErrorCodes} hosts error codes
  *
  * @author Nils - Initial contribution
  */
