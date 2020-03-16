@@ -88,11 +88,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
                         JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mowerId);
 
-                        if (mowerDataJson != null && mowerDataJson.get("online").getAsBoolean()) {
-                            updateStatus(ThingStatus.ONLINE);
-                        } else {
-                            updateStatus(ThingStatus.OFFLINE);
-                        }
+                        updateStatus(
+                                mowerDataJson != null && mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE
+                                        : ThingStatus.OFFLINE);
+
                     }
                 }
 
@@ -148,11 +147,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, payload);
                         bridgeHandler.publishMessage(message);
 
-                        if (mowerDataJson.get("online").getAsBoolean()) {
-                            updateStatus(ThingStatus.ONLINE);
-                        } else {
-                            updateStatus(ThingStatus.OFFLINE);
-                        }
+                        updateStatus(
+                                mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
+
                         future = scheduler.scheduleWithFixedDelay(runnable, 0, 60, TimeUnit.SECONDS);
 
                     } else {
