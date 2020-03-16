@@ -110,6 +110,15 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
                 updateThing(editThing().withProperties(props).build());
 
                 UsersCertificateResponse usersCertificateResponse = apiHandler.retrieveAwsCertificate();
+
+                // TODO test this
+                if (!usersCertificateResponse.isActive()) {
+                    logger.error("Connection blocked from Worx, please try again in 24h");
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                            "Connection blocked from Worx, please try again in 24h!");
+                    return;
+                }
+
                 byte[] p12 = Base64.getDecoder().decode(usersCertificateResponse.getPkcs12().getBytes());
                 KeyStore keystore = KeyStore.getInstance("PKCS12");
                 keystore.load(new ByteArrayInputStream(p12), EMPTY_PASSWORD.toCharArray());

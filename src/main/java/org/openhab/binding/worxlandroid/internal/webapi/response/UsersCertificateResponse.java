@@ -38,4 +38,13 @@ public class UsersCertificateResponse extends WebApiResponse {
         return getJsonResponseAsJsonObject().get("pkcs12").getAsString();
     }
 
+    /**
+     * @return "active" from api response
+     */
+    public boolean isActive() {
+
+        String active = getJsonResponseAsJsonObject().get("active").getAsString();
+        return Boolean.parseBoolean(active);
+    }
+
 }
