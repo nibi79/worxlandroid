@@ -16,6 +16,8 @@ import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConst
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -68,6 +70,40 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private @Nullable AWSTopic awsTopic;
     private String mqttCommandIn = "";
 
+    private @Nullable ScheduledFuture<?> future;
+
+    /**
+     * Defines a runnable for a refresh job
+     */
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+
+                if (bridgeHandler != null) {
+
+                    if (getBridge().getStatus() == ThingStatus.ONLINE) {
+
+                        ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
+                        JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mowerId);
+
+                        if (mowerDataJson != null && mowerDataJson.get("online").getAsBoolean()) {
+                            updateStatus(ThingStatus.ONLINE);
+                        } else {
+                            updateStatus(ThingStatus.OFFLINE);
+                        }
+                    }
+                }
+
+            } catch (IllegalStateException e) {
+                logger.debug("Thread {}: Refreshing Thing failed, handler might be OFFLINE", mowerId);
+            } catch (Exception e) {
+                logger.error("Thread {}: Unknown error", mowerId, e);
+            }
+        }
+    };
+
     public WorxLandroidMowerHandler(Thing thing) {
         super(thing);
     }
@@ -88,7 +124,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 try {
 
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-
                     JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mowerId);
 
                     if (mowerDataJson != null) {
@@ -113,7 +148,12 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, payload);
                         bridgeHandler.publishMessage(message);
 
-                        updateStatus(ThingStatus.ONLINE);
+                        if (mowerDataJson.get("online").getAsBoolean()) {
+                            updateStatus(ThingStatus.ONLINE);
+                        } else {
+                            updateStatus(ThingStatus.OFFLINE);
+                        }
+                        future = scheduler.scheduleWithFixedDelay(runnable, 0, 60, TimeUnit.SECONDS);
 
                     } else {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
