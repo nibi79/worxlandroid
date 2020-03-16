@@ -45,6 +45,10 @@ public class AWSTopic extends AWSIotTopic {
     @Override
     public void onMessage(@Nullable AWSIotMessage message) {
 
+        if (message == null) {
+            logger.warn("onMessage: message == null");
+            return;
+        }
         logger.info("onMessage: {}", message.getStringPayload());
         callback.processMessage(message);
     }
