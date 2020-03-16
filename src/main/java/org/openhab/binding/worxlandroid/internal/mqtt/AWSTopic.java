@@ -30,16 +30,22 @@ import com.amazonaws.services.iot.client.AWSIotTopic;
 public class AWSTopic extends AWSIotTopic {
 
     private final Logger logger = LoggerFactory.getLogger(AWSTopic.class);
+    private AWSMessageCallback callback;
 
-    public AWSTopic(String topic, AWSIotQos qos) {
+    /**
+     * @param topic
+     * @param qos
+     * @param awsMessageCallback
+     */
+    public AWSTopic(String topic, AWSIotQos qos, AWSMessageCallback awsMessageCallback) {
         super(topic, qos);
+        callback = awsMessageCallback;
     }
 
     @Override
     public void onMessage(@Nullable AWSIotMessage message) {
-        // called when a message is received
 
-        logger.info("onMessage: " + message.getStringPayload());
-
+        logger.info("onMessage: {}", message.getStringPayload());
+        callback.processMessage(message);
     }
 }

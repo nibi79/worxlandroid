@@ -13,45 +13,238 @@
 		<description>Worx Landroid Mower</description>
 
 		<channel-groups>
-			<channel-group id="common" typeId="common-type" />
+			<channel-group id="cfgCommon" typeId="cfgCommon-type" />
+
+			<channel-group id="datCommon" typeId="datCommon-type" />
+			<channel-group id="datBattery" typeId="datBattery-type" />
+			<channel-group id="datDmp" typeId="datDmp-type" />
+			<channel-group id="datSt" typeId="datSt-type" />
 		</channel-groups>
 
 		<config-description>
-			<parameter-group name="pg-common">
-				<label>Common settings</label>
-				<description>Common settings</description>
+			<parameter-group name="pg-datCommon">
+				<label>Data common</label>
+				<description>Data common</description>
 				<advanced>false</advanced>
 			</parameter-group>
-
 		</config-description>
 
 	</thing-type>
 
-	<channel-group-type id="common-type">
-		<label>Common channels</label>
-		<description>Common channels of your mower</description>
+	<channel-group-type id="cfgCommon-type">
+		<label>Configuration common channels</label>
+		<description>Configuration common channels of your mower</description>
 		<channels>
-			<channel id="batteryVoltage" typeId="chBatteryVoltage" />
+			<channel id="id" typeId="chId" />
+			<channel id="language" typeId="chLanguage" />
+			<channel id="command" typeId="chCommand" />
+			<channel id="rainDelay" typeId="chRainDelay" />
+			<channel id="serialNumber" typeId="chSerialNumber" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datCommon-type">
+		<label>Data common channels</label>
+		<description>Data common channels of your mower</description>
+		<channels>
+			<channel id="macAdress" typeId="chMacAdress" />
+			<channel id="firmware" typeId="chFirmware" />
+			<channel id="pitch" typeId="chPitch" />
+			<channel id="statusCode" typeId="chStatusCode" />
+			<channel id="errorCode" typeId="chErrorCode" />
+			<channel id="wifiQuality" typeId="chWifiQuality" />
 			<channel id="action" typeId="chAction" />
 		</channels>
 	</channel-group-type>
 
+	<channel-group-type id="datBattery-type">
+		<label>Data battery channels</label>
+		<description>Data battery channels of your mower</description>
+		<channels>
+			<channel id="batteryTemperature" typeId="chBatteryTemperature" />
+			<channel id="batteryVoltage" typeId="chBatteryVoltage" />
+			<channel id="batteryLevel" typeId="chBatteryLevel" />
+			<channel id="batteryChargeCycle" typeId="chBatteryChargeCycle" />
+			<channel id="batteryCharging" typeId="chBatteryCharging" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datDmp-type">
+		<label>Data dmp channels</label>
+		<description>Data dmp channels of your mower</description>
+		<channels>
+			<channel id="pitch" typeId="chPitch" />
+			<channel id="roll" typeId="chRoll" />
+			<channel id="yaw" typeId="chYaw" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datSt-type">
+		<label>Data st channels</label>
+		<description>Data st channels of your mower</description>
+		<channels>
+			<channel id="totalBladeTime" typeId="chTotalBladeTime" />
+			<channel id="totalDistance" typeId="chTotalDistance" />
+			<channel id="totalTime" typeId="chTotalTime" />
+		</channels>
+	</channel-group-type>
+
+	<channel-type id="chId">
+		<item-type>Number</item-type>
+		<label>Id</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chLanguage">
+		<item-type>String</item-type>
+		<label>Language</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chCommand">
+		<item-type>Number</item-type>
+		<label>Command</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chRainDelay">
+		<item-type>Number</item-type>
+		<label>Rain Delay</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chSerialNumber">
+		<item-type>String</item-type>
+		<label>Serial Number</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chMacAdress">
+		<item-type>String</item-type>
+		<label>MacAdress</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chFirmware">
+		<item-type>Number</item-type>
+		<label>Firmware</label>
+		<category>Info</category>
+		<state readOnly="true" pattern="%.2f"/>
+	</channel-type>
+
+	<channel-type id="chBatteryTemperature">
+		<item-type>Number</item-type>
+		<label>Battery Temperature</label>
+		<category>Temperature</category>
+		<state readOnly="true" pattern="%.2f °C" />
+	</channel-type>
+
 	<channel-type id="chBatteryVoltage">
 		<item-type>Number</item-type>
 		<label>Battery Voltage</label>
-		<category>info</category>
+		<category>Voltage</category>
 		<state readOnly="true" pattern="%.2f V" />
+	</channel-type>
+
+	<channel-type id="chBatteryLevel">
+		<item-type>Number</item-type>
+		<label>Battery Level</label>
+		<category>Battery</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chBatteryChargeCycle">
+		<item-type>Number</item-type>
+		<label>Battery Charge Cycle</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chBatteryCharging">
+		<item-type>String</item-type>
+		<label>Battery Charging</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chPitch">
+		<item-type>Number</item-type>
+		<label>Pitch</label>
+		<category>Info</category>
+		<state readOnly="true" pattern="%.2f"/>
+	</channel-type>
+
+	<channel-type id="chRoll">
+		<item-type>Number</item-type>
+		<label>Roll</label>
+		<category>Info</category>
+		<state readOnly="true" pattern="%.2f"/>
+	</channel-type>
+
+	<channel-type id="chYaw">
+		<item-type>Number</item-type>
+		<label>Yaw</label>
+		<category>Info</category>
+		<state readOnly="true" pattern="%.2f"/>
+	</channel-type>
+
+	<channel-type id="chTotalBladeTime">
+		<item-type>Number</item-type>
+		<label>Total Blade Time</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chTotalDistance">
+		<item-type>Number</item-type>
+		<label>Total Distance</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chTotalTime">
+		<item-type>Number</item-type>
+		<label>Total Time</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chStatusCode">
+		<item-type>Number</item-type>
+		<label>Status Code</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chErrorCode">
+		<item-type>Number</item-type>
+		<label>Error Code</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chWifiQuality">
+		<item-type>Number</item-type>
+		<label>Wifi Quality</label>
+		<category>Info</category>
+		<state readOnly="true" />
 	</channel-type>
 
 	<channel-type id="chAction">
 		<item-type>String</item-type>
 		<label>Action</label>
-		<description>Action	channel	for	your	mower</description>
+		<description>Action channel for your    mower</description>
 		<state>
 			<options>
-				<option value="1">start</option>
-				<option value="2">stop</option>
-				<option value="3">home</option>
+				<option value="START">start</option>
+				<option value="STOP">stop</option>
+				<option value="HOME">home</option>
 			</options>
 		</state>
 	</channel-type>

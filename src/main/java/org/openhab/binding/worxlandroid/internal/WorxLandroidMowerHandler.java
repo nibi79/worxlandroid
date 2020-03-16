@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.worxlandroid.internal;
 
-import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.CHANNEL_ACTION;
+import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.smarthome.core.library.types.DecimalType;
+import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -28,7 +30,9 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageCallback;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
@@ -37,10 +41,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.iot.client.AWSIotException;
+import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotQos;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-/***
+/**
  * The{@link WorxLandroidMowerHandler} is responsible for handling commands, which are
  * sent to one of the channels.
  *
@@ -48,7 +56,7 @@ import com.google.gson.JsonObject;
  *
  */
 @NonNullByDefault
-public class WorxLandroidMowerHandler extends BaseThingHandler {
+public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMessageCallback {
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidMowerHandler.class);
 
@@ -96,7 +104,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler {
 
                         updateThing(editThing().withProperties(props).build());
 
-                        AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0);
+                        AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0, this);
                         bridgeHandler.subcribeTopic(awsTopic);
 
                         String payload = "{}";
@@ -104,6 +112,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler {
                         bridgeHandler.publishMessage(message);
 
                         updateStatus(ThingStatus.ONLINE);
+
+                        processMessage(null);
 
                     } else {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
@@ -162,11 +172,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler {
                 return;
             }
 
+            WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
+            logger.debug("{}", actionCode.toString());
+
             AWSMessage message;
             switch (channelUID.getId()) {
 
                 case CHANNEL_ACTION:
-                    String cmd = String.format("{\"cmd\":%s}", command.toString());
+                    String cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
                     message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, cmd);
                     bridgeHandler.publishMessage(message);
                     break;
@@ -179,4 +192,167 @@ public class WorxLandroidMowerHandler extends BaseThingHandler {
             logger.error("error: {}", e.getLocalizedMessage());
         }
     }
+
+    @Override
+    public void processMessage(@Nullable AWSIotMessage message) {
+
+        JsonElement jsonElement = new JsonParser().parse(message.getStringPayload());
+
+        if (jsonElement.isJsonObject()) {
+
+            // cfg
+            if (jsonElement.getAsJsonObject().get("cfg") != null) {
+                updateStateCfg(jsonElement.getAsJsonObject().get("cfg").getAsJsonObject());
+            }
+
+            // dat
+            if (jsonElement.getAsJsonObject().get("dat") != null) {
+                updateStateDat(jsonElement.getAsJsonObject().get("dat").getAsJsonObject());
+            }
+
+        }
+    }
+
+    /**
+     * Update states for data values
+     *
+     * @param dat
+     */
+    private void updateStateDat(JsonObject dat) {
+
+        // dat/mac -> macAddress
+        if (dat.get("mac") != null) {
+            updateState(CHANNELNAME_MAC_ADRESS, new StringType(dat.get("mac").getAsString()));
+        }
+
+        // dat/fw -> firmware
+        if (dat.get("fw") != null) {
+            updateState(CHANNELNAME_FIRMWARE, new DecimalType(dat.get("fw").getAsBigDecimal()));
+        }
+
+        // dat/bt
+        if (dat.get("bt") != null) {
+            JsonObject bt = dat.getAsJsonObject("bt");
+            // dat/bt/t -> batteryTemperature
+            if (dat.get("t") != null) {
+                updateState(CHANNELNAME_BATTERY_TEMPERATURE, new DecimalType(bt.get("t").getAsBigDecimal()));
+            }
+            // dat/bt/v -> batteryVoltage
+            if (dat.get("v") != null) {
+                updateState(CHANNELNAME_BATTERY_VOLTAGE, new DecimalType(bt.get("v").getAsBigDecimal()));
+            }
+            // dat/bt/p -> batteryLevel
+            if (dat.get("p") != null) {
+                updateState(CHANNELNAME_BATTERY_LEVEL, new DecimalType(bt.get("p").getAsLong()));
+            }
+            // dat/bt/nr -> batteryChargeCycle
+            if (dat.get("nr") != null) {
+                updateState(CHANNELNAME_BATTERY_CHARGE_CYCLE, new DecimalType(bt.get("nr").getAsBigDecimal()));
+            }
+            // dat/bt/c -> batteryCharging
+            if (dat.get("c") != null) {
+                // TODO boolean OnOffType?
+                updateState(CHANNELNAME_BATTERY_CHARGING, new StringType(bt.get("c").getAsString()));
+            }
+            // TODO dat/bt/m -> ?
+        }
+
+        // dat/dmp
+        if (dat.get("dmp") != null) {
+            JsonArray dmp = dat.getAsJsonArray("dmp");
+            // dat/dmp.[0] -> pitch
+            if (dmp.get(0) != null) {
+                updateState(CHANNELNAME_PITCH, new DecimalType(dmp.get(0).getAsBigDecimal()));
+            }
+            // dat/dmp.[1] -> roll
+            if (dmp.get(1) != null) {
+                updateState(CHANNELNAME_ROLL, new DecimalType(dmp.get(1).getAsBigDecimal()));
+            }
+            // dat/dmp.[2] -> yaw
+            if (dmp.get(2) != null) {
+                updateState(CHANNELNAME_YAW, new DecimalType(dmp.get(2).getAsBigDecimal()));
+            }
+        }
+
+        // dat/st
+        if (dat.get("st") != null) {
+            JsonObject st = dat.getAsJsonObject("st");
+            // dat/st/b -> totalBladeTime
+            if (dat.get("b") != null) {
+                updateState(CHANNELNAME_TOTAL_BLADE_TIME, new DecimalType(st.get("b").getAsLong()));
+            }
+            // dat/st/d -> totalDistance
+            if (dat.get("d") != null) {
+                updateState(CHANNELNAME_TOTAL_DISTANCE, new DecimalType(st.get("d").getAsLong()));
+            }
+            if (dat.get("wt") != null) {
+                // dat/st/wt -> totalTime
+                updateState(CHANNELNAME_TOTAL_TIME, new DecimalType(st.get("wt").getAsLong()));
+            }
+            // TODO dat/st/bl -> ?
+        }
+
+        if (dat.get("ls") != null) {
+            // dat/ls -> statusCode
+            updateState(CHANNELNAME_STATUS_CODE, new DecimalType(dat.get("ls").getAsLong()));
+        }
+        // dat/le -> errorCode
+        if (dat.get("le") != null) {
+            updateState(CHANNELNAME_ERROR_CODE, new DecimalType(dat.get("le").getAsLong()));
+        }
+        // TODO dat/lz -> ?
+        // dat/rsi -> wifiQuality
+        if (dat.get("rsi") != null) {
+            updateState(CHANNELNAME_WIFI_QUALITY, new DecimalType(dat.get("rsi").getAsLong()));
+        }
+
+        // TODO dat/lk -> ?
+        // TODO dat/act -> ?
+        // TODO dat/conn -> ?
+        // TODO dat/modules/US/stat -> ?
+    }
+
+    /**
+     * Update states for cfg values
+     *
+     * @param cfg
+     */
+    private void updateStateCfg(JsonObject cfg) {
+
+        // cfg/id -> id
+        if (cfg.get("id") != null) {
+            updateState(CHANNELNAME_ID, new DecimalType(cfg.get("id").getAsLong()));
+        }
+
+        // cfg/lg -> language
+        if (cfg.get("lg") != null) {
+            updateState(CHANNELNAME_LANGUAGE, new StringType(cfg.get("lg").getAsString()));
+        }
+
+        // TODO cfg/dt + cfg/tm
+        // TODO updateState(CHANNELNAME_LANGUAGE, new DateTimeType(cfg.get("lg").getAsString()));
+
+        // TODO cfg/sc
+
+        // cfg/cmd -> command
+        if (cfg.get("cmd") != null) {
+            updateState(CHANNELNAME_COMMAND, new DecimalType(cfg.get("cmd").getAsLong()));
+        }
+
+        // TODO cfg/mz
+        // TODO cfg/mzv
+
+        // cfg/rd -> rainDelay
+        if (cfg.get("rd") != null) {
+            updateState(CHANNELNAME_RAIN_DELAY, new DecimalType(cfg.get("rd").getAsLong()));
+        }
+
+        // cfg/sn -> serialNumber
+        if (cfg.get("sn") != null) {
+            updateState(CHANNELNAME_SERIAL_NUMBER, new StringType(cfg.get("sn").getAsString()));
+        }
+
+        // TODO cfg/modules
+    }
+
 }
