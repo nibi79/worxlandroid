@@ -49,9 +49,10 @@
 		<channels>
 			<channel id="macAdress" typeId="chMacAdress" />
 			<channel id="firmware" typeId="chFirmware" />
-			<channel id="pitch" typeId="chPitch" />
 			<channel id="statusCode" typeId="chStatusCode" />
+			<channel id="statusDescription" typeId="chStatusDescription" />
 			<channel id="errorCode" typeId="chErrorCode" />
+			<channel id="errorDescription" typeId="chErrorDescription" />
 			<channel id="wifiQuality" typeId="chWifiQuality" />
 			<channel id="action" typeId="chAction" />
 		</channels>
@@ -222,9 +223,23 @@
 		<state readOnly="true" />
 	</channel-type>
 
+	<channel-type id="chStatusDescription">
+		<item-type>String</item-type>
+		<label>Status Description</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
 	<channel-type id="chErrorCode">
 		<item-type>Number</item-type>
 		<label>Error Code</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chErrorDescription">
+		<item-type>String</item-type>
+		<label>Error Description</label>
 		<category>Info</category>
 		<state readOnly="true" />
 	</channel-type>

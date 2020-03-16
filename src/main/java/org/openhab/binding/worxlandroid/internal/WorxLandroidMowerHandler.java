@@ -31,6 +31,8 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidErrorCodes;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageCallback;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
@@ -232,23 +234,23 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         if (dat.get("bt") != null) {
             JsonObject bt = dat.getAsJsonObject("bt");
             // dat/bt/t -> batteryTemperature
-            if (dat.get("t") != null) {
+            if (bt.get("t") != null) {
                 updateState(CHANNELNAME_BATTERY_TEMPERATURE, new DecimalType(bt.get("t").getAsBigDecimal()));
             }
             // dat/bt/v -> batteryVoltage
-            if (dat.get("v") != null) {
+            if (bt.get("v") != null) {
                 updateState(CHANNELNAME_BATTERY_VOLTAGE, new DecimalType(bt.get("v").getAsBigDecimal()));
             }
             // dat/bt/p -> batteryLevel
-            if (dat.get("p") != null) {
+            if (bt.get("p") != null) {
                 updateState(CHANNELNAME_BATTERY_LEVEL, new DecimalType(bt.get("p").getAsLong()));
             }
             // dat/bt/nr -> batteryChargeCycle
-            if (dat.get("nr") != null) {
+            if (bt.get("nr") != null) {
                 updateState(CHANNELNAME_BATTERY_CHARGE_CYCLE, new DecimalType(bt.get("nr").getAsBigDecimal()));
             }
             // dat/bt/c -> batteryCharging
-            if (dat.get("c") != null) {
+            if (bt.get("c") != null) {
                 // TODO boolean OnOffType?
                 updateState(CHANNELNAME_BATTERY_CHARGING, new StringType(bt.get("c").getAsString()));
             }
@@ -276,14 +278,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         if (dat.get("st") != null) {
             JsonObject st = dat.getAsJsonObject("st");
             // dat/st/b -> totalBladeTime
-            if (dat.get("b") != null) {
+            if (st.get("b") != null) {
                 updateState(CHANNELNAME_TOTAL_BLADE_TIME, new DecimalType(st.get("b").getAsLong()));
             }
             // dat/st/d -> totalDistance
-            if (dat.get("d") != null) {
+            if (st.get("d") != null) {
                 updateState(CHANNELNAME_TOTAL_DISTANCE, new DecimalType(st.get("d").getAsLong()));
             }
-            if (dat.get("wt") != null) {
+            if (st.get("wt") != null) {
                 // dat/st/wt -> totalTime
                 updateState(CHANNELNAME_TOTAL_TIME, new DecimalType(st.get("wt").getAsLong()));
             }
@@ -292,11 +294,25 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
         if (dat.get("ls") != null) {
             // dat/ls -> statusCode
-            updateState(CHANNELNAME_STATUS_CODE, new DecimalType(dat.get("ls").getAsLong()));
+            long statusCode = dat.get("ls").getAsLong();
+            updateState(CHANNELNAME_STATUS_CODE, new DecimalType(statusCode));
+
+            WorxLandroidStatusCodes code = WorxLandroidStatusCodes.getByCode((int) statusCode) == null
+                    ? WorxLandroidStatusCodes.UNKNOWN
+                    : WorxLandroidStatusCodes.getByCode((int) statusCode);
+            updateState(CHANNELNAME_STATUS_DESCRIPTION, new StringType(code.getDescription()));
+            logger.info("{}", code.toString());
         }
         // dat/le -> errorCode
         if (dat.get("le") != null) {
-            updateState(CHANNELNAME_ERROR_CODE, new DecimalType(dat.get("le").getAsLong()));
+            long errorCode = dat.get("le").getAsLong();
+            updateState(CHANNELNAME_ERROR_CODE, new DecimalType(errorCode));
+
+            WorxLandroidErrorCodes code = WorxLandroidErrorCodes.getByCode((int) errorCode) == null
+                    ? WorxLandroidErrorCodes.UNKNOWN
+                    : WorxLandroidErrorCodes.getByCode((int) errorCode);
+            updateState(CHANNELNAME_ERROR_DESCRIPTION, new StringType(code.getDescription()));
+            logger.info("{}", code.toString());
         }
         // TODO dat/lz -> ?
         // dat/rsi -> wifiQuality
