@@ -113,8 +113,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                         updateStatus(ThingStatus.ONLINE);
 
-                        processMessage(null);
-
                     } else {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
                         return;
