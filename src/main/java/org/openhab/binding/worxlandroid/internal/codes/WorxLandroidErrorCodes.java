@@ -19,6 +19,7 @@ package org.openhab.binding.worxlandroid.internal.codes;
  */
 public enum WorxLandroidErrorCodes implements Codes {
 
+    UNKNOWN(-1, "UNKNOWN"),
     NO_ERROR(0, "No error"),
     TRAPPED(1, "Trapped"),
     LIFTED(2, "Lifted"),
@@ -61,7 +62,7 @@ public enum WorxLandroidErrorCodes implements Codes {
      * @param code
      * @return
      */
-    public static Codes getByCode(int code) {
+    public static WorxLandroidErrorCodes getByCode(int code) {
         return Codes.lookup(WorxLandroidErrorCodes.class, code);
     }
 

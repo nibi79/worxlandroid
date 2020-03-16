@@ -19,6 +19,7 @@ package org.openhab.binding.worxlandroid.internal.codes;
  */
 public enum WorxLandroidStatusCodes implements Codes {
 
+    UNKNOWN(-1, "UNKNOWN"),
     IDLE(0, "IDLE"),
     HOME(1, "Home"),
     START_SEQUNCE(2, "Start sequence"),
@@ -61,7 +62,8 @@ public enum WorxLandroidStatusCodes implements Codes {
      * @param code
      * @return
      */
-    public static Codes getByCode(int code) {
+    public static WorxLandroidStatusCodes getByCode(int code) {
+
         return Codes.lookup(WorxLandroidStatusCodes.class, code);
     }
 
