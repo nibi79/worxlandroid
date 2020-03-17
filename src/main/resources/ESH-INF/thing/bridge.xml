@@ -4,38 +4,30 @@
 	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
-	<!-- Sample Thing Type -->
 	<bridge-type id="worxlandroidBridge">
-		<label>WorxLandroid Binding Thing</label>
-		<description>Sample thing for WorxLandroid Binding</description>
+			<label>Bridge Worx Landroid API</label>
+		<description>Represents the API and handler for Worx Landroid.</description>
 
 		<config-description>
 
 			<parameter-group name="worxlandroidBridge">
 				<label>WorxLandroid	Bridge</label>
-				<description>The	WorxLandroid	bridge	represents	a	bridge	with	general	settings	and	communication	tasks.</description>
+				<description>The WorxLandroid bridge represents	a bridge with general settings and communication tasks.</description>
 			</parameter-group>
 
 			<parameter name="webapiUsername" groupName="worxlandroidBridge" type="text">
 				<label>Username</label>
-				<description>Username	to	access	the	Landroid	WebAPI.</description>
+				<description>Username to access the Landroid WebAPI.</description>
 			</parameter>
 
 			<parameter name="webapiPassword" groupName="worxlandroidBridge" type="text">
 				<context>password</context>
 				<label>Password</label>
-				<description>Password	to	access	the	Landroid	WebAPI.</description>
+				<description>Password to access the	Landroid WebAPI.</description>
 			</parameter>
 
 		</config-description>
 
 	</bridge-type>
-
-	<!-- Sample Channel Type -->
-	<channel-type id="sample-channel">
-		<item-type>worxlandroidItem</item-type>
-		<label>WorxLandroid Binding Channel</label>
-		<description>Sample channel for WorxLandroid Binding</description>
-	</channel-type>
 
 </thing:thing-descriptions>
