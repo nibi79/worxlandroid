@@ -103,9 +103,9 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
                         if (mowerElement.isJsonObject()) {
                             JsonObject mower = mowerElement.getAsJsonObject();
 
-                            String mowerId = mower.get("id").getAsString();
+                            String serialNumber = mower.get("serial_number").getAsString();
 
-                            ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, mowerId);
+                            ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, serialNumber);
 
                             Map<String, Object> properties = null;
 
@@ -115,7 +115,7 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
                             thingDiscovered(discoveryResult);
 
-                            logger.debug("Discovered a mower thing with ID '{}'", mowerId);
+                            logger.debug("Discovered a mower thing with ID '{}'", serialNumber);
                         }
                     }
                 }

@@ -69,7 +69,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidMowerHandler.class);
 
-    private @Nullable String mowerId;
+    private @Nullable String serialNumber;
     private @Nullable WorxLandroidWebApiImpl apiHandler;
 
     private @Nullable AWSTopic awsTopic;
@@ -93,7 +93,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
                     if (bridgeHandler != null) {
                         ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-                        JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mowerId);
+                        JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
 
                         updateStatus(
                                 mowerDataJson != null && mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE
@@ -103,9 +103,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
 
             } catch (IllegalStateException e) {
-                logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE", mowerId);
+                logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE", serialNumber);
             } catch (Exception e) {
-                logger.error("RefreshStatusRunnable {}: Unknown error", mowerId, e);
+                logger.error("RefreshStatusRunnable {}: Unknown error", serialNumber, e);
             }
         }
     };
@@ -131,7 +131,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     }
                 }
             } catch (AWSIotException e) {
-                logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), mowerId);
+                logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), serialNumber);
             }
         }
     };
@@ -146,9 +146,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
 
         if (bridgeHandler != null) {
-            mowerId = getThing().getUID().getId();
+            serialNumber = getThing().getUID().getId();
 
-            logger.debug("Initializing WorxLandroidMowerHandler for mowerId '{}'", mowerId);
+            logger.debug("Initializing WorxLandroidMowerHandler for mowerId '{}'", serialNumber);
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 apiHandler = ((WorxLandroidBridgeHandler) getBridge().getHandler()).getWorxLandroidWebApiImpl();
@@ -156,7 +156,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 try {
 
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mowerId);
+                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
 
                     if (mowerDataJson != null) {
                         Map<String, String> props = new LinkedHashMap<>();
@@ -193,7 +193,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     }
 
                 } catch (WebApiException | AWSIotException e) {
-                    logger.error("initialize mower: id {} - {}::{}", mowerId, getThing().getLabel(),
+                    logger.error("initialize mower: id {} - {}::{}", serialNumber, getThing().getLabel(),
                             getThing().getUID());
                 }
 

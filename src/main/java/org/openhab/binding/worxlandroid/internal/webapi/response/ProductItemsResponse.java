@@ -38,12 +38,12 @@ public class ProductItemsResponse extends WebApiResponse {
     /**
      * Return mower data by id from response.
      *
-     * @param mowerId
+     * @param serialNumber
      * @return
      */
-    public @Nullable JsonObject getMowerDataById(@Nullable String mowerId) {
+    public @Nullable JsonObject getMowerDataById(@Nullable String serialNumber) {
 
-        if (mowerId != null) {
+        if (serialNumber != null) {
 
             JsonElement jsonResponse = getJsonResponse();
 
@@ -54,8 +54,8 @@ public class ProductItemsResponse extends WebApiResponse {
 
                     if (jsonElement.isJsonObject()) {
                         JsonObject jsonObject = jsonElement.getAsJsonObject();
-                        String id = jsonObject.get("id").getAsString();
-                        if (id != null && id.equals(mowerId)) {
+                        String id = jsonObject.get("serial_number").getAsString();
+                        if (id != null && id.equals(serialNumber)) {
                             return jsonObject;
                         }
                     }
