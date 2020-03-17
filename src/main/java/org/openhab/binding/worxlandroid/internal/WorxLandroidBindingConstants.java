@@ -41,6 +41,7 @@ public class WorxLandroidBindingConstants {
     // channelnames cfg
     public static final String CHANNELNAME_ID = "cfgCommon#id";
     public static final String CHANNELNAME_LANGUAGE = "cfgCommon#language";
+    public static final String CHANNELNAME_DATETIME = "cfgCommon#dateTime";
     public static final String CHANNELNAME_COMMAND = "cfgCommon#command";
     public static final String CHANNELNAME_RAIN_DELAY = "cfgCommon#rainDelay";
     public static final String CHANNELNAME_SERIAL_NUMBER = "cfgCommon#serialNumber";

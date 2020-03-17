@@ -1,56 +1,93 @@
 # WorxLandroid Binding
 
-_Give some details about what this binding is meant for - a protocol, system, specific device._
+This binding connects openHAB with your WorxLandroid Mower using the API and MQTT.
 
-_If possible, provide some resources like pictures, a YouTube video, etc. to give an impression of what can be done with this binding. You can place such resources into a `doc` folder next to this README.md._
+# Table of contents
+
+1. [Disclaimer](https://github.com/nibi79/worxlandroid/tree/master#disclaimer)
+2. [Installation and upgrade](https://github.com/nibi79/worxlandroid/tree/master#installation-and-upgrade)
+3. [Supported Things](https://github.com/nibi79/worxlandroid/tree/master#supported-things)
+4. [Discovery](https://github.com/nibi79/worxlandroid/tree/master#discovery)
+5. [Configuration](https://github.com/nibi79/worxlandroid/tree/master#configuration)
+6. [Channels](https://github.com/nibi79/worxlandroid/tree/master#channels)
+7. [File based configuration](https://github.com/nibi79/worxlandroid/tree/master#file-based-configuration)
+8. [Support](https://github.com/nibi79/worxlandroid/tree/master#support)
+
+***
+
+## Disclaimer
+
+This binding is currently under development. Your help and testing would be greatly appreciated but there is no stability or functionality warranty.
+
+## Installation and upgrade
+
+For the first installation of the binding you need to copy the [latest release](https://github.com/nibi79/worxlandroid/releases)  into the /addons folder of your openHAB installation. In case you want to upgrade the binding to a newer version, please check the release notes first.
 
 ## Supported Things
 
-_Please describe the different supported things / devices within this section._
-_Which different types are supported, which models were tested etc.?_
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/ESH-INF/thing``` of your binding._
+Currently following Things are supported:
+
+- **WorxLandroid Bridge** Thing representing the handler for Worx API
+- One or many Things for supported **WorxLandroid Mower**
 
 ## Discovery
 
-_Describe the available auto-discovery features here. Mention for what it works and what needs to be kept in mind when using it._
+Manual configuration can be achieved via PaperUI - Configuration - Things - Add Thing “+” Button - WorxLandroid Binding - Add manually - **Bridge Worx Landroid API**. Here you can provide your credentials for WorxLandroid account. Once the server thing has been added **Worx Landroid Mower**s will be discovered automatically and appear in your PaperUI inbox. You just need to add them as new things.
 
 ## Binding Configuration
 
-_If your binding requires or supports general configuration settings, please create a folder ```cfg``` and place the configuration file ```<bindingId>.cfg``` inside it. In this section, you should link to this file and provide some information about the options. The file could e.g. look like:_
+Following options can be set for the **Bridge Worx Landroid API**:
 
-```
-# Configuration for the Philips Hue Binding
-#
-# Default secret key for the pairing of the Philips Hue Bridge.
-# It has to be between 10-40 (alphanumeric) characters
-# This may be changed by the user for security reasons.
-secret=openHABSecret
-```
-
-_Note that it is planned to generate some part of this based on the information that is available within ```src/main/resources/ESH-INF/binding``` of your binding._
-
-_If your binding does not offer any generic configurations, you can remove this section completely._
-
-## Thing Configuration
-
-_Describe what is needed to manually configure a thing, either through the (Paper) UI or via a thing-file. This should be mainly about its mandatory and optional configuration parameters. A short example entry for a thing file can help!_
-
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/ESH-INF/thing``` of your binding._
+| Property   | Description |
+|-----------|-----------|
+| username | Username to access the WorxLandroid API. |
+| password | Password to access the WorxLandroid API. |
 
 ## Channels
 
-_Here you should provide information about available channel types, what their meaning is and how they can be used._
+### Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/ESH-INF/thing``` of your binding._
+| Channel   | Type | Values |
+|------------|-----------|-----------|
+| state      | `Switch` | ON/OFF |
+TODO
 
-| channel  | type   | description                  |
-|----------|--------|------------------------------|
-| control  | Switch | This is the control channel  |
+## File based configuration
 
-## Full Example
+### .things
+```
+TODO
+```
 
-_Provide a full usage example based on textual configuration files (*.things, *.items, *.sitemap)._
+### .items
+```
+TODO
+```
 
-## Any custom content here!
+### .sitemap
+```
+TODO
+```
 
-_Feel free to add additional sections for whatever you think should also be mentioned about your binding!_
+### .rules
+```
+TODO
+```
+
+## Support
+
+If you encounter critical issues with this binding, please consider to:
+
+- create an [issue](https://github.com/nibi79/worxlandroid/issues) on GitHub
+- search [community forum](https://community.openhab.org/) for answers already given
+- or make a new post there, if nothing was found
+
+In any case please provide some information about your problem:
+
+- openHAB and binding version 
+- error description and steps to retrace if applicable
+- any related `[WARN]`/`[ERROR]` from openhab.log (`log:set DEBUG org.openhab.binding.worxlandroid`)
+- whether it's the binding, bridge, device or channel related issue
+
+For the sake of documentation please use English language. 
+
