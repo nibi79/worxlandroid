@@ -151,21 +151,21 @@
 		<item-type>Number</item-type>
 		<label>Battery Temperature</label>
 		<category>Temperature</category>
-		<state readOnly="true" pattern="%.2f °C" />
+		<state readOnly="true" pattern="%.1f°C" />
 	</channel-type>
 
 	<channel-type id="chBatteryVoltage">
 		<item-type>Number</item-type>
 		<label>Battery Voltage</label>
 		<category>Voltage</category>
-		<state readOnly="true" pattern="%.2f V" />
+		<state readOnly="true" pattern="%.2fV" />
 	</channel-type>
 
 	<channel-type id="chBatteryLevel">
 		<item-type>Number</item-type>
 		<label>Battery Level</label>
 		<category>Battery</category>
-		<state readOnly="true" />
+		<state readOnly="true" pattern="%.0f%%"/>
 	</channel-type>
 
 	<channel-type id="chBatteryChargeCycle">
@@ -176,7 +176,7 @@
 	</channel-type>
 
 	<channel-type id="chBatteryCharging">
-		<item-type>String</item-type>
+		<item-type>Switch</item-type>
 		<label>Battery Charging</label>
 		<category>Info</category>
 		<state readOnly="true" />
@@ -205,23 +205,23 @@
 
 	<channel-type id="chTotalBladeTime">
 		<item-type>Number</item-type>
-		<label>Total Blade Time in miuntes</label>
+		<label>Total Blade Time</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="% min"/>
+		<state readOnly="true" pattern="%.0f min"/>
 	</channel-type>
 
 	<channel-type id="chTotalDistance">
 		<item-type>Number</item-type>
-		<label>Total Distance in meters</label>
+		<label>Total Distance</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="% m"/>
+		<state readOnly="true" pattern="%.0f m"/>
 	</channel-type>
 
 	<channel-type id="chTotalTime">
 		<item-type>Number</item-type>
-		<label>Total Time in minutes</label>
+		<label>Total Time</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="% min"/>
+		<state readOnly="true" pattern="%.0f  min"/>
 	</channel-type>
 
 	<channel-type id="chStatusCode">
