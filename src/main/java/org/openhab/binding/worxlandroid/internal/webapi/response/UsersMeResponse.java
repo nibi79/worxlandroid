@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
+import com.google.gson.JsonElement;
+
 /**
  * The {@link UsersMeResponse} class
  *
@@ -45,8 +47,13 @@ public class UsersMeResponse extends WebApiResponse {
         props.put(MN_USER_TYPE, getMemberDataAsString(MN_USER_TYPE));
         props.put(MN_LOCALE, getMemberDataAsString(MN_LOCALE));
         props.put(MN_PUSHNOTIFICATIONS, getMemberDataAsString(MN_PUSHNOTIFICATIONS));
-        props.put(MN_LOCATION_LATITUDE, getMemberDataAsString(MN_LOCATION_LATITUDE));
-        props.put(MN_LOCATION_LONGITUDE, getMemberDataAsString(MN_LOCATION_LONGITUDE));
+
+        JsonElement location = getJsonResponseAsJsonObject().get(MN_LOCATION);
+        if (location != null) {
+            props.put(MN_LATITUDE, location.getAsJsonObject().get(MN_LATITUDE).getAsString());
+            props.put(MN_LONGITUDE, location.getAsJsonObject().get(MN_LONGITUDE).getAsString());
+        }
+
         props.put(MN_TERMSOFUSEAGREED, getMemberDataAsString(MN_TERMSOFUSEAGREED));
         props.put(MN_COUNTRYID, getMemberDataAsString(MN_COUNTRYID));
         props.put(MN_MQTTENDPOINT, getMemberDataAsString(MN_MQTTENDPOINT));
