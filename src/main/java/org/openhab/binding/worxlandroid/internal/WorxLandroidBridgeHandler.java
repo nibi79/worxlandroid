@@ -67,6 +67,18 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
     private @Nullable AWSIotMqttClient awsMqttClient;
 
     /**
+     * Defines a runnable for a discovery
+     */
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (discoveryService != null) {
+                discoveryService.discoverMowers();
+            }
+        }
+    };
+
+    /**
      * @param bridge
      * @param httpClient
      */
@@ -130,6 +142,9 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
                 updateStatus(ThingStatus.ONLINE);
 
+                // Trigger discovery of mowers
+                scheduler.submit(runnable);
+
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                         "Error connecting to Worx Landroid WebApi!");
@@ -154,7 +169,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
             super.dispose();
 
         } catch (AWSIotException e) {
-            logger.error(e.getMessage(), e);
+            logger.error("{}", e.getMessage(), e);
             updateStatus(ThingStatus.OFFLINE);
         }
     }
