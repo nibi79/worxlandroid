@@ -143,6 +143,22 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
     }
 
+    @Override
+    public void dispose() {
+
+        try {
+
+            if (awsMqttClient != null) {
+                awsMqttClient.disconnect();
+            }
+            super.dispose();
+
+        } catch (AWSIotException e) {
+            logger.error(e.getMessage(), e);
+            updateStatus(ThingStatus.OFFLINE);
+        }
+    }
+
     /**
      * @return
      */
