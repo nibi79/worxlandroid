@@ -9,12 +9,26 @@
 		<label>WorxLandroid Binding Thing</label>
 		<description>Sample thing for WorxLandroid Binding</description>
 
-		<channels>
-			<channel id="channel1" typeId="sample-channel" />
-		</channels>
+		<config-description>
 
-		<config-description-ref uri="binding:worxlandroid:worxlandroidBridge" />
-		
+			<parameter-group name="worxlandroidBridge">
+				<label>WorxLandroid	Bridge</label>
+				<description>The	WorxLandroid	bridge	represents	a	bridge	with	general	settings	and	communication	tasks.</description>
+			</parameter-group>
+
+			<parameter name="webapiUsername" groupName="worxlandroidBridge" type="text">
+				<label>Username</label>
+				<description>Username	to	access	the	Landroid	WebAPI.</description>
+			</parameter>
+
+			<parameter name="webapiPassword" groupName="worxlandroidBridge" type="text">
+				<context>password</context>
+				<label>Password</label>
+				<description>Password	to	access	the	Landroid	WebAPI.</description>
+			</parameter>
+
+		</config-description>
+
 	</bridge-type>
 
 	<!-- Sample Channel Type -->
