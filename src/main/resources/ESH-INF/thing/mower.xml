@@ -37,6 +37,7 @@
 		<channels>
 			<channel id="id" typeId="chId" />
 			<channel id="language" typeId="chLanguage" />
+			<channel id="dateTime" typeId="chDateTime" />
 			<channel id="command" typeId="chCommand" />
 			<channel id="rainDelay" typeId="chRainDelay" />
 			<channel id="serialNumber" typeId="chSerialNumber" />
@@ -104,6 +105,13 @@
 		<state readOnly="true" />
 	</channel-type>
 
+	<channel-type id="chDateTime">
+		<item-type>DateTime</item-type>
+		<label>DateTime</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
 	<channel-type id="chCommand">
 		<item-type>Number</item-type>
 		<label>Command</label>
@@ -136,7 +144,7 @@
 		<item-type>Number</item-type>
 		<label>Firmware</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
+		<state readOnly="true" pattern="%.2f" />
 	</channel-type>
 
 	<channel-type id="chBatteryTemperature">
@@ -178,42 +186,42 @@
 		<item-type>Number</item-type>
 		<label>Pitch</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
+		<state readOnly="true" pattern="%.2f" />
 	</channel-type>
 
 	<channel-type id="chRoll">
 		<item-type>Number</item-type>
 		<label>Roll</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
+		<state readOnly="true" pattern="%.2f" />
 	</channel-type>
 
 	<channel-type id="chYaw">
 		<item-type>Number</item-type>
 		<label>Yaw</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
+		<state readOnly="true" pattern="%.2f" />
 	</channel-type>
 
 	<channel-type id="chTotalBladeTime">
 		<item-type>Number</item-type>
-		<label>Total Blade Time</label>
+		<label>Total Blade Time in miuntes</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true" pattern="% min"/>
 	</channel-type>
 
 	<channel-type id="chTotalDistance">
 		<item-type>Number</item-type>
-		<label>Total Distance</label>
+		<label>Total Distance in meters</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true" pattern="% m"/>
 	</channel-type>
 
 	<channel-type id="chTotalTime">
 		<item-type>Number</item-type>
-		<label>Total Time</label>
+		<label>Total Time in minutes</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true" pattern="% min"/>
 	</channel-type>
 
 	<channel-type id="chStatusCode">
