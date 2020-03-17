@@ -14,6 +14,10 @@ package org.openhab.binding.worxlandroid.internal;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -21,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.smarthome.core.library.types.DateTimeType;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -70,21 +75,23 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private @Nullable AWSTopic awsTopic;
     private String mqttCommandIn = "";
 
-    private @Nullable ScheduledFuture<?> future;
+    private @Nullable ScheduledFuture<?> refreshStatusJob;
+    private @Nullable ScheduledFuture<?> pollingJob;
 
     /**
-     * Defines a runnable for a refresh job
+     * Defines a runnable for a refresh status job.
+     * Checks if mower is online.
      */
-    private Runnable runnable = new Runnable() {
+    private Runnable refreshStatusRunnable = new Runnable() {
         @Override
         public void run() {
             try {
-                WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
 
-                if (bridgeHandler != null) {
+                Bridge bridge = getBridge();
+                if (bridge != null && bridge.getStatus() == ThingStatus.ONLINE) {
 
-                    if (getBridge().getStatus() == ThingStatus.ONLINE) {
-
+                    WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+                    if (bridgeHandler != null) {
                         ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
                         JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mowerId);
 
@@ -96,9 +103,35 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
 
             } catch (IllegalStateException e) {
-                logger.debug("Thread {}: Refreshing Thing failed, handler might be OFFLINE", mowerId);
+                logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE", mowerId);
             } catch (Exception e) {
-                logger.error("Thread {}: Unknown error", mowerId, e);
+                logger.error("RefreshStatusRunnable {}: Unknown error", mowerId, e);
+            }
+        }
+    };
+
+    /**
+     * Defines a runnable for a polling job.
+     * Polls AWS mqtt.
+     */
+    private Runnable pollingRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            try {
+
+                Bridge bridge = getBridge();
+                if (bridge != null && bridge.getStatus() == ThingStatus.ONLINE) {
+
+                    WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+                    if (bridgeHandler != null) {
+                        String payload = "{}";
+                        AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, payload);
+                        bridgeHandler.publishMessage(message);
+                    }
+                }
+            } catch (AWSIotException e) {
+                logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), mowerId);
             }
         }
     };
@@ -150,7 +183,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         updateStatus(
                                 mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
 
-                        future = scheduler.scheduleWithFixedDelay(runnable, 0, 60, TimeUnit.SECONDS);
+                        refreshStatusJob = scheduler.scheduleWithFixedDelay(refreshStatusRunnable, 0, 60,
+                                TimeUnit.SECONDS);
+                        pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 0, 5, TimeUnit.MINUTES);
 
                     } else {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
@@ -380,8 +415,13 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateState(CHANNELNAME_LANGUAGE, new StringType(cfg.get("lg").getAsString()));
         }
 
-        // TODO cfg/dt + cfg/tm
-        // TODO updateState(CHANNELNAME_LANGUAGE, new DateTimeType(cfg.get("lg").getAsString()));
+        // cfg/dt + cfg/tm
+        // "tm": "17:09:34","dt": "13/03/2020",
+        String dateTime = String.format("%s %s", cfg.get("dt").getAsString(), cfg.get("tm").getAsString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        LocalDateTime localeDateTime = LocalDateTime.parse(dateTime, formatter);
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localeDateTime, ZoneId.of("Europe/Berlin"));
+        updateState(CHANNELNAME_DATETIME, new DateTimeType(zonedDateTime));
 
         // TODO cfg/sc
 
