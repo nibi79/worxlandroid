@@ -27,8 +27,9 @@ public interface ApiResponse {
     public static final String MN_MQTTENDPOINT = "mqtt_endpoint";
     public static final String MN_COUNTRYID = "country_id";
     public static final String MN_TERMSOFUSEAGREED = "terms_of_use_agreed";
-    public static final String MN_LOCATION_LONGITUDE = "location/longitude";
-    public static final String MN_LOCATION_LATITUDE = "location/latitude";
+    public static final String MN_LOCATION = "location";
+    public static final String MN_LONGITUDE = "longitude";
+    public static final String MN_LATITUDE = "latitude";
     public static final String MN_PUSHNOTIFICATIONS = "push_notifications";
     public static final String MN_LOCALE = "locale";
     public static final String MN_USER_TYPE = "user_type";
