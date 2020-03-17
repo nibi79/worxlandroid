@@ -96,8 +96,13 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
                 // String encoding = response.getEncoding().replaceAll("\"", "").trim();
                 String result = new String(rawResponse);// , encoding);
 
-                String debugResultString = result.replaceAll("_token\":\"[^\"]*\"",
+                // hide secret data for log
+                String debugResultString = result;
+                debugResultString = debugResultString.replaceAll("_token\":\"[^\"]*\"",
                         "_token\":\"***hidden for debug log***\"");
+                debugResultString = debugResultString.replaceAll("pkcs12\":\"[^\"]*\"",
+                        "pkcs12\":\"***hidden for debug log***\"");
+
                 logger.debug("Worx Landroid WebApi Response: {}", debugResultString);
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
