@@ -27,6 +27,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.library.types.DateTimeType;
 import org.eclipse.smarthome.core.library.types.DecimalType;
+import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -103,7 +104,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
 
             } catch (IllegalStateException e) {
-                logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE", serialNumber);
+                logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE",
+                        serialNumber);
             } catch (Exception e) {
                 logger.error("RefreshStatusRunnable {}: Unknown error", serialNumber, e);
             }
@@ -268,6 +270,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     @Override
     public void processMessage(@Nullable AWSIotMessage message) {
 
+        updateStatus(ThingStatus.ONLINE);
+
         JsonElement jsonElement = new JsonParser().parse(message.getStringPayload());
 
         if (jsonElement.isJsonObject()) {
@@ -321,10 +325,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             if (bt.get("nr") != null) {
                 updateState(CHANNELNAME_BATTERY_CHARGE_CYCLE, new DecimalType(bt.get("nr").getAsBigDecimal()));
             }
-            // dat/bt/c -> batteryCharging
+            // dat/bt/c -> batteryCharging - 1=charging
             if (bt.get("c") != null) {
-                // TODO boolean OnOffType?
-                updateState(CHANNELNAME_BATTERY_CHARGING, new StringType(bt.get("c").getAsString()));
+                boolean state = bt.get("c").getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
+                updateState(CHANNELNAME_BATTERY_CHARGING, OnOffType.from(state));
             }
             // TODO dat/bt/m -> ?
         }
