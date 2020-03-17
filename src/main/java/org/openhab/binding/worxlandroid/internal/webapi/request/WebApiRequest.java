@@ -96,12 +96,9 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
                 // String encoding = response.getEncoding().replaceAll("\"", "").trim();
                 String result = new String(rawResponse);// , encoding);
 
-                // TODO hide some data by replace with regex
-                if (request instanceof OauthTokenRequest) {
-                    logger.debug("Worx Landroid WebApi ResponseOauthToken!");
-                } else {
-                    logger.debug("Worx Landroid WebApi Response: {}", result);
-                }
+                String debugResultString = result.replaceAll("_token\":\"[^\"]*\"",
+                        "_token\":\"***hidden for debug log***\"");
+                logger.debug("Worx Landroid WebApi Response: {}", debugResultString);
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
 
