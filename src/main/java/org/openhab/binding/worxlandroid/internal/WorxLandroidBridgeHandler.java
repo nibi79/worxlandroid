@@ -117,7 +117,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
                 UsersMeResponse usersMeResponse = apiHandler.retrieveWebInfo();
                 awsMqttEndpoint = usersMeResponse.getMemberDataAsString(MN_MQTTENDPOINT);
-                Map<String, String> props = usersMeResponse.getDataAsPropertyList();
+                Map<String, String> props = usersMeResponse.getDataAsPropertyMap();
 
                 updateThing(editThing().withProperties(props).build());
 
@@ -193,14 +193,33 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
      * @param awsTopic
      * @throws AWSIotException
      */
+    @SuppressWarnings("null")
     public void subcribeTopic(AWSTopic awsTopic) throws AWSIotException {
+
+        if (awsMqttClient == null) {
+            logger.error("MqttClient is not initialized. Cannot subsribe to topic -> {}", awsTopic.getTopic());
+            return;
+        }
+
         logger.debug("subsribe to topic -> {}", awsTopic.getTopic());
         awsMqttClient.subscribe(awsTopic);
     }
 
+    /**
+     * @param awsMessage
+     * @throws AWSIotException
+     */
+    @SuppressWarnings("null")
     public void publishMessage(AWSMessage awsMessage) throws AWSIotException {
+
+        if (awsMqttClient == null) {
+            logger.error("MqttClient is not initialized. Cannot publish message to topic -> {}", awsMessage.getTopic());
+            return;
+        }
+
         logger.debug("publish topic -> {}", awsMessage.getTopic());
         logger.debug("publish message -> {}", awsMessage.getStringPayload());
         awsMqttClient.publish(awsMessage);
+
     }
 }
