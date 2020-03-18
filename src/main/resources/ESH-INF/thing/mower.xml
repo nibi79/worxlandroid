@@ -123,7 +123,7 @@
 		<item-type>Number</item-type>
 		<label>Rain Delay</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state max="750" pattern="%.0f min"/>
 	</channel-type>
 
 	<channel-type id="chSerialNumber">

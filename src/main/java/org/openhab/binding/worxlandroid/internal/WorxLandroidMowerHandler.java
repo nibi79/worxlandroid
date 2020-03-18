@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -73,10 +72,13 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private @Nullable String serialNumber;
     private @Nullable WorxLandroidWebApiImpl apiHandler;
 
+    @SuppressWarnings("unused")
     private @Nullable AWSTopic awsTopic;
     private String mqttCommandIn = "";
 
+    @SuppressWarnings("unused")
     private @Nullable ScheduledFuture<?> refreshStatusJob;
+    @SuppressWarnings("unused")
     private @Nullable ScheduledFuture<?> pollingJob;
 
     /**
@@ -88,21 +90,15 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         public void run() {
             try {
 
-                Bridge bridge = getBridge();
-                if (bridge != null && bridge.getStatus() == ThingStatus.ONLINE) {
+                if (isBridgeOnline() && apiHandler != null) {
 
-                    WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
-                    if (bridgeHandler != null) {
-                        ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-                        JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
+                    ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
+                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
 
-                        updateStatus(
-                                mowerDataJson != null && mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE
-                                        : ThingStatus.OFFLINE);
-
-                    }
+                    updateStatus(
+                            mowerDataJson != null && mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE
+                                    : ThingStatus.OFFLINE);
                 }
-
             } catch (IllegalStateException e) {
                 logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE",
                         serialNumber);
@@ -122,13 +118,12 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             try {
 
-                Bridge bridge = getBridge();
-                if (bridge != null && bridge.getStatus() == ThingStatus.ONLINE) {
+                if (isBridgeOnline()) {
 
                     WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
                     if (bridgeHandler != null) {
-                        String payload = "{}";
-                        AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, payload);
+
+                        AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, AWSMessage.EMPTY_PAYLOAD);
                         bridgeHandler.publishMessage(message);
                     }
                 }
@@ -138,22 +133,36 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
     };
 
+    /**
+     * @param thing
+     */
     public WorxLandroidMowerHandler(Thing thing) {
         super(thing);
+    }
+
+    /**
+     * @return
+     */
+    private boolean isBridgeOnline() {
+
+        Bridge bridge = getBridge();
+        return bridge != null && bridge.getStatus() == ThingStatus.ONLINE;
     }
 
     @Override
     public void initialize() {
 
-        WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+        serialNumber = getThing().getUID().getId();
 
-        if (bridgeHandler != null) {
-            serialNumber = getThing().getUID().getId();
+        logger.debug("Initializing WorxLandroidMowerHandler for serialNumber '{}'", serialNumber);
 
-            logger.debug("Initializing WorxLandroidMowerHandler for mowerId '{}'", serialNumber);
+        if (isBridgeOnline()) {
 
-            if (getBridge().getStatus() == ThingStatus.ONLINE) {
-                apiHandler = ((WorxLandroidBridgeHandler) getBridge().getHandler()).getWorxLandroidWebApiImpl();
+            WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+
+            if (bridgeHandler != null) {
+
+                apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
 
                 try {
 
@@ -161,25 +170,18 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
 
                     if (mowerDataJson != null) {
-                        Map<String, String> props = new LinkedHashMap<>();
 
-                        props.put("serial_number", mowerDataJson.get("serial_number").getAsString());
+                        Map<String, String> props = productItemsResponse.getDataAsPropertyMap(serialNumber);
 
-                        mqttCommandIn = mowerDataJson.get("mqtt_topics").getAsJsonObject().get("command_in")
-                                .getAsString();
-                        props.put("command_in", mqttCommandIn);
-
-                        String mqttCommandOut = mowerDataJson.get("mqtt_topics").getAsJsonObject().get("command_out")
-                                .getAsString();
-                        props.put("command_out", mqttCommandOut);
+                        mqttCommandIn = props.get("command_in");
+                        String mqttCommandOut = props.get("command_out");
 
                         updateThing(editThing().withProperties(props).build());
 
                         AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0, this);
                         bridgeHandler.subcribeTopic(awsTopic);
 
-                        String payload = "{}";
-                        AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, payload);
+                        AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, AWSMessage.EMPTY_PAYLOAD);
                         bridgeHandler.publishMessage(message);
 
                         updateStatus(
@@ -246,22 +248,27 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 return;
             }
 
-            WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
-            logger.debug("{}", actionCode.toString());
-
-            AWSMessage message;
+            String cmd = AWSMessage.EMPTY_PAYLOAD;
             switch (channelUID.getId()) {
 
                 case CHANNEL_ACTION:
-                    String cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
-                    message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, cmd);
-                    bridgeHandler.publishMessage(message);
+                    WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
+                    logger.debug("{}", actionCode.toString());
+                    cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
+                    break;
+
+                case CHANNELNAME_RAIN_DELAY:
+                    cmd = String.format("{\"rd\":%s}", command);
                     break;
 
                 default:
                     logger.debug("command for ChannelUID not supported: {}", channelUID.getAsString());
                     break;
             }
+
+            AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, cmd);
+            bridgeHandler.publishMessage(message);
+
         } catch (AWSIotException e) {
             logger.error("error: {}", e.getLocalizedMessage());
         }
@@ -269,6 +276,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     @Override
     public void processMessage(@Nullable AWSIotMessage message) {
+
+        if (message == null) {
+            logger.debug("message is null!");
+            return;
+        }
 
         updateStatus(ThingStatus.ONLINE);
 
@@ -424,7 +436,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         String dateTime = String.format("%s %s", cfg.get("dt").getAsString(), cfg.get("tm").getAsString());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime localeDateTime = LocalDateTime.parse(dateTime, formatter);
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(localeDateTime, ZoneId.of("Europe/Berlin"));
+        ZoneId zoneId = ZoneId.of(getThing().getProperties().get("time_zone"));
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(localeDateTime, zoneId);
         updateState(CHANNELNAME_DATETIME, new DateTimeType(zonedDateTime));
 
         // TODO cfg/sc
