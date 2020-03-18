@@ -29,6 +29,13 @@ public class AWSMessage extends AWSIotMessage {
 
     private final Logger logger = LoggerFactory.getLogger(AWSMessage.class);
 
+    public static final String EMPTY_PAYLOAD = "{}";
+
+    /**
+     * @param topic
+     * @param qos
+     * @param payload
+     */
     public AWSMessage(String topic, AWSIotQos qos, String payload) {
         super(topic, qos, payload);
     }
