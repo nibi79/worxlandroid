@@ -12,8 +12,12 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
+import java.util.Map;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,6 +31,8 @@ import com.google.gson.JsonObject;
  */
 @NonNullByDefault
 public class ProductItemsResponse extends WebApiResponse {
+
+    private final Logger logger = LoggerFactory.getLogger(ProductItemsResponse.class);
 
     /**
      * @param jsonResponse
@@ -62,7 +68,20 @@ public class ProductItemsResponse extends WebApiResponse {
                 }
             }
         }
+        logger.warn("No data for mower serialnumber: {}", serialNumber);
         return null;
+    }
+
+    /**
+     * @param serialNumber
+     * @return
+     */
+    public Map<String, String> getDataAsPropertyMap(@Nullable String serialNumber) {
+
+        JsonObject jsonObject = getMowerDataById(serialNumber);
+        jsonObject = jsonObject == null ? EMPTY_JSON_OBJECT : jsonObject;
+
+        return super.getDataAsPropertyMap(null, "UNKNOWN", jsonObject);
     }
 
 }
