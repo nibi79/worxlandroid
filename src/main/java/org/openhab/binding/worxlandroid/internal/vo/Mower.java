@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal;
+package org.openhab.binding.worxlandroid.internal.vo;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
