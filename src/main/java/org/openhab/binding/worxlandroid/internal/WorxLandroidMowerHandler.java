@@ -46,6 +46,8 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageCallback;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
+import org.openhab.binding.worxlandroid.internal.vo.Mower;
+import org.openhab.binding.worxlandroid.internal.vo.ScheduledDay;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
@@ -242,6 +244,12 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         try {
 
             if (command instanceof RefreshType) {
+                return;
+            }
+
+            if (getThing().getStatus() != ThingStatus.ONLINE) {
+                logger.error("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
+                        mower.getSerialNumber());
                 return;
             }
 
