@@ -459,20 +459,17 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     String time[] = shedule.get(0).getAsString().split(":");
 
-                    String channelNameStartHour = String.format("datSc%s#schedule%sStartHour", dayCode.getDescription(),
-                            dayCode.getDescription());
+                    String channelNameStartHour = String.format("datSc%s#scheduleStartHour", dayCode.getDescription());
                     updateState(channelNameStartHour, new DecimalType(time[0]));
 
-                    String channelNameStartMin = String.format("datSc%s#schedule%sStartMinutes",
-                            dayCode.getDescription(), dayCode.getDescription());
+                    String channelNameStartMin = String.format("datSc%s#scheduleStartMinutes",
+                            dayCode.getDescription());
                     updateState(channelNameStartMin, new DecimalType(time[1]));
 
-                    String channelNameDuration = String.format("datSc%s#schedule%sDuration", dayCode.getDescription(),
-                            dayCode.getDescription());
+                    String channelNameDuration = String.format("datSc%s#scheduleDuration", dayCode.getDescription());
                     updateState(channelNameDuration, new DecimalType(shedule.get(1).getAsLong()));
 
-                    String channelNameEdgecut = String.format("datSc%s#schedule%sEdgecut", dayCode.getDescription(),
-                            dayCode.getDescription());
+                    String channelNameEdgecut = String.format("datSc%s#scheduleEdgecut", dayCode.getDescription());
                     boolean state = shedule.get(1).getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
                     updateState(channelNameEdgecut, OnOffType.from(state));
                 }
