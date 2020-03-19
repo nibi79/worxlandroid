@@ -19,13 +19,13 @@ package org.openhab.binding.worxlandroid.internal.codes;
  */
 public enum WorxLandroidDayCodes implements Codes {
 
-    SUN(0, "Sunday"),
-    MON(1, "Monday"),
-    TUE(2, "Tuesday"),
-    WED(3, "Wednesday"),
-    THU(4, "Thursday"),
-    FRI(5, "Friday"),
-    SAT(6, "Saturday");
+    SUNDAY(0, "Sunday"),
+    MONDAY(1, "Monday"),
+    TUESDAY(2, "Tuesday"),
+    WEDNESDAY(3, "Wednesday"),
+    THURSDAY(4, "Thursday"),
+    FRIDAY(5, "Friday"),
+    SATURDAY(6, "Saturday");
 
     private final int code;
     private final String description;

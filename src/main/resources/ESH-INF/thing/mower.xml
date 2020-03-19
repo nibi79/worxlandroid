@@ -111,7 +111,7 @@
 		<label>Data schedule channels Sunday</label>
 		<description>Data schedule channels of your mower for Sunday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
@@ -122,7 +122,7 @@
 		<label>Data schedule channels Monday</label>
 		<description>Data schedule channels of your mower for Monday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
@@ -133,7 +133,7 @@
 		<label>Data schedule channels Tuesday</label>
 		<description>Data schedule channels of your mower for Tuesday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
@@ -144,7 +144,7 @@
 		<label>Data schedule channels Wednesday</label>
 		<description>Data schedule channels of your mower for Wednesday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
@@ -155,7 +155,7 @@
 		<label>Data schedule channels Thursday</label>
 		<description>Data schedule channels of your mower for Thursday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
@@ -166,7 +166,7 @@
 		<label>Data schedule channels Friday</label>
 		<description>Data schedule channels of your mower for Friday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
@@ -177,7 +177,7 @@
 		<label>Data schedule channels Saturday</label>
 		<description>Data schedule channels of your mower for Saturday</description>
 		<channels>
-			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />

@@ -21,6 +21,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -70,7 +72,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidMowerHandler.class);
 
-    private @Nullable String serialNumber;
+    private Mower mower = new Mower("NOT_INITIALIZED");
     private @Nullable WorxLandroidWebApiImpl apiHandler;
 
     @SuppressWarnings("unused")
@@ -94,7 +96,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 if (isBridgeOnline() && apiHandler != null) {
 
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
+                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mower.getSerialNumber());
 
                     updateStatus(
                             mowerDataJson != null && mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE
@@ -102,9 +104,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
             } catch (IllegalStateException e) {
                 logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE",
-                        serialNumber);
+                        mower.getSerialNumber());
             } catch (Exception e) {
-                logger.error("RefreshStatusRunnable {}: Unknown error", serialNumber, e);
+                logger.error("RefreshStatusRunnable {}: Unknown error", mower.getSerialNumber(), e);
             }
         }
     };
@@ -129,7 +131,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     }
                 }
             } catch (AWSIotException e) {
-                logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), serialNumber);
+                logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), mower.getSerialNumber());
             }
         }
     };
@@ -153,9 +155,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     @Override
     public void initialize() {
 
-        serialNumber = getThing().getUID().getId();
+        mower = new Mower(getThing().getUID().getId());
 
-        logger.debug("Initializing WorxLandroidMowerHandler for serialNumber '{}'", serialNumber);
+        logger.debug("Initializing WorxLandroidMowerHandler for serialNumber '{}'", mower.getSerialNumber());
 
         if (isBridgeOnline()) {
 
@@ -168,11 +170,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 try {
 
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
+                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mower.getSerialNumber());
 
                     if (mowerDataJson != null) {
 
-                        Map<String, String> props = productItemsResponse.getDataAsPropertyMap(serialNumber);
+                        Map<String, String> props = productItemsResponse.getDataAsPropertyMap(mower.getSerialNumber());
 
                         mqttCommandIn = props.get("command_in");
                         String mqttCommandOut = props.get("command_out");
@@ -198,7 +200,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     }
 
                 } catch (WebApiException | AWSIotException e) {
-                    logger.error("initialize mower: id {} - {}::{}", serialNumber, getThing().getLabel(),
+                    logger.error("initialize mower: id {} - {}::{}", mower.getSerialNumber(), getThing().getLabel(),
                             getThing().getUID());
                 }
 
@@ -250,27 +252,95 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             }
 
             String cmd = AWSMessage.EMPTY_PAYLOAD;
-            switch (channelUID.getId()) {
 
-                case CHANNEL_ACTION:
-                    WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
-                    logger.debug("{}", actionCode.toString());
-                    cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
-                    break;
+            // update schedule
+            if (channelUID.getId().startsWith("datSc") && !channelUID.getId().startsWith("datSc#")) {
 
-                case CHANNELNAME_RAIN_DELAY:
-                    cmd = String.format("{\"rd\":%s}", command);
-                    break;
+                // update mower data
 
-                default:
-                    logger.debug("command for ChannelUID not supported: {}", channelUID.getAsString());
-                    break;
+                // extract name of from channel
+                Pattern pattern = Pattern.compile("datSc(.*?)#");
+                Matcher matcher = pattern.matcher(channelUID.getId());
+                String day = "";
+                if (matcher.find()) {
+                    day = (matcher.group(1));
+                }
+                WorxLandroidDayCodes dayCodeUpdated = WorxLandroidDayCodes.valueOf(day.toUpperCase());
+                ScheduledDay scheduledDayUpdated = mower.getScheduledDay(dayCodeUpdated);
+
+                String chName = channelUID.getId().split("#")[1];
+                switch (chName) {
+                    case "scheduleStartHour":
+                        scheduledDayUpdated.setHours(Integer.parseInt(command.toString()));
+                        break;
+
+                    case "scheduleStartMinutes":
+                        scheduledDayUpdated.setMinutes(Integer.parseInt(command.toString()));
+                        break;
+
+                    case "scheduleDuration":
+                        scheduledDayUpdated.setDuration(Integer.parseInt(command.toString()));
+                        break;
+
+                    case "scheduleEdgecut":
+                        scheduledDayUpdated.setEdgecut("ON".equals(command.toString()));
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // mower.put(dayCodeUpdated, scheduledDayUpdated);
+                // generate 'sc' message
+                JsonObject jsonObject = new JsonObject();
+                JsonObject sc = new JsonObject();
+                JsonArray jsonArray = new JsonArray();
+
+                for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
+
+                    JsonArray scDay = new JsonArray();
+                    ScheduledDay scheduledDay = mower.getScheduledDay(dayCode);
+
+                    String minutes = scheduledDay.getMinutes() < 10 ? scheduledDay.getMinutes() + "0"
+                            : String.valueOf(scheduledDay.getMinutes());
+                    scDay.add(String.format("%d:%s", scheduledDay.getHour(), minutes));
+                    scDay.add(scheduledDay.getDuration());
+                    scDay.add(scheduledDay.isEdgecut() ? 1 : 0);
+                    jsonArray.add(scDay);
+                }
+                sc.add("d", jsonArray);
+                jsonObject.add("sc", sc);
+
+                cmd = jsonObject.toString();
+                logger.debug("{}", jsonObject.toString());
+            } else {
+
+                switch (channelUID.getId()) {
+
+                    // start action
+                    case CHANNEL_ACTION:
+                        WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
+                        logger.debug("{}", actionCode.toString());
+                        cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
+                        break;
+
+                    // update rainDelay
+                    case CHANNELNAME_RAIN_DELAY:
+                        cmd = String.format("{\"rd\":%s}", command);
+                        break;
+
+                    default:
+                        logger.debug("command for ChannelUID not supported: {}", channelUID.getAsString());
+                        break;
+                }
             }
 
             AWSMessage message = new AWSMessage(mqttCommandIn, AWSIotQos.QOS0, cmd);
             bridgeHandler.publishMessage(message);
 
-        } catch (AWSIotException e) {
+        } catch (
+
+        AWSIotException e) {
             logger.error("error: {}", e.getLocalizedMessage());
         }
     }
@@ -456,22 +526,31 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
 
                     JsonArray shedule = d.get(dayCode.getCode()).getAsJsonArray();
+                    ScheduledDay scheduledDay = mower.getScheduledDay(dayCode);
 
                     String time[] = shedule.get(0).getAsString().split(":");
 
+                    // hour
                     String channelNameStartHour = String.format("datSc%s#scheduleStartHour", dayCode.getDescription());
+                    scheduledDay.setHours(Integer.parseInt(time[0]));
                     updateState(channelNameStartHour, new DecimalType(time[0]));
 
+                    // minutes
                     String channelNameStartMin = String.format("datSc%s#scheduleStartMinutes",
                             dayCode.getDescription());
+                    scheduledDay.setMinutes(Integer.parseInt(time[1]));
                     updateState(channelNameStartMin, new DecimalType(time[1]));
 
+                    // duration
                     String channelNameDuration = String.format("datSc%s#scheduleDuration", dayCode.getDescription());
+                    scheduledDay.setDuration(shedule.get(1).getAsInt());
                     updateState(channelNameDuration, new DecimalType(shedule.get(1).getAsLong()));
 
+                    // edgecut
                     String channelNameEdgecut = String.format("datSc%s#scheduleEdgecut", dayCode.getDescription());
-                    boolean state = shedule.get(1).getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
-                    updateState(channelNameEdgecut, OnOffType.from(state));
+                    boolean edgecut = shedule.get(2).getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
+                    scheduledDay.setEdgecut(edgecut);
+                    updateState(channelNameEdgecut, OnOffType.from(edgecut));
                 }
 
             }
