@@ -19,6 +19,14 @@
 			<channel-group id="datBattery" typeId="datBattery-type" />
 			<channel-group id="datDmp" typeId="datDmp-type" />
 			<channel-group id="datSt" typeId="datSt-type" />
+			<channel-group id="datSc" typeId="datSc-type" />
+			<channel-group id="datScSunday" typeId="datScSunday-type" />
+			<channel-group id="datScMonday" typeId="datScMonday-type" />
+			<channel-group id="datScTuesday" typeId="datScTuesday-type" />
+			<channel-group id="datScWednesday" typeId="datScWednesday-type" />
+			<channel-group id="datScThursday" typeId="datScThursday-type" />
+			<channel-group id="datScFriday" typeId="datScFriday-type" />
+			<channel-group id="datScSaturday" typeId="datScSaturday-type" />
 		</channel-groups>
 
 		<config-description>
@@ -91,6 +99,113 @@
 		</channels>
 	</channel-group-type>
 
+	<channel-group-type id="datSc-type">
+		<label>Data schedule channels</label>
+		<description>Data schedule channels of your mower</description>
+		<channels>
+			<channel id="scheduleTimeExtension" typeId="chScheduleTimeExtension" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScSunday-type">
+		<label>Data schedule channels Sunday</label>
+		<description>Data schedule channels of your mower for Sunday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScMonday-type">
+		<label>Data schedule channels Monday</label>
+		<description>Data schedule channels of your mower for Monday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScTuesday-type">
+		<label>Data schedule channels Tuesday</label>
+		<description>Data schedule channels of your mower for Tuesday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScWednesday-type">
+		<label>Data schedule channels Wednesday</label>
+		<description>Data schedule channels of your mower for Wednesday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScThursday-type">
+		<label>Data schedule channels Thursday</label>
+		<description>Data schedule channels of your mower for Thursday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScFriday-type">
+		<label>Data schedule channels Friday</label>
+		<description>Data schedule channels of your mower for Friday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datScSaturday-type">
+		<label>Data schedule channels Saturday</label>
+		<description>Data schedule channels of your mower for Saturday</description>
+		<channels>
+			<channel id="scheduleyStartHour" typeId="chScheduleStartHour" />
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+		</channels>
+	</channel-group-type>
+
+	<!--cannel-group-type id="datScTuesday-type"> <label>Data schedule channels Tuesday</label> <description>Data schedule channels
+		of your mower for Tuesday</description> <channels> <channel id="scheduleTuesdayStartHour" typeId="chScheduleTuesdayStartHour"
+		/> <channel id="scheduleTuesdayStartMinutes" typeId="chScheduleTuesdayStartMinutes" /> <channel id="scheduleTuesdayDuration"
+		typeId="chScheduleTuesdayDuration" /> <channel id="scheduleTuesdayEdgecut" typeId="chScheduleTuesdayEdgecut" /> </channels>
+		</channel-group-type> <channel-group-type id="datScWednesday-type"> <label>Data schedule channels Wednesday</label> <description>Data
+		schedule channels of your mower for Wednesday</description> <channels> <channel id="scheduleWednesdayStartHour" typeId="chScheduleWednesdayStartHour"
+		/> <channel id="scheduleWednesdayStartMinutes" typeId="chScheduleWednesdayStartMinutes" /> <channel id="scheduleWednesdayDuration"
+		typeId="chScheduleWednesdayDuration" /> <channel id="scheduleWednesdayEdgecut" typeId="chScheduleWednesdayEdgecut" /> </channels>
+		</channel-group-type> <channel-group-type id="datScThursday-type"> <label>Data schedule channels Thursday</label> <description>Data
+		schedule channels of your mower for Thursday</description> <channels> <channel id="scheduleThursdayStartHour" typeId="chScheduleThursdayStartHour"
+		/> <channel id="scheduleThursdayStartMinutes" typeId="chScheduleThursdayStartMinutes" /> <channel id="scheduleThursdayDuration"
+		typeId="chScheduleThursdayDuration" /> <channel id="scheduleThursdayEdgecut" typeId="chScheduleThursdayEdgecut" /> </channels>
+		</channel-group-type> <channel-group-type id="datScFriday-type"> <label>Data schedule channels Friday</label> <description>Data
+		schedule channels of your mower for Friday</description> <channels> <channel id="scheduleFridayStartHour" typeId="chScheduleFridayStartHour"
+		/> <channel id="scheduleFridayStartMinutes" typeId="chScheduleFridayStartMinutes" /> <channel id="scheduleFridayDuration"
+		typeId="chScheduleFridayDuration" /> <channel id="scheduleFridayEdgecut" typeId="chScheduleFridayEdgecut" /> </channels>
+		</channel-group-type> <channel-group-type id="datScSaturday-type"> <label>Data schedule channels Saturday</label> <description>Data
+		schedule channels of your mower for Saturday</description> <channels> <channel id="scheduleSaturdayStartHour" typeId="chScheduleSaturdayStartHour"
+		/> <channel id="scheduleSaturdayStartMinutes" typeId="chScheduleSaturdayStartMinutes" /> <channel id="scheduleSaturdayDuration"
+		typeId="chScheduleSaturdayDuration" /> <channel id="scheduleSaturdayEdgecut" typeId="chScheduleSaturdayEdgecut" /> </channels>
+		</channel-group-type -->
+
 	<channel-type id="chId">
 		<item-type>Number</item-type>
 		<label>Id</label>
@@ -123,7 +238,7 @@
 		<item-type>Number</item-type>
 		<label>Rain Delay</label>
 		<category>Info</category>
-		<state max="750" pattern="%.0f min"/>
+		<state min="0" max="750" step="30" pattern="%d min" />
 	</channel-type>
 
 	<channel-type id="chSerialNumber">
@@ -165,7 +280,7 @@
 		<item-type>Number</item-type>
 		<label>Battery Level</label>
 		<category>Battery</category>
-		<state readOnly="true" pattern="%.0f%%"/>
+		<state readOnly="true" pattern="%d%%" />
 	</channel-type>
 
 	<channel-type id="chBatteryChargeCycle">
@@ -207,21 +322,21 @@
 		<item-type>Number</item-type>
 		<label>Total Blade Time</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.0f min"/>
+		<state readOnly="true" pattern="%d min" />
 	</channel-type>
 
 	<channel-type id="chTotalDistance">
 		<item-type>Number</item-type>
 		<label>Total Distance</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.0f m"/>
+		<state readOnly="true" pattern="%d m" />
 	</channel-type>
 
 	<channel-type id="chTotalTime">
 		<item-type>Number</item-type>
 		<label>Total Time</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.0f  min"/>
+		<state readOnly="true" pattern="%d  min" />
 	</channel-type>
 
 	<channel-type id="chStatusCode">
@@ -259,13 +374,48 @@
 		<state readOnly="true" />
 	</channel-type>
 
+	<channel-type id="chScheduleTimeExtension">
+		<item-type>Number</item-type>
+		<label>Schedule Time Extension</label>
+		<category>Info</category>
+		<state readOnly="false" min="0" max="100" step="10" pattern="%d%%" />
+	</channel-type>
+
+	<channel-type id="chScheduleStartHour">
+		<item-type>Number</item-type>
+		<label>Schedule Start Hour</label>
+		<category>Info</category>
+		<state readOnly="false" min="0" max="23" step="1" pattern="%d h" />
+	</channel-type>
+
+	<channel-type id="chScheduleStartMinutes">
+		<item-type>Number</item-type>
+		<label>Schedule Start Minutes</label>
+		<category>Info</category>
+		<state readOnly="false" min="0" max="30" step="30" pattern="%d min" />
+	</channel-type>
+
+	<channel-type id="chScheduleDuration">
+		<item-type>Number</item-type>
+		<label>Schedule Duration</label>
+		<category>Info</category>
+		<state readOnly="false" min="30" max="1440" step="30" pattern="%d min" />
+	</channel-type>
+
+	<channel-type id="chScheduleEdgecut">
+		<item-type>Switch</item-type>
+		<label>Schedule Edgecut</label>
+		<category>Info</category>
+		<state readOnly="false" />
+	</channel-type>
+
 	<channel-type id="chAction">
 		<item-type>String</item-type>
 		<label>Action</label>
 		<description>Action channel for your    mower</description>
 		<state>
 			<options>
-				<option value="START">start</option>
+				<option value="Start">Start</option>
 				<option value="STOP">stop</option>
 				<option value="HOME">home</option>
 			</options>

@@ -64,4 +64,8 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_ERROR_CODE = "datCommon#errorCode";
     public static final String CHANNELNAME_ERROR_DESCRIPTION = "datCommon#errorDescription";
     public static final String CHANNELNAME_WIFI_QUALITY = "datCommon#wifiQuality";
+
+    // shedule
+    public static final String CHANNELNAME_SC_TIME_EXTENSION = "datSc#sheduleTimeExtension";
+
 }

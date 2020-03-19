@@ -38,6 +38,7 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidErrorCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
@@ -436,11 +437,48 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         String dateTime = String.format("%s %s", cfg.get("dt").getAsString(), cfg.get("tm").getAsString());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime localeDateTime = LocalDateTime.parse(dateTime, formatter);
+
         ZoneId zoneId = ZoneId.of(getThing().getProperties().get("time_zone"));
         ZonedDateTime zonedDateTime = ZonedDateTime.of(localeDateTime, zoneId);
         updateState(CHANNELNAME_DATETIME, new DateTimeType(zonedDateTime));
 
         // TODO cfg/sc
+        if (cfg.get("sc") != null) {
+            JsonObject sc = cfg.getAsJsonObject("sc");
+            // TODO cfg/sc/m
+            // cfg/sc/p
+            if (sc.get("p") != null) {
+                updateState(CHANNELNAME_SC_TIME_EXTENSION, new DecimalType(sc.get("p").getAsLong()));
+            }
+            if (sc.get("d") != null) {
+                JsonArray d = sc.get("d").getAsJsonArray();
+
+                for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
+
+                    JsonArray shedule = d.get(dayCode.getCode()).getAsJsonArray();
+
+                    String time[] = shedule.get(0).getAsString().split(":");
+
+                    String channelNameStartHour = String.format("datSc%s#schedule%sStartHour", dayCode.getDescription(),
+                            dayCode.getDescription());
+                    updateState(channelNameStartHour, new DecimalType(time[0]));
+
+                    String channelNameStartMin = String.format("datSc%s#schedule%sStartMinutes",
+                            dayCode.getDescription(), dayCode.getDescription());
+                    updateState(channelNameStartMin, new DecimalType(time[1]));
+
+                    String channelNameDuration = String.format("datSc%s#schedule%sDuration", dayCode.getDescription(),
+                            dayCode.getDescription());
+                    updateState(channelNameDuration, new DecimalType(shedule.get(1).getAsLong()));
+
+                    String channelNameEdgecut = String.format("datSc%s#schedule%sEdgecut", dayCode.getDescription(),
+                            dayCode.getDescription());
+                    boolean state = shedule.get(1).getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
+                    updateState(channelNameEdgecut, OnOffType.from(state));
+                }
+
+            }
+        }
 
         // cfg/cmd -> command
         if (cfg.get("cmd") != null) {
