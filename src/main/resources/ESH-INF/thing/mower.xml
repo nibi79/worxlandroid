@@ -378,7 +378,7 @@
 		<item-type>Number</item-type>
 		<label>Schedule Time Extension</label>
 		<category>Info</category>
-		<state readOnly="false" min="0" max="100" step="10" pattern="%d%%" />
+		<state readOnly="false" min="-100" max="100" step="10" pattern="%d%%" />
 	</channel-type>
 
 	<channel-type id="chScheduleStartHour">
