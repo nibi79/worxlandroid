@@ -32,7 +32,7 @@ Currently following Things are supported:
 
 ## Discovery
 
-Manual configuration can be achieved via PaperUI - Configuration - Things - Add Thing “+” Button - WorxLandroid Binding - Add manually - **Bridge Worx Landroid API**. Here you can provide your credentials for WorxLandroid account. Once the server thing has been added **Worx Landroid Mower**s will be discovered automatically and appear in your PaperUI inbox. You just need to add them as new things.
+Manual configuration can be achieved via PaperUI - Configuration - Things - Add Thing “+” Button - WorxLandroid Binding - Add manually - **Bridge Worx Landroid API**. Here you can provide your credentials for your WorxLandroid account. Once the bridge has been added **Worx Landroid Mower**s will be discovered automatically and appear in your PaperUI inbox. You just need to add them as new things.
 
 ## Binding Configuration
 
@@ -56,17 +56,173 @@ TODO
 
 ### .things
 ```
-TODO
+Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUsername="my username", webapiPassword="my password" ] {
+    Thing mower MySerialNumber "MyLandroid Shaun"
+}
 ```
+'MySerialNumber' is the serial number of the mower.
 
 ### .items
 ```
-TODO
+String          LandroidAction                          "Action"                            <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#action"}
+String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
+//
+String         LandroidSerialNumber                    "Serial Number [%s]"                <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#serialNumber"}
+Number          LandroidFirmware                        "Firmware [v%s]"                    <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#firmware"}
+Switch          LandroidOnline                          "Online [%s]"                       <network>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#online"}
+String          LandroidLastUpdateOnlineStatus          "Last Update Online Status [%s]"    <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lastUpdateOnlineStatus"}
+
+// Status
+Number          LandroidWifiQuality                     "Wifi Quality [%d]"                 <network>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#wifiQuality"}
+Switch          LandroidBatteryCharging                 "Battery charging [%s]"             <lowbattery>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryCharging"}
+Number          LandroidStatusCode                      "Status Code [%d]"                  <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusCode"}
+String          LandroidStatusDescription               "Status [%s]"                       <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusDescription"}
+Number          LandroidErrorCode                       "Error Code [%d]"                   <error>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorCode"}
+String          LandroidErrorDescription                "Error: [%s]"                       <error>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorDescription"}
+
+// Battery
+Number          LandroidBatteryLevel                    "Battery Level [%d %%]"             <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryLevel"}
+Number          LandroidBatteryVoltage                  "Battery Voltage [%.2f V]"          <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryVoltage"}
+Number          LandroidBatteryTemperature              "Battery Temperature [%.1f °C]"     <temperature>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryTemperature"}
+Number          LandroidBatteryChargeCycle              "Battery ChargeCycle [%d]"          <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryChargeCycle"}
+
+// Settings
+Number          LandroidRainDelay                       "Rain Delay [%d min]"               <rain>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#rainDelay"}
+Number          LandroidScheduleTimeExtension           "Schedule Time Extension [%d %%]"   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSc#scheduleTimeExtension"}
+
+// Statistics
+Number          LandroidTotalTime                       "Total Time [%s min]"               <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalTime"}
+Number:Length   LandroidTotalDistance                   "Total Distance [%s m]"             <chart>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalDistance"}
+Number          LandroidTotalBladeTime                  "Total Bladetime [%s min]"          <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
+
+//Schedule
+// Monday
+Number          LandroidScheduleMondayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScMonday#scheduleStartHour"}
+Number          LandroidScheduleMondayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScMonday#scheduleStartMinutes"}
+Number          LandroidScheduleMondayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScMonday#scheduleDuration"}
+Switch          LandroidScheduleMondayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScMonday#scheduleEdgecut"}
+
+// Tuesday
+Number          LandroidScheduleTuesdayStartHour        "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScTuesday#scheduleStartHour"}
+Number          LandroidScheduleTuesdayStartMinutes     "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScTuesday#scheduleStartMinutes"}
+Number          LandroidScheduleTuesdayDuration         "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScTuesday#scheduleDuration"}
+Switch          LandroidScheduleTuesdayEdgecut          "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScTuesday#scheduleEdgecut"}
+
+// Wednesday
+Number          LandroidScheduleWednesdayStartHour      "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScWednesday#scheduleStartHour"}
+Number          LandroidScheduleWednesdayStartMinutes   "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScWednesday#scheduleStartMinutes"}
+Number          LandroidScheduleWednesdayDuration       "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScWednesday#scheduleDuration"}
+Switch          LandroidScheduleWednesdayEdgecut        "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScWednesday#scheduleEdgecut"}
+
+// Thursday
+Number          LandroidScheduleThursdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScThursday#scheduleStartHour"}
+Number          LandroidScheduleThursdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScThursday#scheduleStartMinutes"}
+Number          LandroidScheduleThursdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScThursday#scheduleDuration"}
+Switch          LandroidScheduleThursdayEdgecut         "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScThursday#scheduleEdgecut"}
+
+// Friday
+Number          LandroidScheduleFridayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScFriday#scheduleStartHour"}
+Number          LandroidScheduleFridayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScFriday#scheduleStartMinutes"}
+Number          LandroidScheduleFridayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScFriday#scheduleDuration"}
+Switch          LandroidScheduleFridayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScFriday#scheduleEdgecut"}
+
+// Saturday
+Number          LandroidScheduleSaturdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSaturday#scheduleStartHour"}
+Number          LandroidScheduleSaturdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSaturday#scheduleStartMinutes"}
+Number          LandroidScheduleSaturdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSaturday#scheduleDuration"}
+Switch          LandroidScheduleSaturdayEdgecut         "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSaturday#scheduleEdgecut"}
+
+// Sunday
+Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartHour"}
+Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartMinutes"}
+Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleDuration"}
+Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleEdgecut"}
 ```
 
 ### .sitemap
 ```
-TODO
+sitemap landroid label="Landroid"
+{
+    Frame {
+        Switch item=LandroidAction mappings=[START="Start", STOP="Stop", HOME="Go Home"]
+         Text item=LandroidLastUpdate
+    }
+    Frame {
+        Text item=LandroidSerialNumber
+        Text item=LandroidFirmware
+        Text item=LandroidOnline //mappings=[OFF="Offline", ON="Online"]
+        Text item=LandroidLastUpdateOnlineStatus
+    }
+    Frame label="Status"{
+        Text item=LandroidWifiQuality
+        Text  item=LandroidBatteryCharging
+        Text item=LandroidStatusCode
+        Text item=LandroidStatusDescription
+        Text item=LandroidErrorCode
+        Text item=LandroidErrorDescription
+    }
+    Frame label="Battery"{
+        Text item=LandroidBatteryLevel
+        Text item=LandroidBatteryVoltage
+        Text item=LandroidBatteryTemperature
+        Text item=LandroidBatteryChargeCycle
+    }
+    Frame label="Settings" {
+        Setpoint item=LandroidScheduleTimeExtension minValue=-100 maxValue=100 step=10
+        Text label="Schedule" icon="time"{
+            Frame label="Schedule Monday" {
+                Setpoint item=LandroidScheduleMondayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleMondayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleMondayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleMondayEdgecut
+            }
+            Frame label="Schedule Tuesday" {
+                Setpoint item=LandroidScheduleTuesdayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleTuesdayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleTuesdayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleTuesdayEdgecut
+            }
+            Frame label="Schedule Wednesday" {
+                Setpoint item=LandroidScheduleWednesdayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleWednesdayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleWednesdayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleWednesdayEdgecut
+            }
+            Frame label="Schedule Thursday" {
+                Setpoint item=LandroidScheduleThursdayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleThursdayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleThursdayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleThursdayEdgecut
+            }
+            Frame label="Schedule Friday" {
+                Setpoint item=LandroidScheduleFridayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleFridayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleFridayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleFridayEdgecut
+            }
+            Frame label="Schedule Saturday" {
+                Setpoint item=LandroidScheduleSaturdayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleSaturdayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleSaturdayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleSaturdayEdgecut
+            }
+            Frame label="Schedule Sunday" {
+                Setpoint item=LandroidScheduleSundayStartHour minValue=0 maxValue=23 step=1
+                Setpoint item=LandroidScheduleSundayStartMinutes minValue=0 maxValue=45 step=15
+                Setpoint item=LandroidScheduleSundayDuration minValue=15 maxValue=1425 step=15
+                Switch item=LandroidScheduleSundayEdgecut
+            }
+        }
+        Setpoint item=LandroidRainDelay minValue=0 maxValue=750 step=30
+    }
+    Frame label="Statistic" {
+        Text item=LandroidTotalTime
+        // Text item=LandroidRunTime_yesterday
+        Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
+        // Text item=Landroid_Distance_yesterday label="Distance yesterday [%.2f km]"
+        Text item=LandroidTotalBladeTime
+    }
+}
 ```
 
 ### .rules
@@ -84,10 +240,10 @@ If you encounter critical issues with this binding, please consider to:
 
 In any case please provide some information about your problem:
 
-- openHAB and binding version 
+- openHAB and binding version
 - error description and steps to retrace if applicable
 - any related `[WARN]`/`[ERROR]` from openhab.log (`log:set DEBUG org.openhab.binding.worxlandroid`)
 - whether it's the binding, bridge, device or channel related issue
 
-For the sake of documentation please use English language. 
+For the sake of documentation please use English language.
 
