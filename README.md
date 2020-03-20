@@ -217,9 +217,7 @@ sitemap landroid label="Landroid"
     }
     Frame label="Statistic" {
         Text item=LandroidTotalTime
-        // Text item=LandroidRunTime_yesterday
         Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
-        // Text item=Landroid_Distance_yesterday label="Distance yesterday [%.2f km]"
         Text item=LandroidTotalBladeTime
     }
 }
