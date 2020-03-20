@@ -45,7 +45,7 @@
 		<channels>
 			<channel id="id" typeId="chId" />
 			<channel id="language" typeId="chLanguage" />
-			<channel id="dateTime" typeId="chDateTime" />
+			<channel id="lastUpdate" typeId="chLastUpdate" />
 			<channel id="command" typeId="chCommand" />
 			<channel id="rainDelay" typeId="chRainDelay" />
 			<channel id="serialNumber" typeId="chSerialNumber" />
@@ -220,9 +220,9 @@
 		<state readOnly="true" />
 	</channel-type>
 
-	<channel-type id="chDateTime">
+	<channel-type id="chLastUpdate">
 		<item-type>DateTime</item-type>
-		<label>DateTime</label>
+		<label>Last Update</label>
 		<category>Info</category>
 		<state readOnly="true" />
 	</channel-type>
@@ -392,14 +392,14 @@
 		<item-type>Number</item-type>
 		<label>Schedule Start Minutes</label>
 		<category>Info</category>
-		<state readOnly="false" min="0" max="30" step="30" pattern="%d min" />
+		<state readOnly="false" min="0" max="45" step="15" pattern="%d min" />
 	</channel-type>
 
 	<channel-type id="chScheduleDuration">
 		<item-type>Number</item-type>
 		<label>Schedule Duration</label>
 		<category>Info</category>
-		<state readOnly="false" min="30" max="1440" step="30" pattern="%d min" />
+		<state readOnly="false" min="15" max="1425" step="15" pattern="%d min" />
 	</channel-type>
 
 	<channel-type id="chScheduleEdgecut">
@@ -412,12 +412,12 @@
 	<channel-type id="chAction">
 		<item-type>String</item-type>
 		<label>Action</label>
-		<description>Action channel for your    mower</description>
+		<description>Action channel for your mower</description>
 		<state>
 			<options>
-				<option value="Start">Start</option>
-				<option value="STOP">stop</option>
-				<option value="HOME">home</option>
+				<option value="START">Start</option>
+				<option value="STOP">Stop</option>
+				<option value="HOME">Home</option>
 			</options>
 		</state>
 	</channel-type>
