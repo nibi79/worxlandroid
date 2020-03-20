@@ -13,6 +13,8 @@
 		<description>Worx Landroid Mower</description>
 
 		<channel-groups>
+			<channel-group id="common" typeId="common-type" />
+
 			<channel-group id="cfgCommon" typeId="cfgCommon-type" />
 
 			<channel-group id="datCommon" typeId="datCommon-type" />
@@ -38,6 +40,15 @@
 		</config-description>
 
 	</thing-type>
+
+	<channel-group-type id="common-type">
+		<label>Common channels</label>
+		<description>Common channels of your mower</description>
+		<channels>
+			<channel id="online" typeId="chOnline" />
+			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus" />
+		</channels>
+	</channel-group-type>
 
 	<channel-group-type id="cfgCommon-type">
 		<label>Configuration common channels</label>
@@ -184,31 +195,16 @@
 		</channels>
 	</channel-group-type>
 
-	<!--cannel-group-type id="datScTuesday-type"> <label>Data schedule channels Tuesday</label> <description>Data schedule channels
-		of your mower for Tuesday</description> <channels> <channel id="scheduleTuesdayStartHour" typeId="chScheduleTuesdayStartHour"
-		/> <channel id="scheduleTuesdayStartMinutes" typeId="chScheduleTuesdayStartMinutes" /> <channel id="scheduleTuesdayDuration"
-		typeId="chScheduleTuesdayDuration" /> <channel id="scheduleTuesdayEdgecut" typeId="chScheduleTuesdayEdgecut" /> </channels>
-		</channel-group-type> <channel-group-type id="datScWednesday-type"> <label>Data schedule channels Wednesday</label> <description>Data
-		schedule channels of your mower for Wednesday</description> <channels> <channel id="scheduleWednesdayStartHour" typeId="chScheduleWednesdayStartHour"
-		/> <channel id="scheduleWednesdayStartMinutes" typeId="chScheduleWednesdayStartMinutes" /> <channel id="scheduleWednesdayDuration"
-		typeId="chScheduleWednesdayDuration" /> <channel id="scheduleWednesdayEdgecut" typeId="chScheduleWednesdayEdgecut" /> </channels>
-		</channel-group-type> <channel-group-type id="datScThursday-type"> <label>Data schedule channels Thursday</label> <description>Data
-		schedule channels of your mower for Thursday</description> <channels> <channel id="scheduleThursdayStartHour" typeId="chScheduleThursdayStartHour"
-		/> <channel id="scheduleThursdayStartMinutes" typeId="chScheduleThursdayStartMinutes" /> <channel id="scheduleThursdayDuration"
-		typeId="chScheduleThursdayDuration" /> <channel id="scheduleThursdayEdgecut" typeId="chScheduleThursdayEdgecut" /> </channels>
-		</channel-group-type> <channel-group-type id="datScFriday-type"> <label>Data schedule channels Friday</label> <description>Data
-		schedule channels of your mower for Friday</description> <channels> <channel id="scheduleFridayStartHour" typeId="chScheduleFridayStartHour"
-		/> <channel id="scheduleFridayStartMinutes" typeId="chScheduleFridayStartMinutes" /> <channel id="scheduleFridayDuration"
-		typeId="chScheduleFridayDuration" /> <channel id="scheduleFridayEdgecut" typeId="chScheduleFridayEdgecut" /> </channels>
-		</channel-group-type> <channel-group-type id="datScSaturday-type"> <label>Data schedule channels Saturday</label> <description>Data
-		schedule channels of your mower for Saturday</description> <channels> <channel id="scheduleSaturdayStartHour" typeId="chScheduleSaturdayStartHour"
-		/> <channel id="scheduleSaturdayStartMinutes" typeId="chScheduleSaturdayStartMinutes" /> <channel id="scheduleSaturdayDuration"
-		typeId="chScheduleSaturdayDuration" /> <channel id="scheduleSaturdayEdgecut" typeId="chScheduleSaturdayEdgecut" /> </channels>
-		</channel-group-type -->
+	<channel-type id="chOnline">
+		<item-type>Switch</item-type>
+		<label>Online</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
 
-	<channel-type id="chId">
-		<item-type>Number</item-type>
-		<label>Id</label>
+	<channel-type id="chLastUpdateOnlineStatus">
+		<item-type>DateTime</item-type>
+		<label>Last Update Online Status</label>
 		<category>Info</category>
 		<state readOnly="true" />
 	</channel-type>
