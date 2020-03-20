@@ -49,9 +49,11 @@ Following options can be set for the **Bridge Worx Landroid API**:
 The binding retrieves properties from the API. To view the properties open the thing in PaperUI and click on 'SHOW PROPERTIES':
 
 Bridge:
+<br>
 <img src="images/SC_PaperUI_Bridge.png" width="40%">       
 
 Mower:
+<br>
 <img src="images/SC_PaperUI_Mower.png" width="40%">
 
 ## Channels
@@ -66,7 +68,7 @@ TODO
 ## File based configuration
 
 <img src="images/SC_BasicUI_Main.png" width="40%">       
-
+<br><br>
 <img src="images/SC_BasicUI_Schedule.png" width="40%">
 
 ### .things
