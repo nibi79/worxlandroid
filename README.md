@@ -8,10 +8,11 @@ This binding connects openHAB with your WorxLandroid Mower using the API and MQT
 2. [Installation and upgrade](https://github.com/nibi79/worxlandroid/tree/master#installation-and-upgrade)
 3. [Supported Things](https://github.com/nibi79/worxlandroid/tree/master#supported-things)
 4. [Discovery](https://github.com/nibi79/worxlandroid/tree/master#discovery)
-5. [Configuration](https://github.com/nibi79/worxlandroid/tree/master#configuration)
-6. [Channels](https://github.com/nibi79/worxlandroid/tree/master#channels)
-7. [File based configuration](https://github.com/nibi79/worxlandroid/tree/master#file-based-configuration)
-8. [Support](https://github.com/nibi79/worxlandroid/tree/master#support)
+5. [Properties](https://github.com/nibi79/worxlandroid/tree/master#properties)
+6. [Configuration](https://github.com/nibi79/worxlandroid/tree/master#configuration)
+7. [Channels](https://github.com/nibi79/worxlandroid/tree/master#channels)
+8. [File based configuration](https://github.com/nibi79/worxlandroid/tree/master#file-based-configuration)
+9. [Support](https://github.com/nibi79/worxlandroid/tree/master#support)
 
 ***
 
@@ -43,6 +44,16 @@ Following options can be set for the **Bridge Worx Landroid API**:
 | username | Username to access the WorxLandroid API. |
 | password | Password to access the WorxLandroid API. |
 
+## Properties
+
+The binding retrieves properties from the API. To view the properties open the thing in PaperUI and click on 'SHOW PROPERTIES':
+
+Bridge:
+<img src="images/SC_PaperUI_Bridge.png" width="40%">       
+
+Mower:
+<img src="images/SC_PaperUI_Mower.png" width="40%">
+
 ## Channels
 
 ### Currently following **Channels** are supported on the **Worx Landroid Mower**:
@@ -53,6 +64,10 @@ Following options can be set for the **Bridge Worx Landroid API**:
 TODO
 
 ## File based configuration
+
+<img src="images/SC_BasicUI_Main.png" width="40%">       
+
+<img src="images/SC_BasicUI_Schedule.png" width="40%">
 
 ### .things
 ```
