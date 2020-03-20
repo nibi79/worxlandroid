@@ -27,6 +27,9 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
 public class Mower {
 
     private String serialNumber;
+    private int timeExtension;
+    private boolean online;
+
     private Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays = new LinkedHashMap<WorxLandroidDayCodes, ScheduledDay>();
 
     /**
@@ -50,6 +53,22 @@ public class Mower {
         this.serialNumber = serialNumber;
     }
 
+    public int getTimeExtension() {
+        return timeExtension;
+    }
+
+    public void setTimeExtension(int timeExtension) {
+        this.timeExtension = timeExtension;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
     /**
      *
      * @param dayCode
@@ -63,4 +82,5 @@ public class Mower {
         scheduledDays.put(dayCode, scheduledDay);
 
     }
+
 }
