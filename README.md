@@ -41,8 +41,8 @@ Following options can be set for the **Bridge Worx Landroid API**:
 
 | Property   | Description |
 |-----------|-----------|
-| username | Username to access the WorxLandroid API. |
-| password | Password to access the WorxLandroid API. |
+| webapiUsername | Username to access the WorxLandroid API. |
+| webapiPassword | Password to access the WorxLandroid API. |
 
 ## Properties
 
