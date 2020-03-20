@@ -10,20 +10,17 @@
 
 		<config-description>
 
-			<parameter-group name="worxlandroidBridge">
-				<label>WorxLandroid	Bridge</label>
-				<description>The WorxLandroid bridge represents	a bridge with general settings and communication tasks.</description>
-			</parameter-group>
-
-			<parameter name="webapiUsername" groupName="worxlandroidBridge" type="text">
+			<parameter name="webapiUsername" type="text">
 				<label>Username</label>
 				<description>Username to access the Landroid WebAPI.</description>
+				<required>true</required>
 			</parameter>
 
-			<parameter name="webapiPassword" groupName="worxlandroidBridge" type="text">
+			<parameter name="webapiPassword" type="text">
 				<context>password</context>
 				<label>Password</label>
 				<description>Password to access the	Landroid WebAPI.</description>
+				<required>true</required>
 			</parameter>
 
 		</config-description>
