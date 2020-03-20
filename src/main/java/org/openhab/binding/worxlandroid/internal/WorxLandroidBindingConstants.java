@@ -66,6 +66,8 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_WIFI_QUALITY = "datCommon#wifiQuality";
 
     // shedule
+    public static final String CHANNELNAME_ONLINE = "common#online";
+    public static final String CHANNELNAME_LAST_UPDATE_ONLINE_STATUS = "common#lastUpdateOnlineStatus";
     public static final String CHANNELNAME_SC_TIME_EXTENSION = "datSc#scheduleTimeExtension";
 
 }
