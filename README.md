@@ -50,7 +50,7 @@ The binding retrieves properties from the API. To view the properties open the t
 
 Bridge:
 <br>
-<img src="images/SC_PaperUI_Bridge.png" width="40%">       
+<img src="images/SC_PaperUI_Bridge.png" width="40%">
 
 Mower:
 <br>
@@ -58,16 +58,138 @@ Mower:
 
 ## Channels
 
-### Currently following **Channels** are supported on the **Worx Landroid Mower**:
+Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
-| Channel   | Type | Values |
+##### common
+
+| Channel   | Type | ChannelName |
 |------------|-----------|-----------|
-| state      | `Switch` | ON/OFF |
-TODO
+| online      | `Switch` | common#online |
+| lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus |
+| action | `String` | common#action |
+
+##### cfgCommon
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| id      | `Switch` | cfgCommon#id |
+| serialNumber | `String` | cfgCommon#serialNumber |
+| language | `String` | cfgCommon#language |
+| lastUpdate | `DateTime` | cfgCommon#lastUpdate |
+| command | `Number` | cfgCommon#command |
+| rainDelay | `Number` | cfgCommon#rainDelay |
+
+##### datCommon
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| macAdress | `String` | datCommon#macAdress |
+| firmware | `Number` | datCommon#firmware |
+| wifiQuality | `Number` | datCommon#wifiQuality |
+| statusCode | `Number` | datCommon#statusCode |
+| statusDescription | `String` | datCommon#statusDescription |
+| errorCode | `Number` | datCommon#errorCode |
+| errorDescription | `String` | datCommon#errorDescription |
+
+##### datBattery
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| batteryTemperature | `Number` | datBattery#batteryTemperature |
+| batteryVoltage | `Number` | datBattery#batteryVoltage |
+| batteryLevel | `Number` | datBattery#batteryLevel |
+| batteryChargeCycle | `Number` | datBattery#batteryChargeCycle |
+| batteryCharging | `Switch` | datBattery#batteryCharging |
+
+##### datDmp
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| pitch | `Number` | datDmp#pitch |
+| roll | `Number` | datDmp#roll |
+| yaw | `Number` | datDmp#yaw |
+
+##### datSt
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| totalBladeTime | `Number` | datSt#totalBladeTime |
+| totalDistance | `Number` | datSt#totalDistance |
+| totalTime | `Number` | datSt#totalTime |
+
+##### datSc
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleTimeExtension | `Number` | datSc#scheduleTimeExtension |
+
+##### datScSunday
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScSunday#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScSunday#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScSunday#scheduleDuration |
+| scheduleEdgecut | `Number` | datScSunday#scheduleEdgecut |
+
+##### datScMonday
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScMonday#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScMonday#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScMonday#scheduleDuration |
+| scheduleEdgecut | `Number` | datScMonday#scheduleEdgecut |
+
+##### datScTuesady
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScTuesady#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScTuesady#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScTuesady#scheduleDuration |
+| scheduleEdgecut | `Number` | datScTuesady#scheduleEdgecut |
+
+##### datScWednesday
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScWednesday#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScWednesday#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScWednesday#scheduleDuration |
+| scheduleEdgecut | `Number` | datScWednesday#scheduleEdgecut |
+
+##### datScThursday
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScThursday#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScThursday#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScThursday#scheduleDuration |
+| scheduleEdgecut | `Number` | datScThursday#scheduleEdgecut |
+
+##### datScFriday
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScFriday#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScFriday#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScFriday#scheduleDuration |
+| scheduleEdgecut | `Number` | datScFriday#scheduleEdgecut |
+
+
+##### datScSaturday
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| scheduleStartHour | `Number` | datScSaturday#scheduleStartHour |
+| scheduleStartMinutes | `Number` | datScSaturday#scheduleStartMinutes |
+| scheduleDuration | `Number` | datScSaturday#scheduleDuration |
+| scheduleEdgecut | `Number` | datScSaturday#scheduleEdgecut |
 
 ## File based configuration
 
-<img src="images/SC_BasicUI_Main.png" width="40%">       
+<img src="images/SC_BasicUI_Main.png" width="40%">
 <br><br>
 <img src="images/SC_BasicUI_Schedule.png" width="40%">
 
