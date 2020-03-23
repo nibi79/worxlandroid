@@ -35,39 +35,48 @@ public class WorxLandroidBindingConstants {
 
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_MOWER);
 
-    // List of all Channel ids
-    public static final String CHANNEL_ACTION = "datCommon#action";
+    // List channel ids
 
-    // channelnames cfg
+    // common
+    public static final String CHANNELNAME_ONLINE = "common#online";
+    public static final String CHANNELNAME_LAST_UPDATE_ONLINE_STATUS = "common#lastUpdateOnlineStatus";
+    public static final String CHANNEL_ACTION = "common#action";
+
+    // cfgCommon
     public static final String CHANNELNAME_ID = "cfgCommon#id";
+    public static final String CHANNELNAME_SERIAL_NUMBER = "cfgCommon#serialNumber";
     public static final String CHANNELNAME_LANGUAGE = "cfgCommon#language";
     public static final String CHANNELNAME_DATETIME = "cfgCommon#lastUpdate";
     public static final String CHANNELNAME_COMMAND = "cfgCommon#command";
     public static final String CHANNELNAME_RAIN_DELAY = "cfgCommon#rainDelay";
-    public static final String CHANNELNAME_SERIAL_NUMBER = "cfgCommon#serialNumber";
 
+    // datCommon
     public static final String CHANNELNAME_MAC_ADRESS = "datCommon#macAdress";
     public static final String CHANNELNAME_FIRMWARE = "datCommon#firmware";
+    public static final String CHANNELNAME_WIFI_QUALITY = "datCommon#wifiQuality";
+    public static final String CHANNELNAME_STATUS_CODE = "datCommon#statusCode";
+    public static final String CHANNELNAME_STATUS_DESCRIPTION = "datCommon#statusDescription";
+    public static final String CHANNELNAME_ERROR_CODE = "datCommon#errorCode";
+    public static final String CHANNELNAME_ERROR_DESCRIPTION = "datCommon#errorDescription";
+
+    // datBattery
     public static final String CHANNELNAME_BATTERY_TEMPERATURE = "datBattery#batteryTemperature";
     public static final String CHANNELNAME_BATTERY_VOLTAGE = "datBattery#batteryVoltage";
     public static final String CHANNELNAME_BATTERY_LEVEL = "datBattery#batteryLevel";
     public static final String CHANNELNAME_BATTERY_CHARGE_CYCLE = "datBattery#batteryChargeCycle";
     public static final String CHANNELNAME_BATTERY_CHARGING = "datBattery#batteryCharging";
+
+    // datDmp
     public static final String CHANNELNAME_PITCH = "datDmp#pitch";
     public static final String CHANNELNAME_ROLL = "datDmp#roll";
     public static final String CHANNELNAME_YAW = "datDmp#yaw";
+
+    // datSt
     public static final String CHANNELNAME_TOTAL_BLADE_TIME = "datSt#totalBladeTime";
     public static final String CHANNELNAME_TOTAL_DISTANCE = "datSt#totalDistance";
     public static final String CHANNELNAME_TOTAL_TIME = "datSt#totalTime";
-    public static final String CHANNELNAME_STATUS_CODE = "datCommon#statusCode";
-    public static final String CHANNELNAME_STATUS_DESCRIPTION = "datCommon#statusDescription";
-    public static final String CHANNELNAME_ERROR_CODE = "datCommon#errorCode";
-    public static final String CHANNELNAME_ERROR_DESCRIPTION = "datCommon#errorDescription";
-    public static final String CHANNELNAME_WIFI_QUALITY = "datCommon#wifiQuality";
 
-    // shedule
-    public static final String CHANNELNAME_ONLINE = "common#online";
-    public static final String CHANNELNAME_LAST_UPDATE_ONLINE_STATUS = "common#lastUpdateOnlineStatus";
+    // datSc
     public static final String CHANNELNAME_SC_TIME_EXTENSION = "datSc#scheduleTimeExtension";
 
 }
