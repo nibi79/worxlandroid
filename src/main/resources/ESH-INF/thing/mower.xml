@@ -47,6 +47,7 @@
 		<channels>
 			<channel id="online" typeId="chOnline" />
 			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus" />
+			<channel id="action" typeId="chAction" />
 		</channels>
 	</channel-group-type>
 
@@ -55,11 +56,11 @@
 		<description>Configuration common channels of your mower</description>
 		<channels>
 			<channel id="id" typeId="chId" />
+			<channel id="serialNumber" typeId="chSerialNumber" />
 			<channel id="language" typeId="chLanguage" />
 			<channel id="lastUpdate" typeId="chLastUpdate" />
 			<channel id="command" typeId="chCommand" />
 			<channel id="rainDelay" typeId="chRainDelay" />
-			<channel id="serialNumber" typeId="chSerialNumber" />
 		</channels>
 	</channel-group-type>
 
@@ -69,12 +70,11 @@
 		<channels>
 			<channel id="macAdress" typeId="chMacAdress" />
 			<channel id="firmware" typeId="chFirmware" />
+			<channel id="wifiQuality" typeId="chWifiQuality" />
 			<channel id="statusCode" typeId="chStatusCode" />
 			<channel id="statusDescription" typeId="chStatusDescription" />
 			<channel id="errorCode" typeId="chErrorCode" />
 			<channel id="errorDescription" typeId="chErrorDescription" />
-			<channel id="wifiQuality" typeId="chWifiQuality" />
-			<channel id="action" typeId="chAction" />
 		</channels>
 	</channel-group-type>
 
