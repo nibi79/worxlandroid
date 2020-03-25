@@ -209,6 +209,13 @@
 		<state readOnly="true" />
 	</channel-type>
 
+    <channel-type id="chId">
+        <item-type>Number</item-type>
+        <label>Id</label>
+        <category>Info</category>
+        <state readOnly="true" />
+    </channel-type>
+
 	<channel-type id="chLanguage">
 		<item-type>String</item-type>
 		<label>Language</label>
