@@ -64,11 +64,11 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### common
 
-| Channel   | Type | ChannelName |
-|------------|-----------|-----------|
-| online      | `Switch` | common#online |
-| lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus |
-| action | `String` | common#action |
+| Channel   | Type | ChannelName | Values |
+|------------|-----------|-----------|-----------|
+| online      | `Switch` | common#online | |
+| lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus | |
+| action | `String` | common#action | START, STOP, HOME |
 
 ##### cfgCommon
 
