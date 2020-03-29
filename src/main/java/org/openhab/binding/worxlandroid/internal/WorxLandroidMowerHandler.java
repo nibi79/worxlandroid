@@ -44,6 +44,7 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidErrorCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
+import org.openhab.binding.worxlandroid.internal.config.MowerConfiguration;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageCallback;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
@@ -181,6 +182,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     if (mowerDataJson != null) {
 
+                        // set mower properties
                         Map<String, String> props = productItemsResponse.getDataAsPropertyMap(mower.getSerialNumber());
 
                         mqttCommandIn = props.get("command_in");
@@ -188,6 +190,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                         updateThing(editThing().withProperties(props).build());
 
+                        // handle AWS
                         AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0, this);
                         bridgeHandler.subcribeTopic(awsTopic);
 
@@ -197,9 +200,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         updateStatus(
                                 mowerDataJson.get("online").getAsBoolean() ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
 
-                        refreshStatusJob = scheduler.scheduleWithFixedDelay(refreshStatusRunnable, 0, 60,
-                                TimeUnit.SECONDS);
-                        pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 0, 5, TimeUnit.MINUTES);
+                        // scheduled jobs
+                        startScheduledJobs();
 
                     } else {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
@@ -226,6 +228,20 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     }
 
     /**
+     * Start scheduled jobs
+     */
+    private void startScheduledJobs() {
+
+        MowerConfiguration config = getConfigAs(MowerConfiguration.class);
+
+        refreshStatusJob = scheduler.scheduleWithFixedDelay(refreshStatusRunnable, 30,
+                config.getRefreshStatusInterval(), TimeUnit.SECONDS);
+
+        pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, config.getPollingInterval(),
+                TimeUnit.SECONDS);
+    }
+
+    /**
      * @return
      */
     protected synchronized @Nullable WorxLandroidBridgeHandler getWorxLandroidBridgeHandler() {
@@ -240,6 +256,17 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             return (WorxLandroidBridgeHandler) handler;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void dispose() {
+        if (refreshStatusJob != null) {
+            refreshStatusJob.cancel(true);
+        }
+
+        if (pollingJob != null) {
+            pollingJob.cancel(true);
         }
     }
 

@@ -33,6 +33,7 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.worxlandroid.internal.config.BridgeConfiguration;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
@@ -59,7 +60,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
     private static final String EMPTY_PASSWORD = "";
 
-    private @Nullable WorxLandroidConfiguration config;
     private WorxLandroidWebApiImpl apiHandler;
     private @Nullable MowerDiscoveryService discoveryService;
 
@@ -106,11 +106,10 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void initialize() {
-        // logger.debug("Start initializing!");
-        config = getConfigAs(WorxLandroidConfiguration.class);
 
         try {
 
+            BridgeConfiguration config = getConfigAs(BridgeConfiguration.class);
             boolean connected = apiHandler.connect(config.getWebapiUsername(), config.getWebapiPassword());
 
             if (connected) {

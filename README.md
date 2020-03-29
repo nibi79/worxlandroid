@@ -41,10 +41,18 @@ For textual configuration go to [File based configuration](https://github.com/ni
 
 Following options can be set for the **Bridge Worx Landroid API**:
 
-| Property   | Description |
+| Property  | Description |
 |-----------|-----------|
 | webapiUsername | Username to access the WorxLandroid API. |
 | webapiPassword | Password to access the WorxLandroid API. |
+
+
+Following options can be set for the **WorxLandroid Mower**:
+
+| Property  | Description |
+|-----------|-----------|
+| refreshStatusInterval | Interval for refreshing mower status in seconds (min="30")|
+| pollingInterval | Interval for polling in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
 
 ## Properties
 

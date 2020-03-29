@@ -10,14 +10,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal;
+package org.openhab.binding.worxlandroid.internal.config;
 
 /**
- * The {@link WorxLandroidConfiguration} class contains fields mapping thing configuration parameters.
+ * The {@link BridgeConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
  */
-public class WorxLandroidConfiguration {
+public class BridgeConfiguration {
 
     public String webapiUsername;
     public String webapiPassword;
@@ -40,6 +40,6 @@ public class WorxLandroidConfiguration {
 
     @Override
     public String toString() {
-        return String.format("LandroidWorxConfiguration [webapiPassword='%s',webapiPassword='*****']", webapiUsername);
+        return String.format("BridgeConfiguration [webapiPassword='%s', webapiPassword='*****']", webapiUsername);
     }
 }
