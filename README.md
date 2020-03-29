@@ -206,7 +206,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 ### .things
 ```
 Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUsername="my username", webapiPassword="my password" ] {
-    Thing mower MySerialNumber "MyLandroid Shaun"
+    Thing mower MySerialNumber "MyLandroid Shaun" [ refreshStatusInterval=60, pollingInterval=300 ]
 }
 ```
 'MySerialNumber' is the serial number of the mower.
