@@ -51,7 +51,7 @@ Following options can be set for the **WorxLandroid Mower**:
 
 | Property  | Description |
 |-----------|-----------|
-| refreshStatusInterval | Interval for refreshing mower status in seconds (min="30")|
+| refreshStatusInterval | Interval for refreshing mower status (ONLINE/OFFLINE) and channel 'common#online' in seconds (min="30")|
 | pollingInterval | Interval for polling in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
 
 ## Properties
