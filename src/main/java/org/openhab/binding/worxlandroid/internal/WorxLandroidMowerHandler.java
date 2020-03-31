@@ -288,11 +288,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 return;
             }
 
-            if (getThing().getStatus() != ThingStatus.ONLINE) {
-                logger.error("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
-                        mower.getSerialNumber());
-                return;
-            }
+            // if (getThing().getStatus() != ThingStatus.ONLINE) {
+            // logger.error("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
+            // mower.getSerialNumber());
+            // return;
+            // }
 
             WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
             if (bridgeHandler == null) {
@@ -301,6 +301,54 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             }
 
             String cmd = AWSMessage.EMPTY_PAYLOAD;
+
+            if (channelUID.getId().startsWith("cfgMultiZones#zone")) {
+                JsonObject jsonObject = new JsonObject();
+                JsonArray mz = new JsonArray();
+
+                // extract zone of from channel
+                Pattern pattern = Pattern.compile("cfgMultiZones#zone(\\d)Meter");
+                Matcher matcher = pattern.matcher(channelUID.getId());
+                int zone = 0;
+                if (matcher.find()) {
+                    zone = Integer.parseInt(matcher.group(1));
+                }
+                mower.setZoneMeter(zone - 1, Integer.parseInt(command.toString()));
+
+                for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
+                    mz.add(mower.getZoneMeter(zoneIndex));
+
+                }
+
+                jsonObject.add("mz", mz);
+
+                cmd = jsonObject.toString();
+                logger.debug("{}", jsonObject.toString());
+
+            } else if (channelUID.getId().startsWith("cfgMultiZones#allocation")) {
+                JsonObject jsonObject = new JsonObject();
+                JsonArray mzv = new JsonArray();
+
+                // extract allocation index of from channel
+                Pattern pattern = Pattern.compile("cfgMultiZones#allocation(\\d+)");
+                Matcher matcher = pattern.matcher(channelUID.getId());
+                int allocationId = 0;
+                if (matcher.find()) {
+                    allocationId = Integer.parseInt(matcher.group(1));
+                }
+
+                mower.setAllocation(allocationId - 1, Integer.parseInt(command.toString()));
+
+                for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
+                    mzv.add(mower.getAllocation(allocationIndex));
+                }
+
+                jsonObject.add("mzv", mzv);
+
+                cmd = jsonObject.toString();
+                logger.debug("{}", jsonObject.toString());
+
+            } else
 
             // update schedule
             // TODO ugly check
@@ -622,8 +670,26 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateState(CHANNELNAME_COMMAND, new DecimalType(cfg.get("cmd").getAsLong()));
         }
 
-        // TODO cfg/mz
-        // TODO cfg/mzv
+        if (cfg.get("mz") != null) {
+            JsonArray multizones = cfg.get("mz").getAsJsonArray();
+            for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
+                int meters = multizones.get(zoneIndex).getAsInt();
+                mower.setZoneMeter(zoneIndex, meters);
+                String channelNamePercentAssign = String.format("cfgMultiZones#zone%dMeter", zoneIndex + 1);
+                updateState(channelNamePercentAssign, new DecimalType(meters));
+            }
+        }
+
+        if (cfg.get("mzv") != null) {
+            JsonArray multizoneAllocations = cfg.get("mzv").getAsJsonArray();
+            for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
+                int zone = multizoneAllocations.get(allocationIndex).getAsInt();
+                mower.setAllocation(allocationIndex, zone);
+                String channelNamePercentAssign = String.format("cfgMultiZones#allocation%d", allocationIndex + 1);
+                updateState(channelNamePercentAssign,
+                        new DecimalType(multizoneAllocations.get(allocationIndex).getAsLong()));
+            }
+        }
 
         // cfg/rd -> rainDelay
         if (cfg.get("rd") != null) {

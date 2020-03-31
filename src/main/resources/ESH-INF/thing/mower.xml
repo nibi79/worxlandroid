@@ -16,11 +16,13 @@
 			<channel-group id="common" typeId="common-type" />
 
 			<channel-group id="cfgCommon" typeId="cfgCommon-type" />
+			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type" />
 
 			<channel-group id="datCommon" typeId="datCommon-type" />
 			<channel-group id="datBattery" typeId="datBattery-type" />
 			<channel-group id="datDmp" typeId="datDmp-type" />
 			<channel-group id="datSt" typeId="datSt-type" />
+
 			<channel-group id="datSc" typeId="datSc-type" />
 			<channel-group id="datScSunday" typeId="datScSunday-type" />
 			<channel-group id="datScMonday" typeId="datScMonday-type" />
@@ -71,6 +73,57 @@
 			<channel id="lastUpdate" typeId="chLastUpdate" />
 			<channel id="command" typeId="chCommand" />
 			<channel id="rainDelay" typeId="chRainDelay" />
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="cfgMultiZones-type">
+		<label>Configuration multi zone channels</label>
+		<description>Configuration multi zones of your mower</description>
+		<channels>
+			<channel id="zone1Meter" typeId="chZoneMeter">
+				<label>Meters Zone 1</label>
+			</channel>
+			<channel id="zone2Meter" typeId="chZoneMeter">
+				<label>Meters Zone 2</label>
+			</channel>
+			<channel id="zone3Meter" typeId="chZoneMeter">
+				<label>Meters Zone 3</label>
+			</channel>
+			<channel id="zone4Meter" typeId="chZoneMeter">
+				<label>Meters Zone 4</label>
+			</channel>
+
+			<channel id="allocation1" typeId="chAllocation">
+				<label>Zone Allocation 1</label>
+			</channel>
+			<channel id="allocation2" typeId="chAllocation">
+				<label>Zone Allocation 2</label>
+			</channel>
+			<channel id="allocation3" typeId="chAllocation">
+				<label>Zone Allocation 3</label>
+			</channel>
+			<channel id="allocation4" typeId="chAllocation">
+				<label>Zone Allocation 4</label>
+			</channel>
+			<channel id="allocation5" typeId="chAllocation">
+				<label>Zone Allocation 5</label>
+			</channel>
+			<channel id="allocation6" typeId="chAllocation">
+				<label>Zone Allocation 6</label>
+			</channel>
+			<channel id="allocation7" typeId="chAllocation">
+				<label>Zone Allocation 7</label>
+			</channel>
+			<channel id="allocation8" typeId="chAllocation">
+				<label>Zone Allocation 8</label>
+			</channel>
+			<channel id="allocation9" typeId="chAllocation">
+				<label>Zone Allocation 9</label>
+			</channel>
+			<channel id="allocation10" typeId="chAllocation">
+				<label>Zone Allocation 10</label>
+			</channel>
+
 		</channels>
 	</channel-group-type>
 
@@ -420,6 +473,27 @@
 		<label>Schedule Edgecut</label>
 		<category>Info</category>
 		<state readOnly="false" />
+	</channel-type>
+
+	<channel-type id="chZoneMeter">
+		<item-type>Number</item-type>
+		<label>Meters of zone</label>
+		<category>Info</category>
+		<state readOnly="false" min="0" step="1" pattern="%d m" />
+	</channel-type>
+
+	<channel-type id="chAllocation">
+		<item-type>Number</item-type>
+		<label>Zone Allocation</label>
+		<category>Info</category>
+		<state>
+			<options>
+				<option value="0">Zone 1</option>
+				<option value="1">Zone 2</option>
+				<option value="2">Zone 3</option>
+				<option value="3">Zone 4</option>
+			</options>
+		</state>
 	</channel-type>
 
 	<channel-type id="chAction">

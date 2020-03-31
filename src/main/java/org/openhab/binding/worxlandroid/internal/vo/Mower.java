@@ -30,6 +30,12 @@ public class Mower {
     private int timeExtension;
     private boolean online;
 
+    // multizone meter
+    int[] zoneMeter = new int[4];
+
+    // multizone allocations
+    int[] allocations = new int[10];
+
     private Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays = new LinkedHashMap<WorxLandroidDayCodes, ScheduledDay>();
 
     /**
@@ -83,4 +89,35 @@ public class Mower {
 
     }
 
+    /**
+     * @param zoneIndex
+     * @return
+     */
+    public int getZoneMeter(int zoneIndex) {
+        return zoneMeter[zoneIndex];
+    }
+
+    /**
+     * @param zoneIndex
+     * @param meter
+     */
+    public void setZoneMeter(int zoneIndex, int meter) {
+        zoneMeter[zoneIndex] = meter;
+    }
+
+    /**
+     * @param allocationIndex
+     * @return
+     */
+    public int getAllocation(int allocationIndex) {
+        return allocations[allocationIndex];
+    }
+
+    /**
+     * @param allocationIndex
+     * @param zoneIndex
+     */
+    public void setAllocation(int allocationIndex, int zoneIndex) {
+        allocations[allocationIndex] = zoneIndex;
+    }
 }
