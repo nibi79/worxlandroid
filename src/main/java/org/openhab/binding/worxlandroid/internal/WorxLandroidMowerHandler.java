@@ -288,11 +288,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 return;
             }
 
-            // if (getThing().getStatus() != ThingStatus.ONLINE) {
-            // logger.error("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
-            // mower.getSerialNumber());
-            // return;
-            // }
+            if (getThing().getStatus() != ThingStatus.ONLINE) {
+                logger.error("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
+                        mower.getSerialNumber());
+                return;
+            }
 
             WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
             if (bridgeHandler == null) {
@@ -330,17 +330,17 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 JsonArray mzv = new JsonArray();
 
                 // extract allocation index of from channel
-                Pattern pattern = Pattern.compile("cfgMultiZones#allocation(\\d+)");
+                Pattern pattern = Pattern.compile("cfgMultiZones#allocation(\\d)");
                 Matcher matcher = pattern.matcher(channelUID.getId());
-                int allocationId = 0;
+                int allocationIndex = 0;
                 if (matcher.find()) {
-                    allocationId = Integer.parseInt(matcher.group(1));
+                    allocationIndex = Integer.parseInt(matcher.group(1));
                 }
 
-                mower.setAllocation(allocationId - 1, Integer.parseInt(command.toString()));
+                mower.setAllocation(allocationIndex, Integer.parseInt(command.toString()));
 
-                for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
-                    mzv.add(mower.getAllocation(allocationIndex));
+                for (int i = 0; i < 10; i++) {
+                    mzv.add(mower.getAllocation(i));
                 }
 
                 jsonObject.add("mzv", mzv);
@@ -385,7 +385,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                             break;
 
                         case "scheduleEdgecut":
-                            scheduledDayUpdated.setEdgecut("ON".equals(command.toString()));
+                            scheduledDayUpdated.setEdgecut(OnOffType.ON.equals(command));
                             break;
 
                         default:
@@ -434,6 +434,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     // update rainDelay
                     case CHANNELNAME_RAIN_DELAY:
                         cmd = String.format("{\"rd\":%s}", command);
+                        break;
+
+                    // lock/unlock
+                    case CHANNELNAME_LOCK:
+                        WorxLandroidActionCodes lockCode = OnOffType.ON.equals(command) ? WorxLandroidActionCodes.LOCK
+                                : WorxLandroidActionCodes.UNLOCK;
+                        logger.debug("{}", lockCode.toString());
+                        cmd = String.format("{\"cmd\":%s}", lockCode.getCode());
                         break;
 
                     default:
@@ -586,7 +594,12 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateState(CHANNELNAME_WIFI_QUALITY, new DecimalType(dat.get("rsi").getAsLong()));
         }
 
-        // TODO dat/lk -> ?
+        // dat/lk -> lock
+        if (dat.get("lk") != null) {
+            boolean lock = dat.get("lk").getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
+            updateState(CHANNELNAME_LOCK, OnOffType.from(lock));
+        }
+
         // TODO dat/act -> ?
         // TODO dat/conn -> ?
         // TODO dat/modules/US/stat -> ?
@@ -685,7 +698,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
                 int zone = multizoneAllocations.get(allocationIndex).getAsInt();
                 mower.setAllocation(allocationIndex, zone);
-                String channelNamePercentAssign = String.format("cfgMultiZones#allocation%d", allocationIndex + 1);
+                String channelNamePercentAssign = String.format("cfgMultiZones#allocation%d", allocationIndex);
                 updateState(channelNamePercentAssign,
                         new DecimalType(multizoneAllocations.get(allocationIndex).getAsLong()));
             }

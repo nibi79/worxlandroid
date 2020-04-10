@@ -21,7 +21,10 @@ public enum WorxLandroidActionCodes implements Codes {
 
     START(1, "start"),
     STOP(2, "stop"),
-    HOME(3, "home");
+    HOME(3, "home"),
+    ZONETRAINING(4, "zonetraining"),
+    LOCK(5, "lock"),
+    UNLOCK(6, "unlock");
 
     private final int code;
     private final String description;

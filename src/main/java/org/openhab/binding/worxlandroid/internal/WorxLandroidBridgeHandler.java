@@ -120,6 +120,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
                 updateThing(editThing().withProperties(props).build());
 
+                logger.debug("Start retrieving AWS certificate");
                 UsersCertificateResponse usersCertificateResponse = apiHandler.retrieveAwsCertificate();
 
                 // TODO test this
@@ -133,7 +134,9 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
                 byte[] p12 = Base64.getDecoder().decode(usersCertificateResponse.getPkcs12().getBytes());
                 KeyStore keystore = KeyStore.getInstance("PKCS12");
                 keystore.load(new ByteArrayInputStream(p12), EMPTY_PASSWORD.toCharArray());
+                logger.debug("AWS certificate loaded to keystore");
 
+                logger.debug("Try to connect to AWS...");
                 awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint, "android-" + MqttAsyncClient.generateClientId(),
                         keystore, EMPTY_PASSWORD);
                 awsMqttClient.connect();
@@ -150,9 +153,11 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
             }
         } catch (WebApiException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
                 | AWSIotException e) {
-            logger.error("error: {}", e.getLocalizedMessage());
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                    "Error: " + e.getLocalizedMessage());
+            logger.error("Iniialization error - class: {}", e.getClass().getName());
+            logger.error("Iniialization error - message: {}", e.getMessage());
+            logger.error("Iniialization error - stacktrace: {}", e.getStackTrace().toString());
+            logger.error("Iniialization error - toString: {}", e.toString());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Error: " + e.getMessage());
         }
 
     }
