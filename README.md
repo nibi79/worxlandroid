@@ -244,6 +244,11 @@ Number          LandroidTotalTime                       "Total Time [%s min]"   
 Number:Length   LandroidTotalDistance                   "Total Distance [%s m]"             <chart>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalDistance"}
 Number          LandroidTotalBladeTime                  "Total Bladetime [%s min]"          <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
 
+// Orientation
+Number          LandroidPitch                           "Pitch [%.1f°]"                     <incline>               {channel="worxlandroid:mower:MyWorxBridge:201930198402003558C8:datDmp#pitch"}
+Number          LandroidRoll                            "Roll [%.1f°]"                      <incline>               {channel="worxlandroid:mower:MyWorxBridge:201930198402003558C8:datDmp#roll"}
+Number          LandroidYaw                             "Yaw [%.1f°]"                       <incline>               {channel="worxlandroid:mower:MyWorxBridge:201930198402003558C8:datDmp#yaw"}
+
 //Schedule
 // Monday
 Number          LandroidScheduleMondayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScMonday#scheduleStartHour"}
@@ -369,6 +374,11 @@ sitemap landroid label="Landroid"
         Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
         Text item=LandroidTotalBladeTime
     }
+    Frame label="Orientation" {
+        Text item=LandroidPitch        
+        Text item=LandroidRoll
+        Text item=LandroidYaw
+    }        
 }
 ```
 
