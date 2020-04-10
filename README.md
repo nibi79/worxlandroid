@@ -51,7 +51,7 @@ Following options can be set for the **WorxLandroid Mower**:
 
 | Property  | Description |
 |-----------|-----------|
-| refreshStatusInterval | Interval for refreshing mower status in seconds (min="30")|
+| refreshStatusInterval | Interval for refreshing mower status (ONLINE/OFFLINE) and channel 'common#online' in seconds (min="30")|
 | pollingInterval | Interval for polling in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
 
 ## Properties
@@ -197,6 +197,30 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | scheduleDuration | `Number` | datScSaturday#scheduleDuration |
 | scheduleEdgecut | `Number` | datScSaturday#scheduleEdgecut |
 
+
+##### cfgMultiZones
+If Multi Zones are supported, you are able to define 4 separate Zones and split working times by 10 to those.
+
+To ease Zone Configuration, you are able to set distance in meters where a specific Zone starts. Bearing in mind that you roughly shall know how many meters of cable have been used (without buffer). As second step you are able to set time in percent and split in parts of 10 between zones,
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| zone1Meter | `Number` | cfgMultiZones#zone1Meter |
+| zone2Meter | `Number` | cfgMultiZones#zone2Meter |
+| zone3Meter | `Number` | cfgMultiZones#zone3Meter |
+| zone4Meter | `Number` | cfgMultiZones#zone4Meter |
+| allocation0 | `Number` | cfgMultiZones#allocation0 |
+| allocation1 | `Number` | cfgMultiZones#allocation1 |
+| allocation2 | `Number` | cfgMultiZones#allocation2 |
+| allocation3 | `Number` | cfgMultiZones#allocation3 |
+| allocation4 | `Number` | cfgMultiZones#allocation4 |
+| allocation5 | `Number` | cfgMultiZones#allocation5 |
+| allocation6 | `Number` | cfgMultiZones#allocation6 |
+| allocation7 | `Number` | cfgMultiZones#allocation7 |
+| allocation8 | `Number` | cfgMultiZones#allocation8 |
+| allocation9 | `Number` | cfgMultiZones#allocation9 |
+
+
 ## File based configuration
 
 <img src="images/SC_BasicUI_Main.png" width="40%">
@@ -215,6 +239,8 @@ Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUser
 ```
 String          LandroidAction                          "Action"                            <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
 String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
+Switch          LandroidLock                            "Lock"                              <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
+
 //
 String          LandroidSerialNumber                    "Serial Number [%s]"                <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#serialNumber"}
 Number          LandroidFirmware                        "Firmware [v%s]"                    <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#firmware"}
@@ -243,6 +269,11 @@ Number          LandroidScheduleTimeExtension           "Schedule Time Extension
 Number          LandroidTotalTime                       "Total Time [%s min]"               <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalTime"}
 Number:Length   LandroidTotalDistance                   "Total Distance [%s m]"             <chart>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalDistance"}
 Number          LandroidTotalBladeTime                  "Total Bladetime [%s min]"          <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
+
+// Orientation
+Number          LandroidPitch                           "Pitch [%.1f°]"                     <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#pitch"}
+Number          LandroidRoll                            "Roll [%.1f°]"                      <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#roll"}
+Number          LandroidYaw                             "Yaw [%.1f°]"                       <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#yaw"}
 
 //Schedule
 // Monday
@@ -286,6 +317,24 @@ Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"       
 Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartMinutes"}
 Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleDuration"}
 Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleEdgecut"}
+
+// Zone Meters
+Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
+Number          LandroidMeterZone2                      "Meters Zone 2 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone2Meter"}
+Number          LandroidMeterZone3                      "Meters Zone 3 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone3Meter"}
+Number          LandroidMeterZone4                      "Meters Zone 4 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone4Meter"}
+
+// Allocation Zones
+Number          LandroidAllocation0                     "Alloction 0"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
+Number          LandroidAllocation1                     "Alloction 1"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
+Number          LandroidAllocation2                     "Alloction 2"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
+Number          LandroidAllocation3                     "Alloction 3"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
+Number          LandroidAllocation4                     "Alloction 4"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
+Number          LandroidAllocation5                     "Alloction 5"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
+Number          LandroidAllocation6                     "Alloction 6"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
+Number          LandroidAllocation7                     "Alloction 7"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
+Number          LandroidAllocation8                     "Alloction 8"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
+Number          LandroidAllocation9                      "Alloction 9"                      <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
 ```
 
 ### .sitemap
@@ -293,8 +342,10 @@ Switch          LandroidScheduleSundayEdgecut           "Edgecut "              
 sitemap landroid label="Landroid"
 {
     Frame {
-        Switch item=LandroidAction mappings=[START="Start", STOP="Stop", HOME="Go Home"]
-         Text item=LandroidLastUpdate
+        Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusDescription=="Home"]
+        Switch item=LandroidAction label="Action" mappings=[START="Start",STOP="Stop",HOME="Home"] visibility=[LandroidStatusDescription!="Home"]
+        Text item=LandroidLastUpdate
+        Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
     }
     Frame {
         Text item=LandroidSerialNumber
@@ -362,12 +413,37 @@ sitemap landroid label="Landroid"
                 Switch item=LandroidScheduleSundayEdgecut
             }
         }
+        Text label="MultiZone" icon="pie"{
+            Frame label="Zone Meters" {
+                Slider item=LandroidMeterZone1 minValue=0 maxValue=150
+                Slider item=LandroidMeterZone2 minValue=0 maxValue=150
+                Slider item=LandroidMeterZone3 minValue=0 maxValue=150
+                Slider item=LandroidMeterZone4 minValue=0 maxValue=150
+            }
+            Frame label="Allocation Zones" {
+                Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+            }
+        }
         Setpoint item=LandroidRainDelay minValue=0 maxValue=750 step=30
     }
     Frame label="Statistic" {
         Text item=LandroidTotalTime
         Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
         Text item=LandroidTotalBladeTime
+    }
+    Frame label="Orientation" {
+        Text item=LandroidPitch
+        Text item=LandroidRoll
+        Text item=LandroidYaw
     }
 }
 ```
