@@ -338,17 +338,10 @@ Number          LandroidScheduleSaturdayDuration        "Duration [%d]"         
 Switch          LandroidScheduleSaturdayEdgecut         "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleEdgecut"}
 
 // Sunday
-<<<<<<< HEAD
-Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartHour"}
-Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartMinutes"}
-Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
-Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleEdgecut"}
-=======
 Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartHour"}
 Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartMinutes"}
 Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleDuration"}
 Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleEdgecut"}
->>>>>>> branch 'zonedefinition' of https://github.com/nibi79/worxlandroid.git
 
 // Zone Meters
 Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
