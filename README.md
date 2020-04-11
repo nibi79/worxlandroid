@@ -221,6 +221,30 @@ To ease Zone Configuration, you are able to set distance in meters where a speci
 | allocation9 | `Number` | cfgMultiZones#allocation9 |
 
 
+
+##### cfgMultiZones
+If Multi Zones are supported, you are able to define 4 separate Zones and split working times by 10 to those.
+
+To ease Zone Configuration, you are able to set distance in meters where a specific Zone starts. Bearing in mind that you roughly shall know how many meters of cable have been used (without buffer). As second step you are able to set time in percent and split in parts of 10 between zones,
+
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| zone1Meter | `Number` | cfgMultiZones#zone1Meter |
+| zone2Meter | `Number` | cfgMultiZones#zone2Meter |
+| zone3Meter | `Number` | cfgMultiZones#zone3Meter |
+| zone4Meter | `Number` | cfgMultiZones#zone4Meter |
+| allocation0 | `Number` | cfgMultiZones#allocation0 |
+| allocation1 | `Number` | cfgMultiZones#allocation1 |
+| allocation2 | `Number` | cfgMultiZones#allocation2 |
+| allocation3 | `Number` | cfgMultiZones#allocation3 |
+| allocation4 | `Number` | cfgMultiZones#allocation4 |
+| allocation5 | `Number` | cfgMultiZones#allocation5 |
+| allocation6 | `Number` | cfgMultiZones#allocation6 |
+| allocation7 | `Number` | cfgMultiZones#allocation7 |
+| allocation8 | `Number` | cfgMultiZones#allocation8 |
+| allocation9 | `Number` | cfgMultiZones#allocation9 |
+
+
 ## File based configuration
 
 <img src="images/SC_BasicUI_Main.png" width="40%">
@@ -313,10 +337,17 @@ Number          LandroidScheduleSaturdayDuration        "Duration [%d]"         
 Switch          LandroidScheduleSaturdayEdgecut         "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleEdgecut"}
 
 // Sunday
+<<<<<<< HEAD
 Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartHour"}
 Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartMinutes"}
 Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
 Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleEdgecut"}
+=======
+Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartHour"}
+Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleStartMinutes"}
+Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleDuration"}
+Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleEdgecut"}
+>>>>>>> branch 'zonedefinition' of https://github.com/nibi79/worxlandroid.git
 
 // Zone Meters
 Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}

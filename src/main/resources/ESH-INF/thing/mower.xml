@@ -506,7 +506,7 @@
 			<options>
 				<option value="START">Start</option>
 				<option value="STOP">Stop</option>
-				<option value="HOME">Home</option>
+				<option value="HOME">Home</option>			
 			</options>
 		</state>
 	</channel-type>
