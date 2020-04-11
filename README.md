@@ -76,6 +76,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 |------------|-----------|-----------|-----------|
 | online      | `Switch` | common#online | |
 | lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus | |
+| poll | `Switch` | common#poll | |
 | action | `String` | common#action | START, STOP, HOME |
 | lock | `Switch` | common#lock | |
 
@@ -264,6 +265,7 @@ Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUser
 ```
 String          LandroidAction                          "Action"                            <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
 String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
+Switch          LandroidPoll                            "Poll"                              <flowpipe>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
 Switch          LandroidLock                            "Lock"                              <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
 
 //
@@ -370,6 +372,7 @@ sitemap landroid label="Landroid"
         Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusDescription=="Home"]
         Switch item=LandroidAction label="Action" mappings=[START="Start",STOP="Stop",HOME="Home"] visibility=[LandroidStatusDescription!="Home"]
         Text item=LandroidLastUpdate
+        Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
         Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
     }
     Frame {

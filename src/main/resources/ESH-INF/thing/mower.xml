@@ -60,6 +60,7 @@
 		<channels>
 			<channel id="online" typeId="chOnline" />
 			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus" />
+			<channel id="poll" typeId="chPoll" />
 			<channel id="action" typeId="chAction" />
 			<channel id="lock" typeId="chLock" />
 		</channels>
@@ -516,4 +517,11 @@
 		<label>Lock mower</label>
 		<description>Lock or unlock your mower.</description>
 	</channel-type>
+
+		<channel-type id="chPoll">
+				<item-type>Switch</item-type>
+				<label>Poll Worx AWS</label>
+				<description>Poll Worx AWS</description>
+		</channel-type>
+
 </thing:thing-descriptions>

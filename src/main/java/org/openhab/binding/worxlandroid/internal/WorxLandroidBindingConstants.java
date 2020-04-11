@@ -40,7 +40,8 @@ public class WorxLandroidBindingConstants {
     // common
     public static final String CHANNELNAME_ONLINE = "common#online";
     public static final String CHANNELNAME_LAST_UPDATE_ONLINE_STATUS = "common#lastUpdateOnlineStatus";
-    public static final String CHANNEL_ACTION = "common#action";
+    public static final String CHANNELNAME_POLL = "common#poll";
+    public static final String CHANNELNAME_ACTION = "common#action";
     public static final String CHANNELNAME_LOCK = "common#lock";
 
     // cfgCommon

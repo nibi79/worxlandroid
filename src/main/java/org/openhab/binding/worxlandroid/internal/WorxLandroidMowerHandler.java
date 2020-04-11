@@ -425,10 +425,16 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 switch (channelUID.getId()) {
 
                     // start action
-                    case CHANNEL_ACTION:
+                    case CHANNELNAME_ACTION:
                         WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
                         logger.debug("{}", actionCode.toString());
                         cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
+                        break;
+
+                    // poll
+                    case CHANNELNAME_POLL:
+                        cmd = AWSMessage.EMPTY_PAYLOAD;
+                        updateState(CHANNELNAME_POLL, OnOffType.OFF);
                         break;
 
                     // update rainDelay
