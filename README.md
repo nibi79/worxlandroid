@@ -203,7 +203,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 ##### cfgMultiZones
 If Multi Zones are supported, you are able to define 4 separate Zones and split working times by 10 to those.
 
-To ease Zone Configuration, you are able to set distance in meters where a specific Zone starts. Bearing in mind that you roughly shall know how many meters of cable have been used (without buffer). As second step you are able to set time in percent and split in parts of 10 between zones,
+To ease Zone Configuration, you are able to set distance in meters where a specific Zone starts. Bearing in mind that you roughly shall know how many meters of cable have been used (without buffer).
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
@@ -211,6 +211,10 @@ To ease Zone Configuration, you are able to set distance in meters where a speci
 | zone2Meter | `Number` | cfgMultiZones#zone2Meter |
 | zone3Meter | `Number` | cfgMultiZones#zone3Meter |
 | zone4Meter | `Number` | cfgMultiZones#zone4Meter |
+
+As second step you are able to set time in percent and split in parts of 10 between zones,
+
+| Channel   | Type | ChannelName |
 | allocation0 | `Number` | cfgMultiZones#allocation0 |
 | allocation1 | `Number` | cfgMultiZones#allocation1 |
 | allocation2 | `Number` | cfgMultiZones#allocation2 |
@@ -221,31 +225,6 @@ To ease Zone Configuration, you are able to set distance in meters where a speci
 | allocation7 | `Number` | cfgMultiZones#allocation7 |
 | allocation8 | `Number` | cfgMultiZones#allocation8 |
 | allocation9 | `Number` | cfgMultiZones#allocation9 |
-
-
-
-##### cfgMultiZones
-If Multi Zones are supported, you are able to define 4 separate Zones and split working times by 10 to those.
-
-To ease Zone Configuration, you are able to set distance in meters where a specific Zone starts. Bearing in mind that you roughly shall know how many meters of cable have been used (without buffer). As second step you are able to set time in percent and split in parts of 10 between zones,
-
-| Channel   | Type | ChannelName |
-|------------|-----------|-----------|
-| zone1Meter | `Number` | cfgMultiZones#zone1Meter |
-| zone2Meter | `Number` | cfgMultiZones#zone2Meter |
-| zone3Meter | `Number` | cfgMultiZones#zone3Meter |
-| zone4Meter | `Number` | cfgMultiZones#zone4Meter |
-| allocation0 | `Number` | cfgMultiZones#allocation0 |
-| allocation1 | `Number` | cfgMultiZones#allocation1 |
-| allocation2 | `Number` | cfgMultiZones#allocation2 |
-| allocation3 | `Number` | cfgMultiZones#allocation3 |
-| allocation4 | `Number` | cfgMultiZones#allocation4 |
-| allocation5 | `Number` | cfgMultiZones#allocation5 |
-| allocation6 | `Number` | cfgMultiZones#allocation6 |
-| allocation7 | `Number` | cfgMultiZones#allocation7 |
-| allocation8 | `Number` | cfgMultiZones#allocation8 |
-| allocation9 | `Number` | cfgMultiZones#allocation9 |
-
 
 ## File based configuration
 
@@ -352,16 +331,16 @@ Number          LandroidMeterZone3                      "Meters Zone 3 [%d]"    
 Number          LandroidMeterZone4                      "Meters Zone 4 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone4Meter"}
 
 // Allocation Zones
-Number          LandroidAllocation0                     "Alloction 0"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
-Number          LandroidAllocation1                     "Alloction 1"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
-Number          LandroidAllocation2                     "Alloction 2"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
-Number          LandroidAllocation3                     "Alloction 3"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
-Number          LandroidAllocation4                     "Alloction 4"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
-Number          LandroidAllocation5                     "Alloction 5"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
-Number          LandroidAllocation6                     "Alloction 6"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
-Number          LandroidAllocation7                     "Alloction 7"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
-Number          LandroidAllocation8                     "Alloction 8"                       <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
-Number          LandroidAllocation9                      "Alloction 9"                      <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
+Number          LandroidAllocation0                     "Alloction 0 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
+Number          LandroidAllocation1                     "Alloction 1 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
+Number          LandroidAllocation2                     "Alloction 2 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
+Number          LandroidAllocation3                     "Alloction 3 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
+Number          LandroidAllocation4                     "Alloction 4 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
+Number          LandroidAllocation5                     "Alloction 5 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
+Number          LandroidAllocation6                     "Alloction 6 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
+Number          LandroidAllocation7                     "Alloction 7 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
+Number          LandroidAllocation8                     "Alloction 8 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
+Number          LandroidAllocation9                     "Alloction 9 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
 ```
 
 ### .sitemap
