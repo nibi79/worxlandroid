@@ -38,6 +38,7 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.ThingStatusInfo;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
+import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
@@ -182,13 +183,46 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     if (mowerDataJson != null) {
 
+                        ThingBuilder thingBuilder = editThing();
+
                         // set mower properties
                         Map<String, String> props = productItemsResponse.getDataAsPropertyMap(mower.getSerialNumber());
+                        thingBuilder.withProperties(props);
 
                         mqttCommandIn = props.get("command_in");
                         String mqttCommandOut = props.get("command_out");
 
-                        updateThing(editThing().withProperties(props).build());
+                        // lock channel only when supported
+                        boolean lockSupported = Boolean.parseBoolean(props.get("lock"));
+                        mower.setLockSupported(lockSupported);
+                        if (!lockSupported) {
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_LOCK));
+                        }
+
+                        // rainDelay channel only when supported
+                        boolean rainDelaySupported = Boolean.parseBoolean(props.get("rain_delay"));
+                        mower.setRainDelaySupported(rainDelaySupported);
+                        if (!rainDelaySupported) {
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_RAIN_DELAY));
+                        }
+
+                        // multizone channels only when supported
+                        boolean multiZoneSupported = Boolean.parseBoolean(props.get("multi_zone"));
+                        mower.setMultiZoneSupported(multiZoneSupported);
+                        if (!multiZoneSupported) {
+                            // remove zome meter channels
+                            for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
+                                String channelNameZoneMeter = String.format("cfgMultiZones#zone%dMeter", zoneIndex + 1);
+                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameZoneMeter));
+                            }
+                            // remove allocation channels
+                            for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
+                                String channelNameAllocation = CHANNELNAME_PREFIX_ALLOCATION + allocationIndex;
+                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameAllocation));
+                            }
+                        }
+
+                        updateThing(thingBuilder.build());
 
                         // handle AWS
                         AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0, this);
@@ -317,7 +351,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                 for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
                     mz.add(mower.getZoneMeter(zoneIndex));
-
                 }
 
                 jsonObject.add("mz", mz);
@@ -325,12 +358,12 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 cmd = jsonObject.toString();
                 logger.debug("{}", jsonObject.toString());
 
-            } else if (channelUID.getId().startsWith("cfgMultiZones#allocation")) {
+            } else if (channelUID.getId().startsWith(CHANNELNAME_PREFIX_ALLOCATION)) {
                 JsonObject jsonObject = new JsonObject();
                 JsonArray mzv = new JsonArray();
 
                 // extract allocation index of from channel
-                Pattern pattern = Pattern.compile("cfgMultiZones#allocation(\\d)");
+                Pattern pattern = Pattern.compile(CHANNELNAME_PREFIX_ALLOCATION + "(\\d)");
                 Matcher matcher = pattern.matcher(channelUID.getId());
                 int allocationIndex = 0;
                 if (matcher.find()) {
@@ -601,7 +634,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
 
         // dat/lk -> lock
-        if (dat.get("lk") != null) {
+        if (mower.isLockSupported() && dat.get("lk") != null) {
             boolean lock = dat.get("lk").getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
             updateState(CHANNELNAME_LOCK, OnOffType.from(lock));
         }
@@ -689,29 +722,34 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateState(CHANNELNAME_COMMAND, new DecimalType(cfg.get("cmd").getAsLong()));
         }
 
-        if (cfg.get("mz") != null) {
-            JsonArray multizones = cfg.get("mz").getAsJsonArray();
-            for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
-                int meters = multizones.get(zoneIndex).getAsInt();
-                mower.setZoneMeter(zoneIndex, meters);
-                String channelNamePercentAssign = String.format("cfgMultiZones#zone%dMeter", zoneIndex + 1);
-                updateState(channelNamePercentAssign, new DecimalType(meters));
-            }
-        }
+        if (mower.isMultiZoneSupported()) {
 
-        if (cfg.get("mzv") != null) {
-            JsonArray multizoneAllocations = cfg.get("mzv").getAsJsonArray();
-            for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
-                int zone = multizoneAllocations.get(allocationIndex).getAsInt();
-                mower.setAllocation(allocationIndex, zone);
-                String channelNamePercentAssign = String.format("cfgMultiZones#allocation%d", allocationIndex);
-                updateState(channelNamePercentAssign,
-                        new DecimalType(multizoneAllocations.get(allocationIndex).getAsLong()));
+            // zone meters
+            if (cfg.get("mz") != null) {
+                JsonArray multizones = cfg.get("mz").getAsJsonArray();
+                for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
+                    int meters = multizones.get(zoneIndex).getAsInt();
+                    mower.setZoneMeter(zoneIndex, meters);
+                    String channelNameZoneMeter = String.format("cfgMultiZones#zone%dMeter", zoneIndex + 1);
+                    updateState(channelNameZoneMeter, new DecimalType(meters));
+                }
+            }
+
+            // allocation zones
+            if (cfg.get("mzv") != null) {
+                JsonArray multizoneAllocations = cfg.get("mzv").getAsJsonArray();
+                for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
+                    int zone = multizoneAllocations.get(allocationIndex).getAsInt();
+                    mower.setAllocation(allocationIndex, zone);
+                    String channelNameAlloction = CHANNELNAME_PREFIX_ALLOCATION + allocationIndex;
+                    updateState(channelNameAlloction,
+                            new DecimalType(multizoneAllocations.get(allocationIndex).getAsLong()));
+                }
             }
         }
 
         // cfg/rd -> rainDelay
-        if (cfg.get("rd") != null) {
+        if (mower.isRainDelaySupported() && cfg.get("rd") != null) {
             updateState(CHANNELNAME_RAIN_DELAY, new DecimalType(cfg.get("rd").getAsLong()));
         }
 

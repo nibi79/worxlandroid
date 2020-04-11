@@ -81,4 +81,6 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_TOTAL_DISTANCE = "datSt#totalDistance";
     public static final String CHANNELNAME_TOTAL_TIME = "datSt#totalTime";
 
+    //
+    public static final String CHANNELNAME_PREFIX_ALLOCATION = "cfgMultiZones#allocation";
 }
