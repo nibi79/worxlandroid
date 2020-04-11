@@ -77,6 +77,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | online      | `Switch` | common#online | |
 | lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus | |
 | action | `String` | common#action | START, STOP, HOME |
+| lock | `Switch` | common#lock | |
 
 ##### cfgCommon
 
