@@ -51,6 +51,9 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_COMMAND = "cfgCommon#command";
     public static final String CHANNELNAME_RAIN_DELAY = "cfgCommon#rainDelay";
 
+    // cfgSc
+    public static final String CHANNELNAME_SC_TIME_EXTENSION = "cfgSc#scheduleTimeExtension";
+
     // datCommon
     public static final String CHANNELNAME_MAC_ADRESS = "datCommon#macAdress";
     public static final String CHANNELNAME_FIRMWARE = "datCommon#firmware";
@@ -76,8 +79,5 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_TOTAL_BLADE_TIME = "datSt#totalBladeTime";
     public static final String CHANNELNAME_TOTAL_DISTANCE = "datSt#totalDistance";
     public static final String CHANNELNAME_TOTAL_TIME = "datSt#totalTime";
-
-    // datSc
-    public static final String CHANNELNAME_SC_TIME_EXTENSION = "datSc#scheduleTimeExtension";
 
 }

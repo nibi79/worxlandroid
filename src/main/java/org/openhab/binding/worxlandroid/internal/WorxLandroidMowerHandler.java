@@ -352,7 +352,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             // update schedule
             // TODO ugly check
-            if (channelUID.getId().startsWith("datSc")) {
+            if (channelUID.getId().startsWith("cfgSc")) {
                 // update mower data
 
                 // update schedule or timeExtension?
@@ -360,7 +360,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     mower.setTimeExtension(Integer.parseInt(command.toString()));
                 } else {
                     // extract name of from channel
-                    Pattern pattern = Pattern.compile("datSc(.*?)#");
+                    Pattern pattern = Pattern.compile("cfgSc(.*?)#");
                     Matcher matcher = pattern.matcher(channelUID.getId());
                     String day = "";
                     if (matcher.find()) {
@@ -653,23 +653,23 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     String time[] = shedule.get(0).getAsString().split(":");
 
                     // hour
-                    String channelNameStartHour = String.format("datSc%s#scheduleStartHour", dayCode.getDescription());
+                    String channelNameStartHour = String.format("cfgSc%s#scheduleStartHour", dayCode.getDescription());
                     scheduledDay.setHours(Integer.parseInt(time[0]));
                     updateState(channelNameStartHour, new DecimalType(time[0]));
 
                     // minutes
-                    String channelNameStartMin = String.format("datSc%s#scheduleStartMinutes",
+                    String channelNameStartMin = String.format("cfgSc%s#scheduleStartMinutes",
                             dayCode.getDescription());
                     scheduledDay.setMinutes(Integer.parseInt(time[1]));
                     updateState(channelNameStartMin, new DecimalType(time[1]));
 
                     // duration
-                    String channelNameDuration = String.format("datSc%s#scheduleDuration", dayCode.getDescription());
+                    String channelNameDuration = String.format("cfgSc%s#scheduleDuration", dayCode.getDescription());
                     scheduledDay.setDuration(shedule.get(1).getAsInt());
                     updateState(channelNameDuration, new DecimalType(shedule.get(1).getAsLong()));
 
                     // edgecut
-                    String channelNameEdgecut = String.format("datSc%s#scheduleEdgecut", dayCode.getDescription());
+                    String channelNameEdgecut = String.format("cfgSc%s#scheduleEdgecut", dayCode.getDescription());
                     boolean edgecut = shedule.get(2).getAsInt() == 1 ? Boolean.TRUE : Boolean.FALSE;
                     scheduledDay.setEdgecut(edgecut);
                     updateState(channelNameEdgecut, OnOffType.from(edgecut));

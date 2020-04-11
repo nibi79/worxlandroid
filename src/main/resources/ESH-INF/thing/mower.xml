@@ -18,19 +18,20 @@
 			<channel-group id="cfgCommon" typeId="cfgCommon-type" />
 			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type" />
 
+            <channel-group id="cfgSc" typeId="cfgSc-type" />
+            <channel-group id="cfgScSunday" typeId="cfgScSunday-type" />
+            <channel-group id="cfgScMonday" typeId="cfgScMonday-type" />
+            <channel-group id="cfgScTuesday" typeId="cfgScTuesday-type" />
+            <channel-group id="cfgScWednesday" typeId="cfgScWednesday-type" />
+            <channel-group id="cfgScThursday" typeId="cfgScThursday-type" />
+            <channel-group id="cfgScFriday" typeId="cfgScFriday-type" />
+            <channel-group id="cfgScSaturday" typeId="cfgScSaturday-type" />
+
 			<channel-group id="datCommon" typeId="datCommon-type" />
 			<channel-group id="datBattery" typeId="datBattery-type" />
 			<channel-group id="datDmp" typeId="datDmp-type" />
 			<channel-group id="datSt" typeId="datSt-type" />
 
-			<channel-group id="datSc" typeId="datSc-type" />
-			<channel-group id="datScSunday" typeId="datScSunday-type" />
-			<channel-group id="datScMonday" typeId="datScMonday-type" />
-			<channel-group id="datScTuesday" typeId="datScTuesday-type" />
-			<channel-group id="datScWednesday" typeId="datScWednesday-type" />
-			<channel-group id="datScThursday" typeId="datScThursday-type" />
-			<channel-group id="datScFriday" typeId="datScFriday-type" />
-			<channel-group id="datScSaturday" typeId="datScSaturday-type" />
 		</channel-groups>
 
 		<config-description>
@@ -174,17 +175,17 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datSc-type">
-		<label>Data schedule channels</label>
-		<description>Data schedule channels of your mower</description>
+	<channel-group-type id="cfgSc-type">
+		<label>Configuration schedule channels</label>
+		<description>Configuration schedule channels of your mower</description>
 		<channels>
 			<channel id="scheduleTimeExtension" typeId="chScheduleTimeExtension" />
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScSunday-type">
-		<label>Data schedule channels Sunday</label>
-		<description>Data schedule channels of your mower for Sunday</description>
+	<channel-group-type id="cfgScSunday-type">
+		<label>Configuration schedule channels Sunday</label>
+		<description>Configuration schedule channels of your mower for Sunday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
@@ -193,9 +194,9 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScMonday-type">
-		<label>Data schedule channels Monday</label>
-		<description>Data schedule channels of your mower for Monday</description>
+	<channel-group-type id="cfgScMonday-type">
+		<label>Configuration schedule channels Monday</label>
+		<description>Configuration schedule channels of your mower for Monday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
@@ -204,9 +205,9 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScTuesday-type">
-		<label>Data schedule channels Tuesday</label>
-		<description>Data schedule channels of your mower for Tuesday</description>
+	<channel-group-type id="cfgScTuesday-type">
+		<label>Configuration schedule channels Tuesday</label>
+		<description>Configuration schedule channels of your mower for Tuesday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
@@ -215,9 +216,9 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScWednesday-type">
-		<label>Data schedule channels Wednesday</label>
-		<description>Data schedule channels of your mower for Wednesday</description>
+	<channel-group-type id="cfgScWednesday-type">
+		<label>Configuration schedule channels Wednesday</label>
+		<description>Configuration schedule channels of your mower for Wednesday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
@@ -226,9 +227,9 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScThursday-type">
-		<label>Data schedule channels Thursday</label>
-		<description>Data schedule channels of your mower for Thursday</description>
+	<channel-group-type id="cfgScThursday-type">
+		<label>Configuration schedule channels Thursday</label>
+		<description>Configuration schedule channels of your mower for Thursday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
@@ -237,9 +238,9 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScFriday-type">
-		<label>Data schedule channels Friday</label>
-		<description>Data schedule channels of your mower for Friday</description>
+	<channel-group-type id="cfgScFriday-type">
+		<label>Configuration schedule channels Friday</label>
+		<description>Configuration schedule channels of your mower for Friday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
@@ -248,9 +249,9 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="datScSaturday-type">
-		<label>Data schedule channels Saturday</label>
-		<description>Data schedule channels of your mower for Saturday</description>
+	<channel-group-type id="cfgScSaturday-type">
+		<label>Configuration schedule channels Saturday</label>
+		<description>Configuration schedule channels of your mower for Saturday</description>
 		<channels>
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
