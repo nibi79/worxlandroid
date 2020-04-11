@@ -215,6 +215,7 @@ To ease Zone Configuration, you are able to set distance in meters where a speci
 As second step you are able to set time in percent and split in parts of 10 between zones,
 
 | Channel   | Type | ChannelName |
+|------------|-----------|-----------|
 | allocation0 | `Number` | cfgMultiZones#allocation0 |
 | allocation1 | `Number` | cfgMultiZones#allocation1 |
 | allocation2 | `Number` | cfgMultiZones#allocation2 |
