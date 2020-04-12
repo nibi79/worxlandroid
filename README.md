@@ -229,9 +229,11 @@ As second step you are able to set time in percent and split in parts of 10 betw
 
 ## File based configuration
 
-<img src="images/SC_BasicUI_Main.png" width="40%">
+<img src="images/SC_BasicUI_Main.png" width="50%">
 <br><br>
-<img src="images/SC_BasicUI_Schedule.png" width="40%">
+<img src="images/SC_BasicUI_Schedule.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_MultiZone.png" width="50%">
 
 ### .things
 ```
@@ -243,10 +245,10 @@ Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUser
 
 ### .items
 ```
-String          LandroidAction                          "Action"                            <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
+String          LandroidAction                          "Action []"                         <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
 String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
-Switch          LandroidPoll                            "Poll"                              <flowpipe>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
-Switch          LandroidLock                            "Lock"                              <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
+Switch          LandroidPoll                            "Poll []"                           <flowpipe>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
+Switch          LandroidLock                            "Lock []"                           <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
 
 //
 String          LandroidSerialNumber                    "Serial Number [%s]"                <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#serialNumber"}
