@@ -445,7 +445,8 @@ sitemap landroid label="Landroid"
 Update Landroid Status to reflect in main menu
 
 <img src="images/SC_BasicUI_MainStatus.png" width="50%">
-<br><br>
+<br>
+
 ```
 rule MowerStatus
 when
@@ -466,7 +467,7 @@ Several Icons have been created in order to suit requirements for robo-mower. Pl
 
 1. [Distance](https://github.com/nibi79/worxlandroid/images/distance.zip)
 2. [Zones](https://github.com/nibi79/worxlandroid/images/zones.zip)
-3. [REfresh](https://github.com/nibi79/worxlandroid/images/refresh.png)
+3. [Refresh](https://github.com/nibi79/worxlandroid/images/refresh.png)
 4. [wr102si](https://github.com/nibi79/worxlandroid/images/wr102si.png)
 
 
