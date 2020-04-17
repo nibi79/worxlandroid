@@ -461,6 +461,11 @@ then
 end
 ```
 
+Place the following *.map to your ..\conf\transform
+
+1. [landroid_error_de.map](https://github.com/nibi79/worxlandroid/doc/landroid_error_de.map)
+2. [landroid_status_de.map](https://github.com/nibi79/worxlandroid/doc/landroid_status_de.map)
+
 ## Iconset
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
