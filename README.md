@@ -364,6 +364,7 @@ sitemap landroid label="Landroid"
             Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
         }
         Frame {
+            Text item=LandroidMacAdress
             Text item=LandroidSerialNumber
             Text item=LandroidFirmware
             Text item=LandroidOnline //mappings=[OFF="Offline", ON="Online"]
@@ -436,7 +437,12 @@ sitemap landroid label="Landroid"
             Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
             Text item=LandroidTotalBladeTime
         }
-    }
+		Frame label="Orientation"{
+			Text item=LandroidPitch
+			Text item=LandroidRoll
+			Text item=LandroidYaw
+		}
+   }
 }
 ```
 
