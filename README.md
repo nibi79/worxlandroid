@@ -353,9 +353,9 @@ Number          LandroidAllocation9                     "Alloction 9 []"        
 ```
 sitemap landroid label="Landroid"
 {
-	Group item=Shaun icon="wr102si" {
+	Group item=Shaun icon="landroid" {
         Frame {
-			Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==1]
+			Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
 			Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7]
 			Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==33]
 			Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
