@@ -4,15 +4,16 @@ This binding connects openHAB with your WorxLandroid Mower using the API and MQT
 
 # Table of contents
 
-1. [Disclaimer](https://github.com/nibi79/worxlandroid/tree/master#disclaimer)
-2. [Installation and upgrade](https://github.com/nibi79/worxlandroid/tree/master#installation-and-upgrade)
-3. [Supported Things](https://github.com/nibi79/worxlandroid/tree/master#supported-things)
-4. [Discovery](https://github.com/nibi79/worxlandroid/tree/master#discovery)
-5. [Properties](https://github.com/nibi79/worxlandroid/tree/master#properties)
-6. [Configuration](https://github.com/nibi79/worxlandroid/tree/master#configuration)
-7. [Channels](https://github.com/nibi79/worxlandroid/tree/master#channels)
-8. [File based configuration](https://github.com/nibi79/worxlandroid/tree/master#file-based-configuration)
-9. [Support](https://github.com/nibi79/worxlandroid/tree/master#support)
+ 1. [Disclaimer](https://github.com/nibi79/worxlandroid/tree/master#disclaimer)
+ 2. [Installation and upgrade](https://github.com/nibi79/worxlandroid/tree/master#installation-and-upgrade)
+ 3. [Supported Things](https://github.com/nibi79/worxlandroid/tree/master#supported-things)
+ 4. [Discovery](https://github.com/nibi79/worxlandroid/tree/master#discovery)
+ 5. [Binding Configuration](https://github.com/nibi79/worxlandroid/tree/master#binding-configuration)
+ 6. [Properties](https://github.com/nibi79/worxlandroid/tree/master#properties)
+ 7. [Channels](https://github.com/nibi79/worxlandroid/tree/master#channels)
+ 8. [File based configuration](https://github.com/nibi79/worxlandroid/tree/master#file-based-configuration)
+ 9. [Iconset](https://github.com/nibi79/worxlandroid/tree/master#iconset)
+10. [Support](https://github.com/nibi79/worxlandroid/tree/master#support)
 
 ***
 
@@ -245,9 +246,11 @@ Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUser
 
 ### .items
 ```
+String Shaun							"Shaun [%s]"
+
 String          LandroidAction                          "Action []"                         <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
 String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
-Switch          LandroidPoll                            "Poll []"                           <flowpipe>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
+Switch          LandroidPoll                            "Poll []"                           <refresh>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
 Switch          LandroidLock                            "Lock []"                           <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
 
 //
@@ -328,140 +331,155 @@ Number          LandroidScheduleSundayDuration          "Duration [%d]"         
 Switch          LandroidScheduleSundayEdgecut           "Edgecut "                          <settings>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datScSunday#scheduleEdgecut"}
 
 // Zone Meters
-Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
-Number          LandroidMeterZone2                      "Meters Zone 2 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone2Meter"}
-Number          LandroidMeterZone3                      "Meters Zone 3 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone3Meter"}
-Number          LandroidMeterZone4                      "Meters Zone 4 [%d]"                <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone4Meter"}
+Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <distance>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
+Number          LandroidMeterZone2                      "Meters Zone 2 [%d]"                <distance>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone2Meter"}
+Number          LandroidMeterZone3                      "Meters Zone 3 [%d]"                <distance>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone3Meter"}
+Number          LandroidMeterZone4                      "Meters Zone 4 [%d]"                <distance>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone4Meter"}
 
 // Allocation Zones
-Number          LandroidAllocation0                     "Alloction 0 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
-Number          LandroidAllocation1                     "Alloction 1 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
-Number          LandroidAllocation2                     "Alloction 2 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
-Number          LandroidAllocation3                     "Alloction 3 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
-Number          LandroidAllocation4                     "Alloction 4 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
-Number          LandroidAllocation5                     "Alloction 5 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
-Number          LandroidAllocation6                     "Alloction 6 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
-Number          LandroidAllocation7                     "Alloction 7 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
-Number          LandroidAllocation8                     "Alloction 8 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
-Number          LandroidAllocation9                     "Alloction 9 []"                    <qualityofservice>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
+Number          LandroidAllocation0                     "Alloction 0 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
+Number          LandroidAllocation1                     "Alloction 1 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
+Number          LandroidAllocation2                     "Alloction 2 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
+Number          LandroidAllocation3                     "Alloction 3 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
+Number          LandroidAllocation4                     "Alloction 4 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
+Number          LandroidAllocation5                     "Alloction 5 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
+Number          LandroidAllocation6                     "Alloction 6 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
+Number          LandroidAllocation7                     "Alloction 7 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
+Number          LandroidAllocation8                     "Alloction 8 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
+Number          LandroidAllocation9                     "Alloction 9 []"                    <zones>      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
 ```
 
 ### .sitemap
 ```
 sitemap landroid label="Landroid"
 {
-    Frame {
-        Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusDescription=="Home"]
-        Switch item=LandroidAction label="Action" mappings=[START="Start",STOP="Stop",HOME="Home"] visibility=[LandroidStatusDescription!="Home"]
-        Text item=LandroidLastUpdate
-        Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
-        Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
-    }
-    Frame {
-        Text item=LandroidSerialNumber
-        Text item=LandroidFirmware
-        Text item=LandroidOnline //mappings=[OFF="Offline", ON="Online"]
-        Text item=LandroidLastUpdateOnlineStatus
-    }
-    Frame label="Status"{
-        Text item=LandroidWifiQuality
-        Text  item=LandroidBatteryCharging
-        Text item=LandroidStatusCode
-        Text item=LandroidStatusDescription
-        Text item=LandroidErrorCode
-        Text item=LandroidErrorDescription
-    }
-    Frame label="Battery"{
-        Text item=LandroidBatteryLevel
-        Text item=LandroidBatteryVoltage
-        Text item=LandroidBatteryTemperature
-        Text item=LandroidBatteryChargeCycle
-    }
-    Frame label="Settings" {
-        Setpoint item=LandroidScheduleTimeExtension minValue=-100 maxValue=100 step=10
-        Text label="Schedule" icon="time"{
-            Frame label="Schedule Monday" {
-                Setpoint item=LandroidScheduleMondayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleMondayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleMondayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleMondayEdgecut
-            }
-            Frame label="Schedule Tuesday" {
-                Setpoint item=LandroidScheduleTuesdayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleTuesdayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleTuesdayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleTuesdayEdgecut
-            }
-            Frame label="Schedule Wednesday" {
-                Setpoint item=LandroidScheduleWednesdayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleWednesdayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleWednesdayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleWednesdayEdgecut
-            }
-            Frame label="Schedule Thursday" {
-                Setpoint item=LandroidScheduleThursdayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleThursdayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleThursdayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleThursdayEdgecut
-            }
-            Frame label="Schedule Friday" {
-                Setpoint item=LandroidScheduleFridayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleFridayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleFridayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleFridayEdgecut
-            }
-            Frame label="Schedule Saturday" {
-                Setpoint item=LandroidScheduleSaturdayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleSaturdayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleSaturdayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleSaturdayEdgecut
-            }
-            Frame label="Schedule Sunday" {
-                Setpoint item=LandroidScheduleSundayStartHour minValue=0 maxValue=23 step=1
-                Setpoint item=LandroidScheduleSundayStartMinutes minValue=0 maxValue=45 step=15
-                Setpoint item=LandroidScheduleSundayDuration minValue=15 maxValue=1425 step=15
-                Switch item=LandroidScheduleSundayEdgecut
-            }
+    Group item=Shaun icon="landroid" {
+        Frame {
+            Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==33]
+            Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
+            Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
+            Text item=LandroidLastUpdate
+            Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
         }
-        Text label="MultiZone" icon="pie"{
-            Frame label="Zone Meters" {
-                Slider item=LandroidMeterZone1 minValue=0 maxValue=150
-                Slider item=LandroidMeterZone2 minValue=0 maxValue=150
-                Slider item=LandroidMeterZone3 minValue=0 maxValue=150
-                Slider item=LandroidMeterZone4 minValue=0 maxValue=150
-            }
-            Frame label="Allocation Zones" {
-                Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-            }
+        Frame {
+            Text item=LandroidSerialNumber
+            Text item=LandroidFirmware
+            Text item=LandroidOnline //mappings=[OFF="Offline", ON="Online"]
+            Text item=LandroidLastUpdateOnlineStatus
         }
-        Setpoint item=LandroidRainDelay minValue=0 maxValue=750 step=30
-    }
-    Frame label="Statistic" {
-        Text item=LandroidTotalTime
-        Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
-        Text item=LandroidTotalBladeTime
-    }
-    Frame label="Orientation" {
-        Text item=LandroidPitch
-        Text item=LandroidRoll
-        Text item=LandroidYaw
-    }
+        Frame label="Status"{
+            Text item=LandroidWifiQuality
+            Text  item=LandroidBatteryCharging
+            Text item=LandroidStatusCode
+            Text item=LandroidStatusDescription
+            Text item=LandroidErrorCode
+            Text item=LandroidErrorDescription
+        }
+        Frame label="Battery"{
+            Text item=LandroidBatteryLevel
+            Text item=LandroidBatteryVoltage
+            Text item=LandroidBatteryTemperature
+            Text item=LandroidBatteryChargeCycle
+        }
+        Frame label="Settings" {
+            Slider item=LandroidScheduleTimeExtension minValue=-100 maxValue=100 step=10
+            Text label="Schedule" icon="time"{
+                Frame label="Schedule Monday" {
+                    Setpoint item=LandroidScheduleMondayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleMondayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleMondayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleMondayEdgecut
+                }
+                Frame label="Schedule Tuesday" {
+                    Setpoint item=LandroidScheduleTuesdayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleTuesdayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleTuesdayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleTuesdayEdgecut
+                }
+                Frame label="Schedule Wednesday" {
+                    Setpoint item=LandroidScheduleWednesdayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleWednesdayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleWednesdayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleWednesdayEdgecut
+                }
+                Frame label="Schedule Thursday" {
+                    Setpoint item=LandroidScheduleThursdayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleThursdayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleThursdayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleThursdayEdgecut
+                }
+                Frame label="Schedule Friday" {
+                    Setpoint item=LandroidScheduleFridayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleFridayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleFridayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleFridayEdgecut
+                }
+                Frame label="Schedule Saturday" {
+                    Setpoint item=LandroidScheduleSaturdayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleSaturdayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleSaturdayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleSaturdayEdgecut
+                }
+                Frame label="Schedule Sunday" {
+                    Setpoint item=LandroidScheduleSundayStartHour minValue=0 maxValue=23 step=1
+                    Setpoint item=LandroidScheduleSundayStartMinutes minValue=0 maxValue=45 step=15
+                    Setpoint item=LandroidScheduleSundayDuration minValue=15 maxValue=1425 step=15
+                    Switch item=LandroidScheduleSundayEdgecut
+                }
+            }
+            Slider item=LandroidRainDelay minValue=0 maxValue=750 step=30
+        }
+        Frame label="Statistic" {
+            Text item=LandroidTotalTime
+            Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
+            Text item=LandroidTotalBladeTime
+        }
+        Frame label="Orientation"{
+            Text item=LandroidPitch
+            Text item=LandroidRoll
+            Text item=LandroidYaw
+        }
+   }
 }
 ```
 
 ### .rules
+
+Update Landroid Status to reflect in main menu
+
+<img src="images/SC_BasicUI_MainStatus.png" width="50%">
+<br>
+
 ```
-TODO
+rule MowerStatus
+when
+	Item LandroidErrorCode changed or 
+	Item LandroidStatusCode changed
+then
+	if (LandroidErrorCode.state != 0) {
+		Shaun.postUpdate(transform("MAP", "landroid_error_de.map", LandroidErrorCode.state.toString))
+	} else {
+		Shaun.postUpdate(transform("MAP", "landroid_status_de.map", LandroidStatusCode.state.toString))
+	}
+end
 ```
+
+Place the following *.map to your ..\conf\transform
+
+1. [landroid_error_de.map](https://github.com/nibi79/worxlandroid/images/landroid_error_de.map)
+2. [landroid_status_de.map](https://github.com/nibi79/worxlandroid/images/landroid_status_de.map)
+
+## Iconset
+
+Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
+
+1. [Distance](https://github.com/nibi79/worxlandroid/images/distance.zip)
+2. [Zones](https://github.com/nibi79/worxlandroid/images/zones.zip)
+3. [Refresh](https://github.com/nibi79/worxlandroid/images/refresh.png)
+4. [Landroid](https://github.com/nibi79/worxlandroid/images/landroid.png)
+
 
 ## Support
 
@@ -479,4 +497,3 @@ In any case please provide some information about your problem:
 - whether it's the binding, bridge, device or channel related issue
 
 For the sake of documentation please use English language.
-
