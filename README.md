@@ -479,7 +479,7 @@ Several Icons have been created in order to suit requirements for robo-mower. Pl
 1. [Distance](https://github.com/nibi79/worxlandroid/images/distance.zip)
 2. [Zones](https://github.com/nibi79/worxlandroid/images/zones.zip)
 3. [Refresh](https://github.com/nibi79/worxlandroid/images/refresh.png)
-4. [wr102si](https://github.com/nibi79/worxlandroid/images/wr102si.png)
+4. [Landroid](https://github.com/nibi79/worxlandroid/images/landroid.png)
 
 
 ## Support
