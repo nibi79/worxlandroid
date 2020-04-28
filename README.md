@@ -475,10 +475,10 @@ Place the following *.map to your ..\conf\transform
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
 
-1. [Distance](https://github.com/nibi79/worxlandroid/images/distance.zip)
-2. [Zones](https://github.com/nibi79/worxlandroid/images/zones.zip)
-3. [Refresh](https://github.com/nibi79/worxlandroid/images/refresh.png)
-4. [Landroid](https://github.com/nibi79/worxlandroid/images/landroid.png)
+1. [Distance](https://github.com/nibi79/worxlandroid/blob/master/images/limages/distance.zip)
+2. [Zones](https://github.com/nibi79/worxlandroid/blob/master/images/l/zones.zip)
+3. [Refresh](https://github.com/nibi79/worxlandroid/blob/master/images/l/refresh.png)
+4. [Landroid](https://github.com/nibi79/worxlandroid/blob/master/images/landroid.png)
 
 
 ## Support
