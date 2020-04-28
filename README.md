@@ -353,18 +353,17 @@ Number          LandroidAllocation9                     "Alloction 9 []"        
 ```
 sitemap landroid label="Landroid"
 {
-	Group item=Shaun icon="landroid" {
+    Group item=Shaun icon="landroid" {
         Frame {
-			Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
-			Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7]
-			Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==33]
-			Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
-			Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
+            Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==33]
+            Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
+            Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
             Text item=LandroidLastUpdate
             Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
         }
         Frame {
-            Text item=LandroidMacAdress
             Text item=LandroidSerialNumber
             Text item=LandroidFirmware
             Text item=LandroidOnline //mappings=[OFF="Offline", ON="Online"]
@@ -437,11 +436,11 @@ sitemap landroid label="Landroid"
             Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
             Text item=LandroidTotalBladeTime
         }
-		Frame label="Orientation"{
-			Text item=LandroidPitch
-			Text item=LandroidRoll
-			Text item=LandroidYaw
-		}
+        Frame label="Orientation"{
+            Text item=LandroidPitch
+            Text item=LandroidRoll
+            Text item=LandroidYaw
+        }
    }
 }
 ```
