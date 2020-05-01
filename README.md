@@ -390,43 +390,43 @@ sitemap landroid label="Landroid"
                 Frame label="Schedule Monday" {
                     Setpoint item=LandroidScheduleMondayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleMondayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleMondayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleMondayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleMondayEdgecut
                 }
                 Frame label="Schedule Tuesday" {
                     Setpoint item=LandroidScheduleTuesdayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleTuesdayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleTuesdayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleTuesdayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleTuesdayEdgecut
                 }
                 Frame label="Schedule Wednesday" {
                     Setpoint item=LandroidScheduleWednesdayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleWednesdayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleWednesdayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleWednesdayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleWednesdayEdgecut
                 }
                 Frame label="Schedule Thursday" {
                     Setpoint item=LandroidScheduleThursdayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleThursdayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleThursdayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleThursdayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleThursdayEdgecut
                 }
                 Frame label="Schedule Friday" {
                     Setpoint item=LandroidScheduleFridayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleFridayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleFridayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleFridayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleFridayEdgecut
                 }
                 Frame label="Schedule Saturday" {
                     Setpoint item=LandroidScheduleSaturdayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleSaturdayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleSaturdayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleSaturdayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleSaturdayEdgecut
                 }
                 Frame label="Schedule Sunday" {
                     Setpoint item=LandroidScheduleSundayStartHour minValue=0 maxValue=23 step=1
                     Setpoint item=LandroidScheduleSundayStartMinutes minValue=0 maxValue=45 step=15
-                    Setpoint item=LandroidScheduleSundayDuration minValue=15 maxValue=1425 step=15
+                    Setpoint item=LandroidScheduleSundayDuration minValue=0 maxValue=1425 step=15
                     Switch item=LandroidScheduleSundayEdgecut
                 }
             }
