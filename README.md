@@ -476,9 +476,9 @@ Place the following *.map to your ..\conf\transform
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
 
-1. [Distance](/images/limages/distance.zip)
-2. [Zones](/images/l/zones.zip)
-3. [Refresh](/images/l/refresh.png)
+1. [Distance](/images/distance.zip)
+2. [Zones](/images/zones.zip)
+3. [Refresh](/images/refresh.png)
 4. [Landroid](/images/landroid.png)
 
 
