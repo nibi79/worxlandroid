@@ -430,6 +430,26 @@ sitemap landroid label="Landroid"
                     Switch item=LandroidScheduleSundayEdgecut
                 }
             }
+            Text label="MultiZone" icon="pie"{
+            	Frame label="Zone Meters" {
+                    Slider item=LandroidMeterZone1 minValue=0 maxValue=90
+                    Slider item=LandroidMeterZone2 minValue=0 maxValue=90
+                    Slider item=LandroidMeterZone3 minValue=0 maxValue=90
+                    Slider item=LandroidMeterZone4 minValue=0 maxValue=90
+                }
+                Frame label="Allocation Zones" {
+                    Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+               }
+            }	    
             Slider item=LandroidRainDelay minValue=0 maxValue=750 step=30
         }
         Frame label="Statistic" {
