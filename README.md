@@ -104,6 +104,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | statusDescription | `String` | datCommon#statusDescription |
 | errorCode | `Number` | datCommon#errorCode |
 | errorDescription | `String` | datCommon#errorDescription |
+| lastZone | `Number` | datCommon#lastZone |
 
 ##### datBattery
 
@@ -267,6 +268,7 @@ Number          LandroidStatusCode                      "Status Code [%d]"      
 String          LandroidStatusDescription               "Status [%s]"                       <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusDescription"}
 Number          LandroidErrorCode                       "Error Code [%d]"                   <error>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorCode"}
 String          LandroidErrorDescription                "Error: [%s]"                       <error>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorDescription"}
+Number          LandroidLastZone                        "Current Zone [%d]"                 <zone>                                      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#lastZone"}
 
 // Battery
 Number          LandroidBatteryLevel                    "Battery Level [%d %%]"             <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryLevel"}
@@ -377,6 +379,7 @@ sitemap landroid label="Landroid"
             Text item=LandroidStatusDescription
             Text item=LandroidErrorCode
             Text item=LandroidErrorDescription
+            Text item=LandroidLastZone
         }
         Frame label="Battery"{
             Text item=LandroidBatteryLevel
@@ -449,7 +452,7 @@ sitemap landroid label="Landroid"
                     Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
                     Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
                }
-            }	    
+            }
             Slider item=LandroidRainDelay minValue=0 maxValue=750 step=30
         }
         Frame label="Statistic" {
@@ -476,7 +479,7 @@ Update Landroid Status to reflect in main menu
 ```
 rule MowerStatus
 when
-	Item LandroidErrorCode changed or 
+	Item LandroidErrorCode changed or
 	Item LandroidStatusCode changed
 then
 	if (LandroidErrorCode.state != 0) {

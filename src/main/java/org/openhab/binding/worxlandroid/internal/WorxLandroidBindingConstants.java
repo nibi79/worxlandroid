@@ -59,6 +59,7 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_MAC_ADRESS = "datCommon#macAdress";
     public static final String CHANNELNAME_FIRMWARE = "datCommon#firmware";
     public static final String CHANNELNAME_WIFI_QUALITY = "datCommon#wifiQuality";
+    public static final String CHANNELNAME_LAST_ZONE = "datCommon#lastZone";
     public static final String CHANNELNAME_STATUS_CODE = "datCommon#statusCode";
     public static final String CHANNELNAME_STATUS_DESCRIPTION = "datCommon#statusDescription";
     public static final String CHANNELNAME_ERROR_CODE = "datCommon#errorCode";

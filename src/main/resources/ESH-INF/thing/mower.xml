@@ -18,14 +18,14 @@
 			<channel-group id="cfgCommon" typeId="cfgCommon-type" />
 			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type" />
 
-            <channel-group id="cfgSc" typeId="cfgSc-type" />
-            <channel-group id="cfgScSunday" typeId="cfgScSunday-type" />
-            <channel-group id="cfgScMonday" typeId="cfgScMonday-type" />
-            <channel-group id="cfgScTuesday" typeId="cfgScTuesday-type" />
-            <channel-group id="cfgScWednesday" typeId="cfgScWednesday-type" />
-            <channel-group id="cfgScThursday" typeId="cfgScThursday-type" />
-            <channel-group id="cfgScFriday" typeId="cfgScFriday-type" />
-            <channel-group id="cfgScSaturday" typeId="cfgScSaturday-type" />
+			<channel-group id="cfgSc" typeId="cfgSc-type" />
+			<channel-group id="cfgScSunday" typeId="cfgScSunday-type" />
+			<channel-group id="cfgScMonday" typeId="cfgScMonday-type" />
+			<channel-group id="cfgScTuesday" typeId="cfgScTuesday-type" />
+			<channel-group id="cfgScWednesday" typeId="cfgScWednesday-type" />
+			<channel-group id="cfgScThursday" typeId="cfgScThursday-type" />
+			<channel-group id="cfgScFriday" typeId="cfgScFriday-type" />
+			<channel-group id="cfgScSaturday" typeId="cfgScSaturday-type" />
 
 			<channel-group id="datCommon" typeId="datCommon-type" />
 			<channel-group id="datBattery" typeId="datBattery-type" />
@@ -141,6 +141,7 @@
 			<channel id="statusDescription" typeId="chStatusDescription" />
 			<channel id="errorCode" typeId="chErrorCode" />
 			<channel id="errorDescription" typeId="chErrorDescription" />
+			<channel id="lastZone" typeId="chLastZone" />
 		</channels>
 	</channel-group-type>
 
@@ -436,6 +437,20 @@
 		<state readOnly="true" />
 	</channel-type>
 
+	<channel-type id="chLastZone">
+		<item-type>Number</item-type>
+		<label>Last Zone</label>
+		<category>Info</category>
+		<state readOnly="true">
+			<options>
+				<option value="0">Zone 1</option>
+				<option value="1">Zone 2</option>
+				<option value="2">Zone 3</option>
+				<option value="3">Zone 4</option>
+			</options>
+		</state>
+	</channel-type>
+
 	<channel-type id="chWifiQuality">
 		<item-type>Number</item-type>
 		<label>Wifi Quality</label>
@@ -507,7 +522,7 @@
 			<options>
 				<option value="START">Start</option>
 				<option value="STOP">Stop</option>
-				<option value="HOME">Home</option>			
+				<option value="HOME">Home</option>
 			</options>
 		</state>
 	</channel-type>
@@ -518,10 +533,10 @@
 		<description>Lock or unlock your mower.</description>
 	</channel-type>
 
-		<channel-type id="chPoll">
-				<item-type>Switch</item-type>
-				<label>Poll Worx AWS</label>
-				<description>Poll Worx AWS</description>
-		</channel-type>
+	<channel-type id="chPoll">
+		<item-type>Switch</item-type>
+		<label>Poll Worx AWS</label>
+		<description>Poll Worx AWS</description>
+	</channel-type>
 
 </thing:thing-descriptions>

@@ -627,7 +627,15 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateState(CHANNELNAME_ERROR_DESCRIPTION, new StringType(code.getDescription()));
             logger.info("{}", code.toString());
         }
-        // TODO dat/lz -> ?
+
+        // dat/lz -> lastZone
+        if (dat.get("lz") != null) {
+            int lastZoneIndex = dat.get("lz").getAsInt();
+
+            int lastZone = mower.getAllocation(lastZoneIndex);
+            updateState(CHANNELNAME_LAST_ZONE, new DecimalType(lastZone));
+        }
+
         // dat/rsi -> wifiQuality
         if (dat.get("rsi") != null) {
             updateState(CHANNELNAME_WIFI_QUALITY, new DecimalType(dat.get("rsi").getAsLong()));
