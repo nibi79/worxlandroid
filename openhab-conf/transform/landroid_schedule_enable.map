@@ -1,4 +1,3 @@
-ON=Deaktiviere Zeitplan
-OFF=Aktiviere Zeitplan
+ON=Deactivate Schedule
+OFF=Activate Schedule
 NULL=UNINITIALISED
--=UNINITIALISED1
