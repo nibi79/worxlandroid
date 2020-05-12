@@ -1,4 +1,4 @@
-<img src="images/landroid.png">
+<img src="openhab-conf/icons/landroid.png">
 
 # WorxLandroid Binding
 This binding connects openHAB with your WorxLandroid Mower using the API and MQTT.
