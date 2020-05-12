@@ -513,17 +513,17 @@ end
 
 Place the following *.map to your ..\conf\transform
 
-1. [landroid_error_de.map](/images/landroid_error_de.map)
-2. [landroid_status_de.map](/images/landroid_status_de.map)
+1. [landroid_error_de.map](/openhab-conf/transform/landroid_error_de.map)
+2. [landroid_status_de.map](/openhab-conf/transform/landroid_status_de.map)
 
 ## Iconset
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
 
-1. [Distance](/images/distance.zip)
-2. [Zones](/images/zones.zip)
-3. [Refresh](/images/refresh.png)
-4. [Landroid](/images/landroid.png)
+1. [Distance](/openhab-conf/icons/distance.zip)
+2. [Zones](/openhab-conf/icons/zones.zip)
+3. [Refresh](/openhab-conf/icons/refresh.png)
+4. [Landroid](/openhab-conf/icons/landroid.png)
 
 
 ## Support
