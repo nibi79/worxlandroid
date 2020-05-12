@@ -387,12 +387,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             // update schedule
             // TODO ugly check
-            if (channelUID.getId().startsWith("cfgSc")) {
+            if (CHANNELNAME_ENABLE.equals(channelUID.getId()) || channelUID.getId().startsWith("cfgSc")) {
                 // update mower data
 
-                // update schedule or timeExtension?
-                if (channelUID.getId().equals(CHANNELNAME_SC_TIME_EXTENSION)) {
+                // update schedule or timeExtension/enable?
+                if (CHANNELNAME_SC_TIME_EXTENSION.equals(channelUID.getId())) {
                     mower.setTimeExtension(Integer.parseInt(command.toString()));
+                } else if (CHANNELNAME_ENABLE.equals(channelUID.getId())) {
+                    mower.setEnable(OnOffType.ON.equals(command));
                 } else {
                     // extract name of from channel
                     Pattern pattern = Pattern.compile("cfgSc(.*?)#");
@@ -694,6 +696,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 int timeExtension = sc.get("p").getAsInt();
                 mower.setTimeExtension(timeExtension);
                 updateState(CHANNELNAME_SC_TIME_EXTENSION, new DecimalType(timeExtension));
+                // mower enable
+                updateState(CHANNELNAME_ENABLE, OnOffType.from(mower.isEnable()));
             }
             if (sc.get("d") != null) {
                 JsonArray d = sc.get("d").getAsJsonArray();

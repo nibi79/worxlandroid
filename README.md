@@ -78,6 +78,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 |------------|-----------|-----------|-----------|
 | online      | `Switch` | common#online | |
 | lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus | |
+| enable | `Switch` | common#enable | |
 | poll | `Switch` | common#poll | |
 | action | `String` | common#action | START, STOP, HOME |
 | lock | `Switch` | common#lock | |
@@ -255,11 +256,12 @@ Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUser
 
 ### .items
 ```
-String Shaun							"Shaun [%s]"
+String          Shaun		                     	"Shaun [%s]"
 
+Switch          LandroidEnable                          "Enable []"                         <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#enable"}
 String          LandroidAction                          "Action []"                         <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
 String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
-Switch          LandroidPoll                            "Poll []"                           <refresh>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
+Switch          LandroidPoll                            "Poll []"                           <refresh>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
 Switch          LandroidLock                            "Lock []"                           <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
 
 //
@@ -372,6 +374,7 @@ sitemap landroid label="Landroid"
 {
     Group item=Shaun icon="landroid" {
         Frame {
+            Switch item=LandroidEnable label="Mowing enabled"
             Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
             Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7]
             Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==33]
@@ -402,7 +405,7 @@ sitemap landroid label="Landroid"
             Text item=LandroidBatteryChargeCycle
         }
         Frame label="Settings" {
-            Slider item=LandroidScheduleTimeExtension minValue=-100 maxValue=100 step=10
+            Slider item=LandroidScheduleTimeExtension minValue=0 maxValue=100 step=10
             Text label="Schedule" icon="time"{
                 Frame label="Schedule Monday" {
                     Switch item=LandroidScheduleMondayEnable

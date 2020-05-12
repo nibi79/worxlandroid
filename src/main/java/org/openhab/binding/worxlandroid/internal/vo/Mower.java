@@ -26,13 +26,18 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
 @NonNullByDefault
 public class Mower {
 
+    private static final int TIME_EXTENSION_DISABLE = -100;
+    private boolean enable;
+
     private String serialNumber;
     private boolean online;
+
+    private int timeExtension;
+    private int timeExtensionRestore = 0;
+
     private boolean lockSupported;
     private boolean rainDelaySupported;
     private boolean multiZoneSupported;
-
-    private int timeExtension;
 
     // multizone meter
     int[] zoneMeter = new int[4];
@@ -67,7 +72,21 @@ public class Mower {
         return timeExtension;
     }
 
+    /**
+     * timeExtension = -100 disables mowing (enable=false).
+     * timeExtension > -100 enables mowing (enable=true).
+     *
+     * @param timeExtension
+     */
     public void setTimeExtension(int timeExtension) {
+
+        if (timeExtension == TIME_EXTENSION_DISABLE) {
+            storeTimeExtension();
+            this.enable = false;
+        } else {
+            this.enable = true;
+        }
+
         this.timeExtension = timeExtension;
     }
 
@@ -147,5 +166,47 @@ public class Mower {
      */
     public void setAllocation(int allocationIndex, int zoneIndex) {
         allocations[allocationIndex] = zoneIndex;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isEnable() {
+        return enable;
+    }
+
+    /**
+     * Enable/Disables mowing using timeExtension.
+     * disable: timeExtension = -100
+     * enable: timeExtension > -100
+     *
+     * @param enable
+     */
+    public void setEnable(boolean enable) {
+
+        this.enable = enable;
+
+        if (enable && timeExtension == TIME_EXTENSION_DISABLE) {
+            restoreTimeExtension();
+        } else {
+            storeTimeExtension();
+            this.timeExtension = TIME_EXTENSION_DISABLE;
+        }
+    }
+
+    /**
+     * Stores timeExtension to timeExtensionRestore for restore,
+     */
+    private void storeTimeExtension() {
+        if (this.timeExtension > TIME_EXTENSION_DISABLE) {
+            this.timeExtensionRestore = this.timeExtension;
+        }
+    }
+
+    /**
+     * Restores timeExtension from timeExtensionRestore.
+     */
+    private void restoreTimeExtension() {
+        this.timeExtension = this.timeExtensionRestore;
     }
 }
