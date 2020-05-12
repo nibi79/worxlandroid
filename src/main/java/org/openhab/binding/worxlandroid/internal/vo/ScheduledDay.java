@@ -57,8 +57,8 @@ public class ScheduledDay {
     }
 
     /**
-     * If duration = 0 disables this scheduled day (enable=false).
-     * A duration > 0 enables this scheduled day (enable=true).
+     * duration = 0 disables this scheduled day (enable=false).
+     * duration > 0 enables this scheduled day (enable=true).
      *
      * @param duration
      */
@@ -87,6 +87,7 @@ public class ScheduledDay {
     }
 
     /**
+     * Enable/Disables scheduling using duration.
      *
      * @param enable
      */
@@ -103,7 +104,7 @@ public class ScheduledDay {
     }
 
     /**
-     *
+     * Retores duration from durationRestore.
      */
     private void storeDuration() {
         if (this.duration > DURATION_0) {
@@ -112,8 +113,8 @@ public class ScheduledDay {
     }
 
     /**
-    *
-    */
+     * Stores duration to durationRestore for restore,
+     */
     private void restoreDuration() {
         this.duration = this.durationRestore;
     }
