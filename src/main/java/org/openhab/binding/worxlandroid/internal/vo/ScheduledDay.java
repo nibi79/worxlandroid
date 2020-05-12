@@ -19,9 +19,14 @@ package org.openhab.binding.worxlandroid.internal.vo;
  */
 public class ScheduledDay {
 
+    private static final int DURATION_0 = 0;
+    private static final int DURATION_DEFAULT = 15;
+
+    private boolean enable;
     private int hour;
     private int minutes;
     private int duration;
+    private int durationRestore = DURATION_DEFAULT;
     private boolean edgecut;
 
     /**
@@ -51,7 +56,21 @@ public class ScheduledDay {
         return duration;
     }
 
+    /**
+     * If duration = 0 disables this scheduled day (enable=false).
+     * A duration > 0 enables this scheduled day (enable=true).
+     *
+     * @param duration
+     */
     public void setDuration(int duration) {
+
+        if (duration == DURATION_0) {
+            storeDuration();
+            this.enable = false;
+        } else {
+            this.enable = true;
+        }
+
         this.duration = duration;
     }
 
@@ -63,4 +82,39 @@ public class ScheduledDay {
         this.edgecut = edgecut;
     }
 
+    public boolean isEnable() {
+        return enable;
+    }
+
+    /**
+     *
+     * @param enable
+     */
+    public void setEnable(boolean enable) {
+
+        this.enable = enable;
+
+        if (enable && duration == DURATION_0) {
+            restoreDuration();
+        } else {
+            storeDuration();
+            this.duration = DURATION_0;
+        }
+    }
+
+    /**
+     *
+     */
+    private void storeDuration() {
+        if (this.duration > DURATION_0) {
+            this.durationRestore = this.duration;
+        }
+    }
+
+    /**
+    *
+    */
+    private void restoreDuration() {
+        this.duration = this.durationRestore;
+    }
 }

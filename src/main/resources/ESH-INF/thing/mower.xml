@@ -189,6 +189,7 @@
 		<label>Configuration schedule channels Sunday</label>
 		<description>Configuration schedule channels of your mower for Sunday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -200,6 +201,7 @@
 		<label>Configuration schedule channels Monday</label>
 		<description>Configuration schedule channels of your mower for Monday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -211,6 +213,7 @@
 		<label>Configuration schedule channels Tuesday</label>
 		<description>Configuration schedule channels of your mower for Tuesday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -222,6 +225,7 @@
 		<label>Configuration schedule channels Wednesday</label>
 		<description>Configuration schedule channels of your mower for Wednesday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -233,6 +237,7 @@
 		<label>Configuration schedule channels Thursday</label>
 		<description>Configuration schedule channels of your mower for Thursday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -244,6 +249,7 @@
 		<label>Configuration schedule channels Friday</label>
 		<description>Configuration schedule channels of your mower for Friday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -255,6 +261,7 @@
 		<label>Configuration schedule channels Saturday</label>
 		<description>Configuration schedule channels of your mower for Saturday</description>
 		<channels>
+			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
 			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
 			<channel id="scheduleDuration" typeId="chScheduleDuration" />
@@ -483,7 +490,7 @@
 		<item-type>Number</item-type>
 		<label>Schedule Duration</label>
 		<category>Info</category>
-		<state readOnly="false" min="15" max="1425" step="15" pattern="%d min" />
+		<state readOnly="false" min="0" max="1425" step="15" pattern="%d min" />
 	</channel-type>
 
 	<channel-type id="chScheduleEdgecut">
@@ -523,6 +530,7 @@
 				<option value="START">Start</option>
 				<option value="STOP">Stop</option>
 				<option value="HOME">Home</option>
+				<!-- option value="ZONETRAINING">Training</option -->
 			</options>
 		</state>
 	</channel-type>
@@ -539,4 +547,8 @@
 		<description>Poll Worx AWS</description>
 	</channel-type>
 
+	<channel-type id="chEnable">
+		<item-type>Switch</item-type>
+		<label>Activation / Deactivation</label>
+	</channel-type>
 </thing:thing-descriptions>

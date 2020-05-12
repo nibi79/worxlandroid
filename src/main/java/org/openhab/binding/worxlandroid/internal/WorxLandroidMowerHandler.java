@@ -210,7 +210,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         boolean multiZoneSupported = Boolean.parseBoolean(props.get("multi_zone"));
                         mower.setMultiZoneSupported(multiZoneSupported);
                         if (!multiZoneSupported) {
-                            // remove zome meter channels
+                            // remove lastZome channel
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_LAST_ZONE));
+                            // remove zone meter channels
                             for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
                                 String channelNameZoneMeter = String.format("cfgMultiZones#zone%dMeter", zoneIndex + 1);
                                 thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameZoneMeter));
@@ -405,6 +407,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     String chName = channelUID.getId().split("#")[1];
                     switch (chName) {
+                        case "enable":
+                            scheduledDayUpdated.setEnable(OnOffType.ON.equals(command));
+                            break;
+
                         case "scheduleStartHour":
                             scheduledDayUpdated.setHours(Integer.parseInt(command.toString()));
                             break;
@@ -710,10 +716,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     scheduledDay.setMinutes(Integer.parseInt(time[1]));
                     updateState(channelNameStartMin, new DecimalType(time[1]));
 
-                    // duration
+                    // duration (and implicit enable)
                     String channelNameDuration = String.format("cfgSc%s#scheduleDuration", dayCode.getDescription());
-                    scheduledDay.setDuration(shedule.get(1).getAsInt());
+                    int duration = shedule.get(1).getAsInt();
+                    scheduledDay.setDuration(duration);
                     updateState(channelNameDuration, new DecimalType(shedule.get(1).getAsLong()));
+                    // enable
+                    String channelNameEnable = String.format("cfgSc%s#enable", dayCode.getDescription());
+                    updateState(channelNameEnable, OnOffType.from(scheduledDay.isEnable()));
 
                     // edgecut
                     String channelNameEdgecut = String.format("cfgSc%s#scheduleEdgecut", dayCode.getDescription());
