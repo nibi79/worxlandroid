@@ -62,7 +62,9 @@
 			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus" />
 			<channel id="poll" typeId="chPoll" />
 			<channel id="action" typeId="chAction" />
-			<channel id="enable" typeId="chEnable" />
+			<channel id="enable" typeId="chEnable">
+				<label>Mowing enabled</label>
+			</channel>
 			<channel id="lock" typeId="chLock" />
 		</channels>
 	</channel-group-type>
