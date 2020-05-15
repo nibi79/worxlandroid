@@ -86,6 +86,9 @@
 		<label>Configuration multi zone channels</label>
 		<description>Configuration multi zones of your mower</description>
 		<channels>
+			<channel id="enable" typeId="chEnable">
+				<label>Multizone enabled</label>
+			</channel>
 			<channel id="zone1Meter" typeId="chZoneMeter">
 				<label>Meters Zone 1</label>
 			</channel>

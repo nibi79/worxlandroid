@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.worxlandroid.internal.vo;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
 public class Mower {
 
     private static final int TIME_EXTENSION_DISABLE = -100;
+    private static final int[] MULTI_ZONE_METER_DISABLE = { 0, 0, 0, 0 };
+    private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 1, 0, 0 };
+
     private boolean enable;
 
     private String serialNumber;
@@ -39,8 +43,11 @@ public class Mower {
     private boolean rainDelaySupported;
     private boolean multiZoneSupported;
 
+    private boolean multiZoneEnable;
+
     // multizone meter
     int[] zoneMeter = new int[4];
+    int[] zoneMeterRestore = new int[4];
 
     // multizone allocations
     int[] allocations = new int[10];
@@ -137,6 +144,31 @@ public class Mower {
     }
 
     /**
+     * @return
+     */
+    public boolean isMultiZoneEnable() {
+        return multiZoneEnable;
+    }
+
+    /**
+     * @param multiZoneEnable
+     */
+    public void setMultiZoneEnable(boolean multiZoneEnable) {
+
+        this.multiZoneEnable = multiZoneEnable;
+
+        if (multiZoneEnable && isZoneMeterDisabled()) {
+            restoreZoneMeter();
+            if (isZoneMeterDisabled()) {
+                this.zoneMeter = Arrays.copyOf(MULTI_ZONE_METER_ENABLE, MULTI_ZONE_METER_ENABLE.length);
+            }
+        } else {
+            storeZoneMeter();
+            this.zoneMeter = Arrays.copyOf(MULTI_ZONE_METER_DISABLE, MULTI_ZONE_METER_DISABLE.length);
+        }
+    }
+
+    /**
      * @param zoneIndex
      * @return
      */
@@ -150,6 +182,7 @@ public class Mower {
      */
     public void setZoneMeter(int zoneIndex, int meter) {
         zoneMeter[zoneIndex] = meter;
+        this.multiZoneEnable = !isZoneMeterDisabled();
     }
 
     /**
@@ -209,4 +242,37 @@ public class Mower {
     private void restoreTimeExtension() {
         this.timeExtension = this.timeExtensionRestore;
     }
+
+    /**
+     * Stores zoneMeter to zoneMeterRestore for restore,
+     */
+    private void storeZoneMeter() {
+        if (!isZoneMeterDisabled()) {
+            this.zoneMeterRestore = Arrays.copyOf(zoneMeter, zoneMeter.length);
+        }
+    }
+
+    /**
+     * Restores zoneMeter from zoneMeterRestore.
+     */
+    private void restoreZoneMeter() {
+        this.zoneMeter = Arrays.copyOf(zoneMeterRestore, zoneMeterRestore.length);
+    }
+
+    /**
+     * @return false if less than 2 meters are 0
+     */
+    private boolean isZoneMeterDisabled() {
+
+        int count0 = 0;
+        for (int i = 0; i < zoneMeter.length; i++) {
+
+            if (zoneMeter[i] != 0) {
+                count0 += 1;
+            }
+        }
+
+        return count0 == 0;
+    }
+
 }

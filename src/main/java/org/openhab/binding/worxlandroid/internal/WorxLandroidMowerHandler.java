@@ -338,29 +338,39 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             String cmd = AWSMessage.EMPTY_PAYLOAD;
 
-            if (channelUID.getId().startsWith("cfgMultiZones#zone")) {
+            // channel: multizone enable or multizone meters (mz)
+            if (CHANNELNAME_MULTIZONE_ENABLE.equals(channelUID.getId())
+                    || channelUID.getId().startsWith("cfgMultiZones#zone")) {
+
                 JsonObject jsonObject = new JsonObject();
                 JsonArray mz = new JsonArray();
 
-                // extract zone of from channel
-                Pattern pattern = Pattern.compile("cfgMultiZones#zone(\\d)Meter");
-                Matcher matcher = pattern.matcher(channelUID.getId());
-                int zone = 0;
-                if (matcher.find()) {
-                    zone = Integer.parseInt(matcher.group(1));
+                if (CHANNELNAME_MULTIZONE_ENABLE.equals(channelUID.getId())) {
+
+                    mower.setMultiZoneEnable(OnOffType.ON.equals(command));
+
+                } else {
+                    // extract zone of from channel
+                    Pattern pattern = Pattern.compile("cfgMultiZones#zone(\\d)Meter");
+                    Matcher matcher = pattern.matcher(channelUID.getId());
+                    int zone = 0;
+                    if (matcher.find()) {
+                        zone = Integer.parseInt(matcher.group(1));
+                    }
+                    mower.setZoneMeter(zone - 1, Integer.parseInt(command.toString()));
                 }
-                mower.setZoneMeter(zone - 1, Integer.parseInt(command.toString()));
 
                 for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
                     mz.add(mower.getZoneMeter(zoneIndex));
                 }
 
                 jsonObject.add("mz", mz);
-
                 cmd = jsonObject.toString();
                 logger.debug("{}", jsonObject.toString());
 
+                // channel: multizone allocation (mzv)
             } else if (channelUID.getId().startsWith(CHANNELNAME_PREFIX_ALLOCATION)) {
+
                 JsonObject jsonObject = new JsonObject();
                 JsonArray mzv = new JsonArray();
 
@@ -383,19 +393,24 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 cmd = jsonObject.toString();
                 logger.debug("{}", jsonObject.toString());
 
-            } else
+            }
 
             // update schedule
             // TODO ugly check
             if (CHANNELNAME_ENABLE.equals(channelUID.getId()) || channelUID.getId().startsWith("cfgSc")) {
                 // update mower data
 
-                // update schedule or timeExtension/enable?
-                if (CHANNELNAME_SC_TIME_EXTENSION.equals(channelUID.getId())) {
-                    mower.setTimeExtension(Integer.parseInt(command.toString()));
-                } else if (CHANNELNAME_ENABLE.equals(channelUID.getId())) {
+                // update enable mowing or schedule or timeExtension/enable?
+                if (CHANNELNAME_ENABLE.equals(channelUID.getId())) {
+
                     mower.setEnable(OnOffType.ON.equals(command));
+
+                } else if (CHANNELNAME_SC_TIME_EXTENSION.equals(channelUID.getId())) {
+
+                    mower.setTimeExtension(Integer.parseInt(command.toString()));
+
                 } else {
+
                     // extract name of from channel
                     Pattern pattern = Pattern.compile("cfgSc(.*?)#");
                     Matcher matcher = pattern.matcher(channelUID.getId());
@@ -756,6 +771,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     updateState(channelNameZoneMeter, new DecimalType(meters));
                 }
             }
+
+            // multizone enable is initialized and set by zone meters
+            updateState(CHANNELNAME_MULTIZONE_ENABLE, OnOffType.from(mower.isMultiZoneEnable()));
 
             // allocation zones
             if (cfg.get("mzv") != null) {

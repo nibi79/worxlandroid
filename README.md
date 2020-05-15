@@ -214,6 +214,10 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 ##### cfgMultiZones
 If Multi Zones are supported, you are able to define 4 separate Zones and split working times by 10 to those.
 
+| Channel   | Type | ChannelName |
+|------------|-----------|-----------|
+| enable | `Switch` | cfgMultiZones#enable |
+
 To ease Zone Configuration, you are able to set distance in meters where a specific Zone starts. Bearing in mind that you roughly shall know how many meters of cable have been used (without buffer).
 
 | Channel   | Type | ChannelName |
@@ -349,6 +353,9 @@ Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"    
 Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
 Switch          LandroidScheduleSundayEdgecut           "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleEdgecut"}
 
+// Multizone
+Switch          LandroidMultizoneEnable                 "Multizone enable[]"                                        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#enable"}
+
 // Zone Meters
 Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <distance>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
 Number          LandroidMeterZone2                      "Meters Zone 2 [%d]"                <distance>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone2Meter"}
@@ -457,24 +464,27 @@ sitemap landroid label="Landroid"
                     Setpoint item=LandroidScheduleSundayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleSundayEnable==ON]
                 }
             }
-            Text label="MultiZone" icon="pie"{
+            Text label="MultiZone" icon="zones"{
+              Frame {
+                    Switch item=LandroidMultizoneEnable
+              }
               Frame label="Zone Meters" {
-                    Slider item=LandroidMeterZone1 minValue=0 maxValue=90
-                    Slider item=LandroidMeterZone2 minValue=0 maxValue=90
-                    Slider item=LandroidMeterZone3 minValue=0 maxValue=90
-                    Slider item=LandroidMeterZone4 minValue=0 maxValue=90
+                    Slider item=LandroidMeterZone1 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
+                    Slider item=LandroidMeterZone2 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
+                    Slider item=LandroidMeterZone3 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
+                    Slider item=LandroidMeterZone4 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
                 }
                 Frame label="Allocation Zones" {
-                    Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-                    Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
+                    Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
                }
             }
             Slider item=LandroidRainDelay minValue=0 maxValue=750 step=30

@@ -85,4 +85,5 @@ public class WorxLandroidBindingConstants {
 
     //
     public static final String CHANNELNAME_PREFIX_ALLOCATION = "cfgMultiZones#allocation";
+    public static final String CHANNELNAME_MULTIZONE_ENABLE = "cfgMultiZones#enable";
 }
