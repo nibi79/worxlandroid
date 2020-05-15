@@ -54,6 +54,7 @@ import org.openhab.binding.worxlandroid.internal.vo.ScheduledDay;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsStatusResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,6 +226,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         }
 
                         updateThing(thingBuilder.build());
+
+                        ProductItemsStatusResponse productItemsStatusResponse = apiHandler
+                                .retrieveDeviceStatus(mower.getSerialNumber());
+                        processStatusMessage(productItemsStatusResponse.getJsonResponseAsJsonObject());
 
                         // handle AWS
                         AWSTopic awsTopic = new AWSTopic(mqttCommandOut, AWSIotQos.QOS0, this);
@@ -535,17 +540,22 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         JsonElement jsonElement = new JsonParser().parse(message.getStringPayload());
 
         if (jsonElement.isJsonObject()) {
+            processStatusMessage(jsonElement.getAsJsonObject());
+        }
+    }
 
-            // cfg
-            if (jsonElement.getAsJsonObject().get("cfg") != null) {
-                updateStateCfg(jsonElement.getAsJsonObject().get("cfg").getAsJsonObject());
-            }
+    /**
+     * @param jsonMessage
+     */
+    public void processStatusMessage(JsonObject jsonMessage) {
+        // cfg
+        if (jsonMessage.get("cfg") != null) {
+            updateStateCfg(jsonMessage.get("cfg").getAsJsonObject());
+        }
 
-            // dat
-            if (jsonElement.getAsJsonObject().get("dat") != null) {
-                updateStateDat(jsonElement.getAsJsonObject().get("dat").getAsJsonObject());
-            }
-
+        // dat
+        if (jsonMessage.get("dat") != null) {
+            updateStateDat(jsonMessage.get("dat").getAsJsonObject());
         }
     }
 
