@@ -539,7 +539,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             JsonArray scDay = new JsonArray();
             ScheduledDay scheduledDay = mower.getScheduledDay(dayCode);
 
-            String minutes = scheduledDay.getMinutes() < 10 ? scheduledDay.getMinutes() + "0"
+            String minutes = scheduledDay.getMinutes() < 10 ? "0" + scheduledDay.getMinutes()
                     : String.valueOf(scheduledDay.getMinutes());
             scDay.add(String.format("%d:%s", scheduledDay.getHour(), minutes));
             scDay.add(scheduledDay.getDuration());
