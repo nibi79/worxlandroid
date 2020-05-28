@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,7 @@ public class AWSMessage extends AWSIotMessage {
     private final Logger logger = LoggerFactory.getLogger(AWSMessage.class);
 
     public static final String EMPTY_PAYLOAD = "{}";
+    public static final String CMD_START = String.format("{\"cmd\":%d}", WorxLandroidActionCodes.START.getCode());
 
     /**
      * @param topic

@@ -403,7 +403,7 @@ sitemap landroid label="Landroid"
             Text item=LandroidStatusDescription
             Text item=LandroidErrorCode
             Text item=LandroidErrorDescription
-            Text item=LandroidLastZone
+            Switch item=LandroidLastZone mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
         }
         Frame label="Battery"{
             Text item=LandroidBatteryLevel

@@ -29,12 +29,14 @@ public class Mower {
 
     private static final int TIME_EXTENSION_DISABLE = -100;
     private static final int[] MULTI_ZONE_METER_DISABLE = { 0, 0, 0, 0 };
-    private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 1, 0, 0 };
+    private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 0, 0, 0 };
 
     private boolean enable;
 
     private String serialNumber;
     private boolean online;
+
+    private long status = -1;
 
     private int timeExtension;
     private int timeExtensionRestore = 0;
@@ -176,6 +178,14 @@ public class Mower {
         return zoneMeter[zoneIndex];
     }
 
+    public int[] getZoneMeters() {
+        return Arrays.copyOf(zoneMeter, zoneMeter.length);
+    }
+
+    public void setZoneMeters(int[] zoneMeter) {
+        this.zoneMeter = Arrays.copyOf(zoneMeter, zoneMeter.length);
+    }
+
     /**
      * @param zoneIndex
      * @param meter
@@ -273,6 +283,20 @@ public class Mower {
         }
 
         return count0 == 0;
+    }
+
+    /**
+     * @return
+     */
+    public long getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status
+     */
+    public void setStatus(long status) {
+        this.status = status;
     }
 
 }
