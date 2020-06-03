@@ -357,8 +357,7 @@ sitemap landroid label="Landroid"
     Group item=Shaun icon="landroid" {
         Frame {
             Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
-            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7]
-            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==33]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7, LandroidStatusCode==33]
             Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
             Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
             Text item=LandroidLastUpdate
