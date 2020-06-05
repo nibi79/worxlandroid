@@ -49,7 +49,7 @@ public class AWSTopic extends AWSIotTopic {
             logger.warn("onMessage: message == null");
             return;
         }
-        logger.info("onMessage: {}", message.getStringPayload());
+        logger.debug("onMessage: {}", message.getStringPayload());
         callback.processMessage(message);
     }
 }

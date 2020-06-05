@@ -45,18 +45,18 @@ public class AWSMessage extends AWSIotMessage {
     @Override
     public void onSuccess() {
         // called when message publishing succeeded
-        logger.info("onSuccess");
+        logger.debug("AWS message publishing succeeded");
     }
 
     @Override
     public void onFailure() {
         // called when message publishing failed
-        logger.info("onFailure");
+        logger.warn("AWS message publishing failed");
     }
 
     @Override
     public void onTimeout() {
         // called when message publishing timed out
-        logger.info("onTimeout");
+        logger.warn("AWS message publishing timed out");
     }
 }

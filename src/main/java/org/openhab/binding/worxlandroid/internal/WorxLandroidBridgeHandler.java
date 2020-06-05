@@ -120,7 +120,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
                 updateThing(editThing().withProperties(props).build());
 
-                logger.debug("Start retrieving AWS certificate");
+                logger.info("Start retrieving AWS certificate");
                 UsersCertificateResponse usersCertificateResponse = apiHandler.retrieveAwsCertificate();
 
                 // TODO test this
@@ -140,7 +140,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
                 awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint, "android-" + MqttAsyncClient.generateClientId(),
                         keystore, EMPTY_PASSWORD);
                 awsMqttClient.connect();
-                logger.info("AWS connected");
 
                 updateStatus(ThingStatus.ONLINE);
 

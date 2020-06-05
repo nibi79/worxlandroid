@@ -27,7 +27,7 @@ public enum WorxLandroidStatusCodes implements Codes {
     FOLLOW_WIRE(4, "Follow wire"),
     SEARCHING_HOME(5, "Searching home"),
     SEARCHING_WIRE(6, "Searching wire"),
-    MOWING(7, "MOWING"),
+    MOWING(7, "Mowing"),
     LIFTED(8, "Lifted"),
     TRAPPED(9, "Trapped"),
     BLADE_BLOCKED(10, "Blade blocked"),
