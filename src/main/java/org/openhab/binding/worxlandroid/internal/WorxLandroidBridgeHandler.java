@@ -35,6 +35,8 @@ import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.worxlandroid.internal.config.BridgeConfiguration;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientCallback;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
@@ -45,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.services.iot.client.AWSIotException;
-import com.amazonaws.services.iot.client.AWSIotMqttClient;
 
 /**
  * The {@link WorxLandroidBridgeHandler} is responsible for handling commands, which are
@@ -54,7 +55,7 @@ import com.amazonaws.services.iot.client.AWSIotMqttClient;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
+public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSClientCallback {
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidBridgeHandler.class);
 
@@ -64,7 +65,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
     private @Nullable MowerDiscoveryService discoveryService;
 
     private @Nullable String awsMqttEndpoint;
-    private @Nullable AWSIotMqttClient awsMqttClient;
+    private @Nullable AWSClient awsClient;
 
     /**
      * Defines a runnable for a discovery
@@ -137,17 +138,15 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
                 logger.debug("AWS certificate loaded to keystore");
 
                 logger.debug("Try to connect to AWS...");
-                awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint, "android-" + MqttAsyncClient.generateClientId(),
-                        keystore, EMPTY_PASSWORD);
-                awsMqttClient.connect();
-
-                updateStatus(ThingStatus.ONLINE);
+                awsClient = new AWSClient(awsMqttEndpoint, "android-" + MqttAsyncClient.generateClientId(), keystore,
+                        EMPTY_PASSWORD, this);
+                awsClient.connect();
 
                 // Trigger discovery of mowers
                 scheduler.submit(runnable);
 
             } else {
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.COMMUNICATION_ERROR,
                         "Error connecting to Worx Landroid WebApi!");
             }
         } catch (WebApiException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
@@ -166,8 +165,8 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
 
         try {
 
-            if (awsMqttClient != null) {
-                awsMqttClient.disconnect();
+            if (awsClient != null) {
+                awsClient.disconnect();
             }
             super.dispose();
 
@@ -199,13 +198,13 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
     @SuppressWarnings("null")
     public void subcribeTopic(AWSTopic awsTopic) throws AWSIotException {
 
-        if (awsMqttClient == null) {
+        if (awsClient == null) {
             logger.error("MqttClient is not initialized. Cannot subsribe to topic -> {}", awsTopic.getTopic());
             return;
         }
 
         logger.debug("subsribe to topic -> {}", awsTopic.getTopic());
-        awsMqttClient.subscribe(awsTopic);
+        awsClient.subscribe(awsTopic);
     }
 
     /**
@@ -215,14 +214,33 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
     @SuppressWarnings("null")
     public void publishMessage(AWSMessage awsMessage) throws AWSIotException {
 
-        if (awsMqttClient == null) {
+        if (awsClient == null) {
             logger.error("MqttClient is not initialized. Cannot publish message to topic -> {}", awsMessage.getTopic());
             return;
         }
 
         logger.debug("publish topic -> {}", awsMessage.getTopic());
         logger.debug("publish message -> {}", awsMessage.getStringPayload());
-        awsMqttClient.publish(awsMessage);
+        awsClient.publish(awsMessage);
+
+    }
+
+    @Override
+    public void onAWSConnectionSuccess() {
+        logger.debug("AWS connection success");
+        updateStatus(ThingStatus.ONLINE);
+    }
+
+    @Override
+    public void onAWSConnectionFailure() {
+        logger.warn("AWS connection failure");
+        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "AWS connection failure!");
+    }
+
+    @Override
+    public void onAWSConnectionClosed() {
+        logger.debug("AWS connection closed");
+        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "AWS connection closed!");
 
     }
 }
