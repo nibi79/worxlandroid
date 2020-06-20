@@ -614,7 +614,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     ? WorxLandroidStatusCodes.UNKNOWN
                     : WorxLandroidStatusCodes.getByCode((int) statusCode);
             updateState(CHANNELNAME_STATUS_DESCRIPTION, new StringType(code.getDescription()));
-            logger.info("{}", code.toString());
+            logger.debug("{}", code.toString());
         }
         // dat/le -> errorCode
         if (dat.get("le") != null) {
@@ -625,7 +625,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     ? WorxLandroidErrorCodes.UNKNOWN
                     : WorxLandroidErrorCodes.getByCode((int) errorCode);
             updateState(CHANNELNAME_ERROR_DESCRIPTION, new StringType(code.getDescription()));
-            logger.info("{}", code.toString());
+            logger.debug("{}", code.toString());
         }
         // TODO dat/lz -> ?
         // dat/rsi -> wifiQuality

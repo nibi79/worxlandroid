@@ -140,7 +140,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler {
                 awsMqttClient = new AWSIotMqttClient(awsMqttEndpoint, "android-" + MqttAsyncClient.generateClientId(),
                         keystore, EMPTY_PASSWORD);
                 awsMqttClient.connect();
-                logger.info("AWS connected");
+                logger.debug("AWS connected");
 
                 updateStatus(ThingStatus.ONLINE);
 

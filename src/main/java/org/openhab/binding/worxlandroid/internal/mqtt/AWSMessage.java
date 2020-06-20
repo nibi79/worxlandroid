@@ -43,18 +43,18 @@ public class AWSMessage extends AWSIotMessage {
     @Override
     public void onSuccess() {
         // called when message publishing succeeded
-        logger.info("onSuccess");
+        logger.debug("onSuccess");
     }
 
     @Override
     public void onFailure() {
         // called when message publishing failed
-        logger.info("onFailure");
+        logger.error("onFailure");
     }
 
     @Override
     public void onTimeout() {
         // called when message publishing timed out
-        logger.info("onTimeout");
+        logger.error("onTimeout");
     }
 }
