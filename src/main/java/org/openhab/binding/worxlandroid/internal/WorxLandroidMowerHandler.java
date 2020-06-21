@@ -783,7 +783,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime localeDateTime = LocalDateTime.parse(dateTime, formatter);
 
-        ZoneId zoneId = ZoneId.of(getThing().getProperties().get("time_zone"));
+        ZoneId zoneId = ZoneId.getAvailableZoneIds().contains("time_zone") ? ZoneId.of("time_zone")
+                : ZoneId.systemDefault();
         ZonedDateTime zonedDateTime = ZonedDateTime.of(localeDateTime, zoneId);
         updateState(CHANNELNAME_DATETIME, new DateTimeType(zonedDateTime));
 
@@ -885,5 +886,4 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
         // TODO cfg/modules
     }
-
 }
