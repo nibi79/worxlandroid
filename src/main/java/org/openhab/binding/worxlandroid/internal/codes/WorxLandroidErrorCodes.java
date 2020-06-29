@@ -20,7 +20,7 @@ package org.openhab.binding.worxlandroid.internal.codes;
 public enum WorxLandroidErrorCodes implements Codes {
 
     UNKNOWN(-1, "UNKNOWN"),
-    NO_ERROR(0, "No error"),
+    NO_ERR(0, "No error!"),
     TRAPPED(1, "Trapped"),
     LIFTED(2, "Lifted"),
     WIRE_MISSING(3, "Wire missing"),

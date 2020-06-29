@@ -42,6 +42,7 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_LAST_UPDATE_ONLINE_STATUS = "common#lastUpdateOnlineStatus";
     public static final String CHANNELNAME_POLL = "common#poll";
     public static final String CHANNELNAME_ACTION = "common#action";
+    public static final String CHANNELNAME_ENABLE = "common#enable";
     public static final String CHANNELNAME_LOCK = "common#lock";
 
     // cfgCommon
@@ -59,6 +60,7 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_MAC_ADRESS = "datCommon#macAdress";
     public static final String CHANNELNAME_FIRMWARE = "datCommon#firmware";
     public static final String CHANNELNAME_WIFI_QUALITY = "datCommon#wifiQuality";
+    public static final String CHANNELNAME_LAST_ZONE = "datCommon#lastZone";
     public static final String CHANNELNAME_STATUS_CODE = "datCommon#statusCode";
     public static final String CHANNELNAME_STATUS_DESCRIPTION = "datCommon#statusDescription";
     public static final String CHANNELNAME_ERROR_CODE = "datCommon#errorCode";
@@ -83,4 +85,5 @@ public class WorxLandroidBindingConstants {
 
     //
     public static final String CHANNELNAME_PREFIX_ALLOCATION = "cfgMultiZones#allocation";
+    public static final String CHANNELNAME_MULTIZONE_ENABLE = "cfgMultiZones#enable";
 }

@@ -14,6 +14,7 @@ package org.openhab.binding.worxlandroid.internal.webapi;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsStatusResponse;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductsResponse;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificateResponse;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
@@ -37,9 +38,9 @@ public interface WorxLandroidApi {
 
     /**
      * Retrieve AWS certificate
-     * 
+     *
      * /**
-     * 
+     *
      * @return
      * @throws WebApiException
      */
@@ -62,11 +63,20 @@ public interface WorxLandroidApi {
     public ProductItemsResponse retrieveUserDevices() throws WebApiException;
 
     /**
-     * Reterieve product information
+     * Retrieve product information
      *
      * @return
      * @throws WebApiException
      */
     public ProductsResponse retrieveDevices() throws WebApiException;
+
+    /**
+     * Retrieve status of device
+     *
+     * @param serialNumber
+     * @return
+     * @throws WebApiException
+     */
+    public ProductItemsStatusResponse retrieveDeviceStatus(String serialNumber) throws WebApiException;
 
 }
