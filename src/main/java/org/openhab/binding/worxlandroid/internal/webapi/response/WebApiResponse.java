@@ -72,7 +72,7 @@ public abstract class WebApiResponse implements ApiResponse {
         if (jsonResponse.isJsonObject()) {
             return jsonResponse.getAsJsonObject();
         } else {
-            logger.warn("Cannot get response as JosnObject");
+            logger.warn("Cannot get response as JsonObject");
             return EMPTY_JSON_OBJECT;
         }
     }
