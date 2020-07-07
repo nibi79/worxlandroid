@@ -244,11 +244,13 @@ As second step you are able to set time in percent and split in parts of 10 betw
 
 ## File based configuration
 
-<img src="images/SC_BasicUI_Main.png" width="50%">
-<br><br>
-<img src="images/SC_BasicUI_Schedule.png" width="50%">
-<br><br>
-<img src="images/SC_BasicUI_MultiZone.png" width="50%">
+You have to have Persistence Service configured in order to use statistic graphs
+It's recommended to use rr4dj
+
+### .persist
+```
+MowerBat_Chart*, MowerBatTemp_Chart*, MowerBatStatus_Chart* : strategy = everyMinute
+```
 
 ### .things
 ```
@@ -260,254 +262,316 @@ Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUser
 
 ### .items
 ```
-String          Shaun		                     	"Shaun [%s]"
+Group All
+    Group Mower                    (All)
+        Group MowerBat             (Mower)
+        Group MowerStatus          (Mower)
+        Group MowerSchedule        (Mower)
+        Group MowerBat_Chart       (Mower)
+        Group MowerBatTemp_Chart   (Mower)
+        Group MowerBatStatus_Chart (Mower)
 
-Switch          LandroidEnable                          "Enable []"                         <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#enable"}
-String          LandroidAction                          "Action []"                         <movecontrol>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
-String          LandroidLastUpdate                      "Last Update Data [%s]"             <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
-Switch          LandroidPoll                            "Poll []"                           <refresh>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
-Switch          LandroidLock                            "Lock []"                           <lock>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
 
-//
-String          LandroidSerialNumber                    "Serial Number [%s]"                <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#serialNumber"}
-Number          LandroidFirmware                        "Firmware [v%s]"                    <text>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#firmware"}
-Switch          LandroidOnline                          "Online [%s]"                       <network>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#online"}
-String          LandroidLastUpdateOnlineStatus          "Last Update Online Status [%s]"    <calendar>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lastUpdateOnlineStatus"}
+/* Chart Parameters */
+Number Mower_Chart_Period         "Chart Period"
+   
+/* Landroid */
+String Shaun                      "Shaun [%s]"
+Switch LandroidEnable             "Mowing enabled"                          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#enable"}
+
+String LandroidAction             "Action []"             <movecontrol>     {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action", autoupdate="false"}
+String LandroidLastUpdate         "Last Update [%1$td.%1$tm.%1$ty / %1$tH:%1$tM:%1$tS]"    <calendar>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
+Switch LandroidPoll               "Poll []"               <refresh>         {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
+Switch LandroidLock               "Lock"                  <mlock>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
+
+String LandroidMacAdress          "MAC [%s]"              <text>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#macAdress"}
+String LandroidSerialNumber       "Serial Number [%s]"    <text>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#serialNumber"}
+Number LandroidFirmware           "Firmware [v%s]"        <text>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#firmware"}
+Switch LandroidOnline             "Onlinestatus [%s]"     <network>         {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#online"}
+Number LandroidId                 "Id []"                                   {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#id"}
+Number LandroidProductId          "Id []"                                   {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#id"}
+
+String LandroidLastUpdateOnlineStatus    "Last Update Online Status [%1$td.%1$tm.%1$ty / %1$tH:%1$tM:%1$tS]"    <calendar>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lastUpdateOnlineStatus"}
+
+// Multizone
+Switch LandroidMultizoneEnable    "Multizone enable []"                            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#enable"}
+Number LandroidLastZone           "push Start for Zone [MAP(landroid_zones.map):%d]"    <zones>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#lastZone"}
+
+// Zone Meters
+Number LandroidMeterZone1         "Meters Zone 1 [%d]"    <distance>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
+Number LandroidMeterZone2         "Meters Zone 2 [%d]"    <distance>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone2Meter"}
+Number LandroidMeterZone3         "Meters Zone 3 [%d]"    <distance>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone3Meter"}
+Number LandroidMeterZone4         "Meters Zone 4 [%d]"    <distance>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone4Meter"}
+
+// Allocation Zones
+Number LandroidAllocation0        "Alloction 0 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
+Number LandroidAllocation1        "Alloction 1 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
+Number LandroidAllocation2        "Alloction 2 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
+Number LandroidAllocation3        "Alloction 3 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
+Number LandroidAllocation4        "Alloction 4 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
+Number LandroidAllocation5        "Alloction 5 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
+Number LandroidAllocation6        "Alloction 6 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
+Number LandroidAllocation7        "Alloction 7 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
+Number LandroidAllocation8        "Alloction 8 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
+Number LandroidAllocation9        "Alloction 9 []"        <zones>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
 
 // Status
-Number          LandroidWifiQuality                     "Wifi Quality [%d]"                 <network>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#wifiQuality"}
-Switch          LandroidBatteryCharging                 "Battery charging [%s]"             <lowbattery>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryCharging"}
-Number          LandroidStatusCode                      "Status Code [%d]"                  <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusCode"}
-String          LandroidStatusDescription               "Status [%s]"                       <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusDescription"}
-Number          LandroidErrorCode                       "Error Code [%d]"                   <error>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorCode"}
-String          LandroidErrorDescription                "Error: [%s]"                       <error>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorDescription"}
-Number          LandroidLastZone                        "Current Zone []"                   <zone>                                      {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#lastZone"}
+Number LandroidWifiQuality        "Wifi Quality [%d]"     <network>          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#wifiQuality"}
+Switch LandroidBatteryCharging    "Battery charging [%s]" <lowbattery>       {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryCharging"}
+Number LandroidStatusCode         "Status Code [%d]"      <lawnmower>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusCode"}
+String LandroidStatusDescription  "[%s]"                  <lawnmower>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusDescription"}
+Number LandroidErrorCode          "Error Code [%d]"       <error>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorCode"}
+String LandroidErrorDescription   "Error: [%s]"           <error>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorDescription"}
+
+// Move
+Number LandroidPitch              "Pitch [%s]"            <incline>          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#pitch"}
+Number LandroidRoll               "Roll [%s]"             <incline>          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#roll"}
+Number LandroidYaw                "Yaw [%s]"              <incline>          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#yaw"}
 
 // Battery
-Number          LandroidBatteryLevel                    "Battery Level [%d %%]"             <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryLevel"}
-Number          LandroidBatteryVoltage                  "Battery Voltage [%.2f V]"          <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryVoltage"}
-Number          LandroidBatteryTemperature              "Battery Temperature [%.1f °C]"     <temperature>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryTemperature"}
-Number          LandroidBatteryChargeCycle              "Battery ChargeCycle [%d]"          <battery>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryChargeCycle"}
+Number LandroidBatteryLevel       "Battery Level [%d %%]"     <battery>            (MowerBat, MowerBatStatus_Chart)    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryLevel"}
+Number LandroidBatteryVoltage     "Battery Voltage [%.2f V]"  <battery>            (MowerBat, MowerBat_Chart)            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryVoltage"}
+Number LandroidBatteryTemperature "Battery Temperature [%.1f °C]" <temperature>    (MowerBat, MowerBatTemp_Chart)        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryTemperature"}
+Number LandroidBatteryChargeCycle "Battery ChargeCycle [%d]"  <battery>         {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryChargeCycle"}
 
 // Settings
-Number          LandroidRainDelay                       "Rain Delay [%d min]"               <rain>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#rainDelay"}
-Number          LandroidScheduleTimeExtension           "Schedule Time Extension [%d %%]"   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgSc#scheduleTimeExtension"}
+Number LandroidRainDelay          "Rain Delay [%d min]"           <rain>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#rainDelay"}
+Number LandroidScheduleTimeExtension "Schedule Time Extension [%d %%]"  <time>  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgSc#scheduleTimeExtension"}
 
 // Statistics
-Number          LandroidTotalTime                       "Total Time [%s min]"               <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalTime"}
-Number:Length   LandroidTotalDistance                   "Total Distance [%s m]"             <chart>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalDistance"}
-Number          LandroidTotalBladeTime                  "Total Bladetime [%s min]"          <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
-
-// Orientation
-Number          LandroidPitch                           "Pitch [%.1f°]"                     <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#pitch"}
-Number          LandroidRoll                            "Roll [%.1f°]"                      <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#roll"}
-Number          LandroidYaw                             "Yaw [%.1f°]"                       <incline>               {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datDmp#yaw"}
+Number LandroidTotalTime          "Total Time [JS(minstohours.js):%d]"           <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalTime"}
+Number:Length LandroidTotalDistance    "Total Distance [%s m]"    <chart>       {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalDistance"}
+Number LandroidTotalBladeTime     "Total Bladetime [JS(minstohours.js):%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
 
 //Schedule
 // Monday
-Switch          LandroidScheduleMondayEnable            "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#enable"}
-Number          LandroidScheduleMondayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartHour"}
-Number          LandroidScheduleMondayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartMinutes"}
-Number          LandroidScheduleMondayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleDuration"}
-Switch          LandroidScheduleMondayEdgecut           "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleEdgecut"}
+Switch LandroidScheduleMondayEnable        "Monday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:30173502170118050389:cfgScMonday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleMondayStartHour     "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartHour"}
+Number LandroidScheduleMondayStartMinutes  "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartMinutes"}
+Number LandroidScheduleMondayDuration      "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleDuration"}
+Switch LandroidScheduleMondayEdgecut       "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleEdgecut"}
 
 // Tuesday
-Switch          LandroidScheduleTuesdayEnable           "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#enable"}
-Number          LandroidScheduleTuesdayStartHour        "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartHour"}
-Number          LandroidScheduleTuesdayStartMinutes     "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartMinutes"}
-Number          LandroidScheduleTuesdayDuration         "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleDuration"}
-Switch          LandroidScheduleTuesdayEdgecut          "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleEdgecut"}
+Switch LandroidScheduleTuesdayEnable       "Tuesday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleTuesdayStartHour    "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartHour"}
+Number LandroidScheduleTuesdayStartMinutes "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartMinutes"}
+Number LandroidScheduleTuesdayDuration     "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleDuration"}
+Switch LandroidScheduleTuesdayEdgecut      "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleEdgecut"}
 
 // Wednesday
-Switch          LandroidScheduleWednesdayEnable         "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#enable"}
-Number          LandroidScheduleWednesdayStartHour      "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartHour"}
-Number          LandroidScheduleWednesdayStartMinutes   "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartMinutes"}
-Number          LandroidScheduleWednesdayDuration       "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleDuration"}
-Switch          LandroidScheduleWednesdayEdgecut        "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleEdgecut"}
+Switch LandroidScheduleWednesdayEnable     "Wednesday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleWednesdayStartHour  "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartHour"}
+Number LandroidScheduleWednesdayStartMinutes "Start Minutes [%d]" <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartMinutes"}
+Number LandroidScheduleWednesdayDuration   "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleDuration"}
+Switch LandroidScheduleWednesdayEdgecut    "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleEdgecut"}
 
 // Thursday
-Switch          LandroidScheduleThursdayEnable          "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#enable"}
-Number          LandroidScheduleThursdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartHour"}
-Number          LandroidScheduleThursdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartMinutes"}
-Number          LandroidScheduleThursdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleDuration"}
-Switch          LandroidScheduleThursdayEdgecut         "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleEdgecut"}
+Switch LandroidScheduleThursdayEnable      "Thursday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleThursdayStartHour   "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartHour"}
+Number LandroidScheduleThursdayStartMinutes "Start Minutes [%d]"  <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartMinutes"}
+Number LandroidScheduleThursdayDuration    "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleDuration"}
+Switch LandroidScheduleThursdayEdgecut     "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleEdgecut"}
 
 // Friday
-Switch          LandroidScheduleFridayEnable            "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#enable"}
-Number          LandroidScheduleFridayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartHour"}
-Number          LandroidScheduleFridayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartMinutes"}
-Number          LandroidScheduleFridayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleDuration"}
-Switch          LandroidScheduleFridayEdgecut           "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleEdgecut"}
+Switch LandroidScheduleFridayEnable        "Friday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleFridayStartHour     "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartHour"}
+Number LandroidScheduleFridayStartMinutes  "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartMinutes"}
+Number LandroidScheduleFridayDuration      "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleDuration"}
+Switch LandroidScheduleFridayEdgecut       "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleEdgecut"}
 
 // Saturday
-Switch          LandroidScheduleSaturdayEnable          "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#enable"}
-Number          LandroidScheduleSaturdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartHour"}
-Number          LandroidScheduleSaturdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartMinutes"}
-Number          LandroidScheduleSaturdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleDuration"}
-Switch          LandroidScheduleSaturdayEdgecut         "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleEdgecut"}
+Switch LandroidScheduleSaturdayEnable      "Saturday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleSaturdayStartHour   "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartHour"}
+Number LandroidScheduleSaturdayStartMinutes "Start Minutes [%d]"  <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartMinutes"}
+Number LandroidScheduleSaturdayDuration    "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleDuration"}
+Switch LandroidScheduleSaturdayEdgecut     "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleEdgecut"}
 
 // Sunday
-Switch          LandroidScheduleSundayEnable            "[MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#enable"}
-Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartHour"}
-Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartMinutes"}
-Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
-Switch          LandroidScheduleSundayEdgecut           "Edgecut"                           <lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleEdgecut"}
-
-// Multizone
-Switch          LandroidMultizoneEnable                 "Multizone enable[]"                                        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#enable"}
-
-// Zone Meters
-Number          LandroidMeterZone1                      "Meters Zone 1 [%d]"                <distance>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
-Number          LandroidMeterZone2                      "Meters Zone 2 [%d]"                <distance>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone2Meter"}
-Number          LandroidMeterZone3                      "Meters Zone 3 [%d]"                <distance>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone3Meter"}
-Number          LandroidMeterZone4                      "Meters Zone 4 [%d]"                <distance>              {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone4Meter"}
-
-// Allocation Zones
-Number          LandroidAllocation0                     "Alloction 0 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation0"}
-Number          LandroidAllocation1                     "Alloction 1 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation1"}
-Number          LandroidAllocation2                     "Alloction 2 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation2"}
-Number          LandroidAllocation3                     "Alloction 3 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation3"}
-Number          LandroidAllocation4                     "Alloction 4 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation4"}
-Number          LandroidAllocation5                     "Alloction 5 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation5"}
-Number          LandroidAllocation6                     "Alloction 6 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation6"}
-Number          LandroidAllocation7                     "Alloction 7 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation7"}
-Number          LandroidAllocation8                     "Alloction 8 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation8"}
-Number          LandroidAllocation9                     "Alloction 9 []"                    <zones>                 {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#allocation9"}
+Switch LandroidScheduleSundayEnable        "Sunday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#enable",autoupdateautoupdate="false"}
+Number LandroidScheduleSundayStartHour     "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartHour"}
+Number LandroidScheduleSundayStartMinutes  "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartMinutes"}
+Number LandroidScheduleSundayDuration      "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
+Switch LandroidScheduleSundayEdgecut       "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleEdgecut"}
 ```
 
 ### .sitemap
 ```
 sitemap landroid label="Landroid"
 {
-    Group item=Shaun icon="landroid" {
-        Frame {
-            Switch item=LandroidEnable label="Mowing enabled"
+    Group item=Shaun icon="worx_landroid_logo.png" {
+        Frame item=LandroidStatusDescription {
             Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
-            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==7, LandroidStatusCode==33]
             Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
-            Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop",HOME="Home"] visibility=[LandroidStatusCode==6, LandroidStatusCode==7, LandroidStatusCode==33, LandroidStatusCode==32]
+            Switch item=LandroidAction label="Action" mappings=[STOP="Stop"] visibility=[LandroidStatusCode==5,LandroidStatusCode==30]
+            Switch item=LandroidLastZone mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidStatusCode==1]
+            Switch item=LandroidEnable
+            Text label="Orientation" icon="compass" visibility=[LandroidStatusCode!="1"] {
+                Text item=LandroidPitch
+                Text item=LandroidRoll
+                Text item=LandroidYaw
+            }
+            Text label="Settings" icon="settings" {
+                Slider item=LandroidScheduleTimeExtension minValue=-100 maxValue=100 step=10
+                Slider item=LandroidRainDelay minValue=0 maxValue=750 step=30
+                Text label="Schedule" icon="time"{
+                    Frame label="Schedule Monday" {
+                        Switch item=LandroidScheduleMondayEnable
+                        Switch item=LandroidScheduleMondayEdgecut visibility=[LandroidScheduleMondayEnable==ON]
+                        Slider item=LandroidScheduleMondayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleMondayEnable==ON]
+                        Slider item=LandroidScheduleMondayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleMondayEnable==ON]
+                        Slider item=LandroidScheduleMondayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleMondayEnable==ON]
+                    }
+                    Frame label="Schedule Tuesday" {
+                        Switch item=LandroidScheduleTuesdayEnable
+                        Switch item=LandroidScheduleTuesdayEdgecut visibility=[LandroidScheduleTuesdayEnable==ON]
+                        Slider item=LandroidScheduleTuesdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleTuesdayEnable==ON]
+                        Slider item=LandroidScheduleTuesdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleTuesdayEnable==ON]
+                        Slider item=LandroidScheduleTuesdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleTuesdayEnable==ON]
+                    }
+                    Frame label="Schedule Wednesday" {
+                        Switch item=LandroidScheduleWednesdayEnable
+                        Switch item=LandroidScheduleWednesdayEdgecut visibility=[LandroidScheduleWednesdayEnable==ON]
+                        Slider item=LandroidScheduleWednesdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleWednesdayEnable==ON]
+                        Slider item=LandroidScheduleWednesdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleWednesdayEnable==ON]
+                        Slider item=LandroidScheduleWednesdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleWednesdayEnable==ON]
+                    }
+                    Frame label="Schedule Thursday" {
+                        Switch item=LandroidScheduleThursdayEnable
+                        Switch item=LandroidScheduleThursdayEdgecut visibility=[LandroidScheduleThursdayEnable==ON]
+                        Slider item=LandroidScheduleThursdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleThursdayEnable==ON]
+                        Slider item=LandroidScheduleThursdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleThursdayEnable==ON]
+                        Slider item=LandroidScheduleThursdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleThursdayEnable==ON]
+                    }
+                    Frame label="Schedule Friday" {
+                        Switch item=LandroidScheduleFridayEnable
+                        Switch item=LandroidScheduleFridayEdgecut visibility=[LandroidScheduleFridayEnable==ON]
+                        Slider item=LandroidScheduleFridayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleFridayEnable==ON]
+                        Slider item=LandroidScheduleFridayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleFridayEnable==ON]
+                        Slider item=LandroidScheduleFridayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleFridayEnable==ON]
+                    }
+                    Frame label="Schedule Saturday" {
+                        Switch item=LandroidScheduleSaturdayEnable
+                        Switch item=LandroidScheduleSaturdayEdgecut visibility=[LandroidScheduleSaturdayEnable==ON]
+                        Slider item=LandroidScheduleSaturdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleSaturdayEnable==ON]
+                        Slider item=LandroidScheduleSaturdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleSaturdayEnable==ON]
+                        Slider item=LandroidScheduleSaturdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleSaturdayEnable==ON]
+                    }
+                    Frame label="Schedule Sunday" {
+                        Switch item=LandroidScheduleSundayEnable
+                        Switch item=LandroidScheduleSundayEdgecut visibility=[LandroidScheduleSundayEnable==ON]
+                        Slider item=LandroidScheduleSundayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleSundayEnable==ON]
+                        Slider item=LandroidScheduleSundayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleSundayEnable==ON]
+                        Slider item=LandroidScheduleSundayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleSundayEnable==ON]
+                    }
+                }
+                Text label="MultiZone" icon="zones" {
+                    Frame label="Zone Meters" {
+                        Switch item=LandroidMultizoneEnable
+                        Slider item=LandroidMeterZone1 minValue=0 maxValue=120 visibility=[LandroidMultizoneEnable==ON]
+                        Slider item=LandroidMeterZone2 minValue=0 maxValue=120 visibility=[LandroidMultizoneEnable==ON]
+                        Slider item=LandroidMeterZone3 minValue=0 maxValue=120 visibility=[LandroidMultizoneEnable==ON]
+                        Slider item=LandroidMeterZone4 minValue=0 maxValue=120 visibility=[LandroidMultizoneEnable==ON]
+                    }
+                    Frame label="Allocation Zones" visibility=[LandroidMultizoneEnable==ON] {
+                        Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                        Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
+                    }
+                }
+            }
+        }
+        Frame label="Status" {
             Text item=LandroidLastUpdate
-            Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
-        }
-        Frame {
-            Text item=LandroidSerialNumber
-            Text item=LandroidFirmware
-            Text item=LandroidOnline //mappings=[OFF="Offline", ON="Online"]
-            Text item=LandroidLastUpdateOnlineStatus
-        }
-        Frame label="Status"{
+            Switch item=LandroidPoll label="Refresh" mappings=[ON="Poll"]
+            Text item=LandroidOnline
             Text item=LandroidWifiQuality
-            Text  item=LandroidBatteryCharging
-            Text item=LandroidStatusCode
             Text item=LandroidStatusDescription
-            Text item=LandroidErrorCode
-            Text item=LandroidErrorDescription
-            Switch item=LandroidLastZone mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"]
-        }
-        Frame label="Battery"{
-            Text item=LandroidBatteryLevel
-            Text item=LandroidBatteryVoltage
-            Text item=LandroidBatteryTemperature
-            Text item=LandroidBatteryChargeCycle
-        }
-        Frame label="Settings" {
-            Slider item=LandroidScheduleTimeExtension minValue=0 maxValue=100 step=10
-            Text label="Schedule" icon="time"{
-                Frame label="Schedule Monday" {
-                    Switch item=LandroidScheduleMondayEnable
-                    Switch item=LandroidScheduleMondayEdgecut visibility=[LandroidScheduleMondayEnable==ON]
-                    Setpoint item=LandroidScheduleMondayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleMondayEnable==ON]
-                    Setpoint item=LandroidScheduleMondayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleMondayEnable==ON]
-                    Setpoint item=LandroidScheduleMondayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleMondayEnable==ON]
+            Text item=LandroidErrorDescription visibility=[LandroidErrorCode!=0]
+            Text label="Device Information" icon="mower" {
+                Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
+                Text item=LandroidLastUpdateOnlineStatus
+                Text item=LandroidSerialNumber
+                Text item=LandroidMacAdress
+                Text item=LandroidFirmware
+            }
+            Text item=LandroidBatteryLevel {
+                Text item=LandroidBatteryCharging
+                Text item=LandroidBatteryVoltage
+                Text item=LandroidBatteryTemperature
+            }
+            Text label="Statistics" icon="line"{
+                Frame label="General" {
+                    Text item=LandroidTotalTime
+                    Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
+                    Text item=LandroidTotalBladeTime
                 }
-                Frame label="Schedule Tuesday" {
-                    Switch item=LandroidScheduleTuesdayEnable
-                    Switch item=LandroidScheduleTuesdayEdgecut visibility=[LandroidScheduleTuesdayEnable==ON]
-                    Setpoint item=LandroidScheduleTuesdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleTuesdayEnable==ON]
-                    Setpoint item=LandroidScheduleTuesdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleTuesdayEnable==ON]
-                    Setpoint item=LandroidScheduleTuesdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleTuesdayEnable==ON]
-                }
-                Frame label="Schedule Wednesday" {
-                    Switch item=LandroidScheduleWednesdayEnable
-                    Switch item=LandroidScheduleWednesdayEdgecut visibility=[LandroidScheduleWednesdayEnable==ON]
-                    Setpoint item=LandroidScheduleWednesdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleWednesdayEnable==ON]
-                    Setpoint item=LandroidScheduleWednesdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleWednesdayEnable==ON]
-                    Setpoint item=LandroidScheduleWednesdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleWednesdayEnable==ON]
-                }
-                Frame label="Schedule Thursday" {
-                    Switch item=LandroidScheduleThursdayEnable
-                    Switch item=LandroidScheduleThursdayEdgecut visibility=[LandroidScheduleThursdayEnable==ON]
-                    Setpoint item=LandroidScheduleThursdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleThursdayEnable==ON]
-                    Setpoint item=LandroidScheduleThursdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleThursdayEnable==ON]
-                    Setpoint item=LandroidScheduleThursdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleThursdayEnable==ON]
-                }
-                Frame label="Schedule Friday" {
-                    Switch item=LandroidScheduleFridayEnable
-                    Switch item=LandroidScheduleFridayEdgecut visibility=[LandroidScheduleFridayEnable==ON]
-                    Setpoint item=LandroidScheduleFridayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleFridayEnable==ON]
-                    Setpoint item=LandroidScheduleFridayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleFridayEnable==ON]
-                    Setpoint item=LandroidScheduleFridayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleFridayEnable==ON]
-                }
-                Frame label="Schedule Saturday" {
-                    Switch item=LandroidScheduleSaturdayEnable
-                    Switch item=LandroidScheduleSaturdayEdgecut visibility=[LandroidScheduleSaturdayEnable==ON]
-                    Setpoint item=LandroidScheduleSaturdayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleSaturdayEnable==ON]
-                    Setpoint item=LandroidScheduleSaturdayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleSaturdayEnable==ON]
-                    Setpoint item=LandroidScheduleSaturdayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleSaturdayEnable==ON]
-                }
-                Frame label="Schedule Sunday" {
-                    Switch item=LandroidScheduleSundayEnable
-                    Switch item=LandroidScheduleSundayEdgecut visibility=[LandroidScheduleSundayEnable==ON]
-                    Setpoint item=LandroidScheduleSundayStartHour minValue=0 maxValue=23 step=1 visibility=[LandroidScheduleSundayEnable==ON]
-                    Setpoint item=LandroidScheduleSundayStartMinutes minValue=0 maxValue=45 step=15 visibility=[LandroidScheduleSundayEnable==ON]
-                    Setpoint item=LandroidScheduleSundayDuration minValue=0 maxValue=1425 step=15 visibility=[LandroidScheduleSundayEnable==ON]
+                Frame label="Battery" {
+                    Text item=LandroidBatteryChargeCycle
+                    Switch item=Mower_Chart_Period label="Skalierung" mappings=[0="1h", 1="4h", 2="8h", 3="12h", 4="1 Tag", 5="1 Woche", 6="1 Monat", 7="1 Jahr"]
+                    Chart item=MowerBatStatus_Chart period=h refresh=6000 legend=true visibility=[Mower_Chart_Period==0]
+                    Chart item=MowerBatStatus_Chart period=4h refresh=30000 legend=true visibility=[Mower_Chart_Period==1]
+                    Chart item=MowerBatStatus_Chart period=8h refresh=30000 legend=true visibility=[Mower_Chart_Period==2]
+                    Chart item=MowerBatStatus_Chart period=12h refresh=30000 legend=true visibility=[Mower_Chart_Period==3, Mower_Chart_Period=="NULL", Mower_Chart_Period=="Uninitialized"]
+                    Chart item=MowerBatStatus_Chart period=D refresh=30000 legend=true visibility=[Mower_Chart_Period==4]
+                    Chart item=MowerBatStatus_Chart period=W refresh=30000 legend=true visibility=[Mower_Chart_Period==5]
+                    Chart item=MowerBatStatus_Chart period=M refresh=30000 legend=true visibility=[Mower_Chart_Period==6]
+                    Chart item=MowerBatStatus_Chart period=Y refresh=30000 legend=true visibility=[Mower_Chart_Period==7]
+
+                    Chart item=MowerBat_Chart period=h refresh=6000 legend=true visibility=[Mower_Chart_Period==0]
+                    Chart item=MowerBat_Chart period=4h refresh=30000 legend=true visibility=[Mower_Chart_Period==1]
+                    Chart item=MowerBat_Chart period=8h refresh=30000 legend=true visibility=[Mower_Chart_Period==2]
+                    Chart item=MowerBat_Chart period=12h refresh=30000 legend=true visibility=[Mower_Chart_Period==3, Mower_Chart_Period=="NULL", Mower_Chart_Period=="Uninitialized"]
+                    Chart item=MowerBat_Chart period=D refresh=30000 legend=true visibility=[Mower_Chart_Period==4]
+                    Chart item=MowerBat_Chart period=W refresh=30000 legend=true visibility=[Mower_Chart_Period==5]
+                    Chart item=MowerBat_Chart period=M refresh=30000 legend=true visibility=[Mower_Chart_Period==6]
+                    Chart item=MowerBat_Chart period=Y refresh=30000 legend=true visibility=[Mower_Chart_Period==7]
+
+                    Chart item=MowerBatTemp_Chart period=h refresh=6000 legend=true visibility=[Mower_Chart_Period==0]
+                    Chart item=MowerBatTemp_Chart period=4h refresh=30000 legend=true visibility=[Mower_Chart_Period==1]
+                    Chart item=MowerBatTemp_Chart period=8h refresh=30000 legend=true visibility=[Mower_Chart_Period==2]
+                    Chart item=MowerBatTemp_Chart period=12h refresh=30000 legend=true visibility=[Mower_Chart_Period==3, Mower_Chart_Period=="NULL", Mower_Chart_Period=="Uninitialized"]
+                    Chart item=MowerBatTemp_Chart period=D refresh=30000 legend=true visibility=[Mower_Chart_Period==4]
+                    Chart item=MowerBatTemp_Chart period=W refresh=30000 legend=true visibility=[Mower_Chart_Period==5]
+                    Chart item=MowerBatTemp_Chart period=M refresh=30000 legend=true visibility=[Mower_Chart_Period==6]
+                    Chart item=MowerBatTemp_Chart period=Y refresh=30000 legend=true visibility=[Mower_Chart_Period==7]
                 }
             }
-            Text label="MultiZone" icon="zones"{
-              Frame {
-                    Switch item=LandroidMultizoneEnable
-              }
-              Frame label="Zone Meters" {
-                    Slider item=LandroidMeterZone1 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
-                    Slider item=LandroidMeterZone2 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
-                    Slider item=LandroidMeterZone3 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
-                    Slider item=LandroidMeterZone4 minValue=0 maxValue=90 visibility=[LandroidMultizoneEnable==ON]
-                }
-                Frame label="Allocation Zones" {
-                    Switch item=LandroidAllocation0 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation1 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation2 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation3 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation4 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation5 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation6 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation7 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation8 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-                    Switch item=LandroidAllocation9 mappings=[0="Zone 1", 1="Zone 2", 2="Zone 3", 3="Zone 4"] visibility=[LandroidMultizoneEnable==ON]
-               }
-            }
-            Slider item=LandroidRainDelay minValue=0 maxValue=750 step=30
         }
-        Frame label="Statistic" {
-            Text item=LandroidTotalTime
-            Text item=LandroidTotalDistance label="Total Distance [%.2f km]"
-            Text item=LandroidTotalBladeTime
-        }
-        Frame label="Orientation"{
-            Text item=LandroidPitch
-            Text item=LandroidRoll
-            Text item=LandroidYaw
-        }
-   }
+    }
 }
 ```
+
+### Preview of above Sitemap
+
+<img src="images/SC_BasicUI_Main_Status.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_Orientation.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_Settings.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_Settings_Schedule.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_Settings_MultiZone.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_DeviceInfo.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_Battery.png" width="50%">
+<br><br>
+<img src="images/SC_BasicUI_Main_Statistic.png" width="50%">
 
 ### .rules
 
 Update Landroid Status to reflect in main menu
-
-<img src="images/SC_BasicUI_MainStatus.png" width="50%">
-<br>
 
 ```
 rule MowerStatus
@@ -523,20 +587,42 @@ then
 end
 ```
 
+Rule "MowerStatusMonitor" requires configured pushNotification or adopt this to Mail Action
+
+```
+rule MowerStatusMonitor
+when
+    Item Mower_StatusCode changed
+then
+    if (LandroidStatusCode.state == 5 && previousState == 0) {
+        pushNotification("Shaun: " + now, "Regenverzögerung ausgelöst")
+    } else if (LandroidStatusCode.state == 0 && previousState == 5) {
+        pushNotification("Shaun: " + now, "Regenverzögerung beendet")
+    } else {
+        pushNotification("Shaun: " + now, previousState + " changed to " + LandroidStatusCode.state)
+    }
+end
+```
+
+### .transform
+
 Place the following *.map to your ..\conf\transform
 
 1. [landroid_error_de.map](/openhab-conf/transform/landroid_error_de.map)
 2. [landroid_status_de.map](/openhab-conf/transform/landroid_status_de.map)
+3. [minstohours.js](/openhab-conf/transform/minstohours.js)
 
 ## Iconset
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
+Note: Worx Support confirmed private usage of their logo and picture is free
 
 1. [Distance](/openhab-conf/icons/distance.zip)
 2. [Zones](/openhab-conf/icons/zones.zip)
 3. [Refresh](/openhab-conf/icons/refresh.png)
-4. [Landroid](/openhab-conf/icons/landroid.png)
-
+4. [Worx-Logo](/openhab-conf/icons/worx_landroid_logo.png)
+5. [Mower](/openhab-conf/icons/landroid.png)
+5. [Lock](/openhab-conf/icons/mlock.zip)
 
 ## Support
 
