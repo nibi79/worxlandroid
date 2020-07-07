@@ -615,7 +615,8 @@ Place the following *.map to your ..\conf\transform
 ## Iconset
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
-Note: Worx Support confirmed private usage of their logo and picture is free
+
+#### Note: Worx Support confirmed private usage of their logo and picture is free
 
 1. [Distance](/openhab-conf/icons/distance.zip)
 2. [Zones](/openhab-conf/icons/zones.zip)
