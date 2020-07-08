@@ -279,7 +279,7 @@ Number Mower_Chart_Period         "Chart Period"
 String Shaun                      "Shaun [%s]"
 Switch LandroidEnable             "Mowing enabled"                          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#enable"}
 
-String LandroidAction             "Action []"             <movecontrol>     {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action", autoupdate="false"}
+String LandroidAction             "Action []"             <movecontrol>     {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#action"}
 String LandroidLastUpdate         "Last Update [%1$td.%1$tm.%1$ty / %1$tH:%1$tM:%1$tS]"    <calendar>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgCommon#lastUpdate"}
 Switch LandroidPoll               "Poll []"               <refresh>         {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#poll"}
 Switch LandroidLock               "Lock"                  <mlock>           {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:common#lock"}
@@ -344,49 +344,49 @@ Number LandroidTotalBladeTime     "Total Bladetime [JS(minstohours.js):%d]"     
 
 //Schedule
 // Monday
-Switch LandroidScheduleMondayEnable        "Monday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#enable",autoupdate="false"}
+Switch LandroidScheduleMondayEnable        "Monday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#enable"}
 Number LandroidScheduleMondayStartHour     "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartHour"}
 Number LandroidScheduleMondayStartMinutes  "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartMinutes"}
 Number LandroidScheduleMondayDuration      "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleDuration"}
 Switch LandroidScheduleMondayEdgecut       "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleEdgecut"}
 
 // Tuesday
-Switch LandroidScheduleTuesdayEnable       "Tuesday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#enable",autoupdate="false"}
+Switch LandroidScheduleTuesdayEnable       "Tuesday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#enable"}
 Number LandroidScheduleTuesdayStartHour    "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartHour"}
 Number LandroidScheduleTuesdayStartMinutes "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartMinutes"}
 Number LandroidScheduleTuesdayDuration     "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleDuration"}
 Switch LandroidScheduleTuesdayEdgecut      "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleEdgecut"}
 
 // Wednesday
-Switch LandroidScheduleWednesdayEnable     "Wednesday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#enable",autoupdate="false"}
+Switch LandroidScheduleWednesdayEnable     "Wednesday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#enable"}
 Number LandroidScheduleWednesdayStartHour  "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartHour"}
 Number LandroidScheduleWednesdayStartMinutes "Start Minutes [%d]" <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartMinutes"}
 Number LandroidScheduleWednesdayDuration   "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleDuration"}
 Switch LandroidScheduleWednesdayEdgecut    "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleEdgecut"}
 
 // Thursday
-Switch LandroidScheduleThursdayEnable      "Thursday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#enable",autoupdate="false"}
+Switch LandroidScheduleThursdayEnable      "Thursday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#enable"}
 Number LandroidScheduleThursdayStartHour   "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartHour"}
 Number LandroidScheduleThursdayStartMinutes "Start Minutes [%d]"  <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartMinutes"}
 Number LandroidScheduleThursdayDuration    "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleDuration"}
 Switch LandroidScheduleThursdayEdgecut     "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleEdgecut"}
 
 // Friday
-Switch LandroidScheduleFridayEnable        "Friday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#enable",autoupdate="false"}
+Switch LandroidScheduleFridayEnable        "Friday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#enable"}
 Number LandroidScheduleFridayStartHour     "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartHour"}
 Number LandroidScheduleFridayStartMinutes  "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartMinutes"}
 Number LandroidScheduleFridayDuration      "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleDuration"}
 Switch LandroidScheduleFridayEdgecut       "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleEdgecut"}
 
 // Saturday
-Switch LandroidScheduleSaturdayEnable      "Saturday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#enable",autoupdate="false"}
+Switch LandroidScheduleSaturdayEnable      "Saturday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#enable"}
 Number LandroidScheduleSaturdayStartHour   "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartHour"}
 Number LandroidScheduleSaturdayStartMinutes "Start Minutes [%d]"  <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartMinutes"}
 Number LandroidScheduleSaturdayDuration    "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleDuration"}
 Switch LandroidScheduleSaturdayEdgecut     "Edgecut "             <settings>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleEdgecut"}
 
 // Sunday
-Switch LandroidScheduleSundayEnable        "Sunday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#enable",autoupdate="false"}
+Switch LandroidScheduleSundayEnable        "Sunday: [MAP(landroid_schedule_enable.map):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#enable"}
 Number LandroidScheduleSundayStartHour     "Start Hour [%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartHour"}
 Number LandroidScheduleSundayStartMinutes  "Start Minutes [%d]"   <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartMinutes"}
 Number LandroidScheduleSundayDuration      "Duration [%d]"        <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
