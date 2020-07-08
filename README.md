@@ -552,25 +552,25 @@ sitemap landroid label="Landroid"
 ### Preview of above Sitemap
 
 <img src="images/SC_BasicUI_Main_Status.png" width="50%">
-<br><br>
-<img src="images/SC_BasicUI_Main_Home.png" width="50%">
 <br>
+<img src="images/SC_BasicUI_Main_Home.png" width="50%">
+
 #### Zone will change to Orientation once Mower is underway
 <br>
 <img src="images/SC_BasicUI_Main_Action.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_Orientation.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_Settings.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_Settings_Schedule.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_Settings_MultiZone.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_DeviceInfo.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_Battery.png" width="50%">
-<br><br>
+<br>
 <img src="images/SC_BasicUI_Main_Statistic.png" width="50%">
 
 ### .rules
