@@ -555,7 +555,7 @@ sitemap landroid label="Landroid"
 <br>
 <img src="images/SC_BasicUI_Main_Home.png" width="50%">
 
-#### Zone will change to Orientation once Mower is underway
+#### "Start Zone" will change to "Orientation" once Mower is underway
 <br>
 <img src="images/SC_BasicUI_Main_Action.png" width="50%">
 <br>
