@@ -398,7 +398,7 @@ Switch LandroidScheduleSundayEdgecut       "Edgecut "             <settings>    
 ```
 sitemap landroid label="Landroid"
 {
-    Group item=Shaun icon="worx_landroid_logo.png" {
+    Group item=Shaun icon="landroid" {
         Frame item=LandroidStatusDescription {
             Switch item=LandroidAction label="Action" mappings=[START="Start"] visibility=[LandroidStatusCode==0, LandroidStatusCode==1]
             Switch item=LandroidAction label="Action" mappings=[START="Start",HOME="Home"] visibility=[LandroidStatusCode==34]
@@ -495,7 +495,7 @@ sitemap landroid label="Landroid"
             Text item=LandroidWifiQuality
             Text item=LandroidStatusDescription
             Text item=LandroidErrorDescription visibility=[LandroidErrorCode!=0]
-            Text label="Device Information" icon="mower" {
+            Text label="Device Information" icon="landroid" {
                 Switch item=LandroidLock label="Lock" mappings=[ON="LOCK",OFF="UNLOCK"]
                 Text item=LandroidLastUpdateOnlineStatus
                 Text item=LandroidSerialNumber
@@ -515,7 +515,7 @@ sitemap landroid label="Landroid"
                 }
                 Frame label="Battery" {
                     Text item=LandroidBatteryChargeCycle
-                    Switch item=Mower_Chart_Period label="Skalierung" mappings=[0="1h", 1="4h", 2="8h", 3="12h", 4="1 Tag", 5="1 Woche", 6="1 Monat", 7="1 Jahr"]
+                    Switch item=Mower_Chart_Period label="Skalierung" mappings=[0="1H", 1="4H", 2="8H", 3="12H", 4="1D", 5="1W", 6="1M", 7="1Y"]
                     Chart item=MowerBatStatus_Chart period=h refresh=6000 legend=true visibility=[Mower_Chart_Period==0]
                     Chart item=MowerBatStatus_Chart period=4h refresh=30000 legend=true visibility=[Mower_Chart_Period==1]
                     Chart item=MowerBatStatus_Chart period=8h refresh=30000 legend=true visibility=[Mower_Chart_Period==2]
@@ -553,7 +553,11 @@ sitemap landroid label="Landroid"
 
 <img src="images/SC_BasicUI_Main_Status.png" width="50%">
 <br><br>
-<img src="images/SC_BasicUI_Main.png" width="50%">
+<img src="images/SC_BasicUI_Main_Home.png" width="50%">
+<br>
+#### Zone will change to Orientation once Mower is underway
+<br>
+<img src="images/SC_BasicUI_Main_Action.png" width="50%">
 <br><br>
 <img src="images/SC_BasicUI_Main_Orientation.png" width="50%">
 <br><br>
@@ -616,13 +620,10 @@ Place the following *.map to your ..\conf\transform
 
 Several Icons have been created in order to suit requirements for robo-mower. Please feel free to download from this repository and place/extract them into ..\conf\icons\classic
 
-#### Note: Worx Support confirmed private usage of their logo and picture is free
-
-1. [Distance](/openhab-conf/icons/distance.zip)
-2. [Zones](/openhab-conf/icons/zones.zip)
-3. [Refresh](/openhab-conf/icons/refresh.png)
-4. [Worx-Logo](/openhab-conf/icons/worx_landroid_logo.png)
-5. [Mower](/openhab-conf/icons/landroid.png)
+1. [Mower](/openhab-conf/icons/landroid.png)
+2. [Distance](/openhab-conf/icons/distance.zip)
+3. [Zones](/openhab-conf/icons/zones.zip)
+4. [Refresh](/openhab-conf/icons/refresh.png)
 5. [Lock](/openhab-conf/icons/mlock.zip)
 
 ## Support
