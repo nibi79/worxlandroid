@@ -338,9 +338,9 @@ Number LandroidRainDelay          "Rain Delay [%d min]"           <rain>        
 Number LandroidScheduleTimeExtension "Schedule Time Extension [%d %%]"  <time>  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgSc#scheduleTimeExtension"}
 
 // Statistics
-Number LandroidTotalTime          "Total Time [JS(minstohours.js):%d]"           <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalTime"}
+Number LandroidTotalTime          "Total Time [JS(minstohours.js):%s]"           <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalTime"}
 Number:Length LandroidTotalDistance    "Total Distance [%s m]"    <chart>       {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalDistance"}
-Number LandroidTotalBladeTime     "Total Bladetime [JS(minstohours.js):%d]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
+Number LandroidTotalBladeTime     "Total Bladetime [JS(minstohours.js):%s]"      <time>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datSt#totalBladeTime"}
 
 //Schedule
 // Monday
