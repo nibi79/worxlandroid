@@ -294,7 +294,7 @@ String LandroidLastUpdateOnlineStatus    "Last Update Online Status [%1$td.%1$tm
 
 // Multizone
 Switch LandroidMultizoneEnable    "Multizone enable []"                            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#enable"}
-Number LandroidLastZone           "push Start for Zone [MAP(landroid_zones.map):%d]"    <zones>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#lastZone"}
+Number LandroidLastZone           "Start Zone []"    <zones>    {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#lastZone"}
 
 // Zone Meters
 Number LandroidMeterZone1         "Meters Zone 1 [%d]"    <distance>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgMultiZones#zone1Meter"}
@@ -613,7 +613,8 @@ Place the following *.map to your ..\conf\transform
 
 1. [landroid_error_de.map](/openhab-conf/transform/landroid_error_de.map)
 2. [landroid_status_de.map](/openhab-conf/transform/landroid_status_de.map)
-3. [minstohours.js](/openhab-conf/transform/minstohours.js)
+3. [landroid_schedule_enable](/openhab-conf/transform/landroid_schedule_enable.map)
+4. [minstohours.js](/openhab-conf/transform/minstohours.js)
 
 ## Iconset
 
