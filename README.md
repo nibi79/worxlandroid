@@ -161,7 +161,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScSunday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScSunday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScSunday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
@@ -181,7 +181,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScMonday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScMonday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScMonday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
@@ -201,7 +201,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScTuesday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScTuesday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScTuesday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
@@ -221,7 +221,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScWednesday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScWednesday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScWednesday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
@@ -241,7 +241,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScThursday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScThursday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScThursday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
@@ -261,7 +261,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScFriday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScFriday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScFriday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
@@ -281,7 +281,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 
 ##### cfgScSaturday Slot 2
 
-| Channel   | Type | ChannelName |
+| Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScSaturday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 | scheduleStartHour | `Number` | cfgScSaturday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
