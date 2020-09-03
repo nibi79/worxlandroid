@@ -19,18 +19,63 @@
 			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type" />
 
 			<channel-group id="cfgSc" typeId="cfgSc-type" />
-			<channel-group id="cfgScSunday" typeId="cfgScSunday-type" />
-			<channel-group id="cfgScMonday" typeId="cfgScMonday-type" />
-			<channel-group id="cfgScTuesday" typeId="cfgScTuesday-type" />
-			<channel-group id="cfgScWednesday" typeId="cfgScWednesday-type" />
-			<channel-group id="cfgScThursday" typeId="cfgScThursday-type" />
-			<channel-group id="cfgScFriday" typeId="cfgScFriday-type" />
-			<channel-group id="cfgScSaturday" typeId="cfgScSaturday-type" />
+
+			<channel-group id="cfgScSunday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Sunday</label>
+			</channel-group>
+			<channel-group id="cfgScSunday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Sunday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgScMonday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Monday</label>
+			</channel-group>
+			<channel-group id="cfgScMonday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Monday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgScTuesday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Tuesday</label>
+			</channel-group>
+			<channel-group id="cfgScTuesday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Tuesday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgScWednesday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Wednesday</label>
+			</channel-group>
+			<channel-group id="cfgScWednesday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Wednesday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgScThursday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Thursday</label>
+			</channel-group>
+			<channel-group id="cfgScThursday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Thursday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgScFriday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Friday</label>
+			</channel-group>
+			<channel-group id="cfgScFriday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Friday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgScSaturday" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Saturday</label>
+			</channel-group>
+			<channel-group id="cfgScSaturday2" typeId="cfgScDay-type">
+				<label>Configuration schedule channels Saturday Slot 2</label>
+			</channel-group>
+
+			<channel-group id="cfgOneTimeSc" typeId="cfgOneTimeSc-type" />
 
 			<channel-group id="datCommon" typeId="datCommon-type" />
 			<channel-group id="datBattery" typeId="datBattery-type" />
 			<channel-group id="datDmp" typeId="datDmp-type" />
 			<channel-group id="datSt" typeId="datSt-type" />
+			<channel-group id="datRain" typeId="datRain-type" />
 
 		</channel-groups>
 
@@ -158,7 +203,12 @@
 			<channel id="batteryTemperature" typeId="chBatteryTemperature" />
 			<channel id="batteryVoltage" typeId="chBatteryVoltage" />
 			<channel id="batteryLevel" typeId="chBatteryLevel" />
-			<channel id="batteryChargeCycle" typeId="chBatteryChargeCycle" />
+			<channel id="batteryChargeCycle" typeId="chBatteryChargeCycle">
+				<label>Battery Charge Cycle Total</label>
+			</channel>
+			<channel id="batteryChargeCycleCurrent" typeId="chBatteryChargeCycle">
+				<label>Battery Charge Cycle Current</label>
+			</channel>
 			<channel id="batteryCharging" typeId="chBatteryCharging" />
 		</channels>
 	</channel-group-type>
@@ -177,9 +227,25 @@
 		<label>Data st channels</label>
 		<description>Data st channels of your mower</description>
 		<channels>
-			<channel id="totalBladeTime" typeId="chTotalBladeTime" />
+			<channel id="totalBladeTime" typeId="chTimeMinutes">
+				<label>Total Blade Time</label>
+			</channel>
+			<channel id="currentBladeTime" typeId="chTimeMinutes">
+				<label>Current Blade Time</label>
+			</channel>
 			<channel id="totalDistance" typeId="chTotalDistance" />
-			<channel id="totalTime" typeId="chTotalTime" />
+			<channel id="totalTime" typeId="chTimeMinutes">
+				<label>Total Time</label>
+			</channel>
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="datRain-type">
+		<label>Data rain channels</label>
+		<description>Data rain channels of your mower</description>
+		<channels>
+			<channel id="state" typeId="chRainState" />
+			<channel id="counter" typeId="chRainCounter" />
 		</channels>
 	</channel-group-type>
 
@@ -187,85 +253,24 @@
 		<label>Configuration schedule channels</label>
 		<description>Configuration schedule channels of your mower</description>
 		<channels>
+			<channel id="scheduleMode" typeId="chScheduleMode" />
 			<channel id="scheduleTimeExtension" typeId="chScheduleTimeExtension" />
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="cfgScSunday-type">
-		<label>Configuration schedule channels Sunday</label>
-		<description>Configuration schedule channels of your mower for Sunday</description>
+	<channel-group-type id="cfgOneTimeSc-type">
+		<label>Configuration one time schedule channels</label>
+		<description>Configuration one time schedule channels of your mower</description>
 		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+			<channel id="scheduleDuration" typeId="chScheduleDuration" />
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="cfgScMonday-type">
-		<label>Configuration schedule channels Monday</label>
-		<description>Configuration schedule channels of your mower for Monday</description>
-		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
-		</channels>
-	</channel-group-type>
 
-	<channel-group-type id="cfgScTuesday-type">
-		<label>Configuration schedule channels Tuesday</label>
-		<description>Configuration schedule channels of your mower for Tuesday</description>
-		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgScWednesday-type">
-		<label>Configuration schedule channels Wednesday</label>
-		<description>Configuration schedule channels of your mower for Wednesday</description>
-		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgScThursday-type">
-		<label>Configuration schedule channels Thursday</label>
-		<description>Configuration schedule channels of your mower for Thursday</description>
-		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgScFriday-type">
-		<label>Configuration schedule channels Friday</label>
-		<description>Configuration schedule channels of your mower for Friday</description>
-		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgScSaturday-type">
-		<label>Configuration schedule channels Saturday</label>
-		<description>Configuration schedule channels of your mower for Saturday</description>
+	<channel-group-type id="cfgScDay-type">
+		<label>Configuration schedule channels for each day</label>
+		<description>Configuration schedule channels for each day</description>
 		<channels>
 			<channel id="enable" typeId="chEnable" />
 			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
@@ -401,13 +406,6 @@
 		<state readOnly="true" pattern="%.2f" />
 	</channel-type>
 
-	<channel-type id="chTotalBladeTime">
-		<item-type>Number</item-type>
-		<label>Total Blade Time</label>
-		<category>Info</category>
-		<state readOnly="true" pattern="%d min" />
-	</channel-type>
-
 	<channel-type id="chTotalDistance">
 		<item-type>Number</item-type>
 		<label>Total Distance</label>
@@ -415,11 +413,11 @@
 		<state readOnly="true" pattern="%d m" />
 	</channel-type>
 
-	<channel-type id="chTotalTime">
+	<channel-type id="chTimeMinutes">
 		<item-type>Number</item-type>
-		<label>Total Time</label>
+		<label>Time</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%d  min" />
+		<state readOnly="true" pattern="%d min" />
 	</channel-type>
 
 	<channel-type id="chStatusCode">
@@ -476,6 +474,18 @@
 		<label>Schedule Time Extension</label>
 		<category>Info</category>
 		<state readOnly="false" min="-100" max="100" step="10" pattern="%d%%" />
+	</channel-type>
+
+	<channel-type id="chScheduleMode">
+		<item-type>Number</item-type>
+		<label>Schedule Mode (Party)</label>
+		<category>Info</category>
+		<state readOnly="false">
+			<options>
+				<option value="1">Normal</option>
+				<option value="2">Party</option>
+			</options>
+		</state>
 	</channel-type>
 
 	<channel-type id="chScheduleStartHour">
@@ -556,5 +566,19 @@
 	<channel-type id="chEnable">
 		<item-type>Switch</item-type>
 		<label>Activation / Deactivation</label>
+	</channel-type>
+
+	<channel-type id="chRainState">
+		<item-type>Switch</item-type>
+		<label>Rain state</label>
+		<category>Info</category>
+		<state readOnly="true" />
+	</channel-type>
+
+	<channel-type id="chRainCounter">
+		<item-type>Number</item-type>
+		<label>Rain counter</label>
+		<category>Info</category>
+		<state readOnly="true" />
 	</channel-type>
 </thing:thing-descriptions>

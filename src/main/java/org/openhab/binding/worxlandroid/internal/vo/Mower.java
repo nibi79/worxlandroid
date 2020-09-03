@@ -43,7 +43,10 @@ public class Mower {
 
     private boolean lockSupported;
     private boolean rainDelaySupported;
+    private boolean rainDelayStartSupported;
     private boolean multiZoneSupported;
+    private boolean scheduler2Supported;
+    private boolean oneTimeSchedulerSupported;
 
     private boolean multiZoneEnable;
 
@@ -55,6 +58,7 @@ public class Mower {
     int[] allocations = new int[10];
 
     private Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays = new LinkedHashMap<WorxLandroidDayCodes, ScheduledDay>();
+    private Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays2 = new LinkedHashMap<WorxLandroidDayCodes, ScheduledDay>();
 
     /**
      * @param serialNumber
@@ -66,6 +70,7 @@ public class Mower {
         // initialize scheduledDay map for each day
         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
             scheduledDays.put(dayCode, new ScheduledDay());
+            scheduledDays2.put(dayCode, new ScheduledDay());
         }
     }
 
@@ -123,12 +128,36 @@ public class Mower {
         this.rainDelaySupported = rainDelaySupported;
     }
 
+    public boolean isRainDelayStartSupported() {
+        return rainDelayStartSupported;
+    }
+
+    public void setRainDelayStartSupported(boolean rainDelayStartSupported) {
+        this.rainDelayStartSupported = rainDelayStartSupported;
+    }
+
     public boolean isMultiZoneSupported() {
         return multiZoneSupported;
     }
 
     public void setMultiZoneSupported(boolean multiZoneSupported) {
         this.multiZoneSupported = multiZoneSupported;
+    }
+
+    public boolean isScheduler2Supported() {
+        return scheduler2Supported;
+    }
+
+    public void setScheduler2Supported(boolean scheduler2Supported) {
+        this.scheduler2Supported = scheduler2Supported;
+    }
+
+    public boolean isOneTimeSchedulerSupported() {
+        return oneTimeSchedulerSupported;
+    }
+
+    public void setOneTimeSchedulerSupported(boolean oneTimeSchedulerSupported) {
+        this.oneTimeSchedulerSupported = oneTimeSchedulerSupported;
     }
 
     /**
@@ -142,6 +171,20 @@ public class Mower {
 
     public void put(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
         scheduledDays.put(dayCode, scheduledDay);
+
+    }
+
+    /**
+     *
+     * @param dayCode
+     * @return
+     */
+    public ScheduledDay getScheduledDay2(WorxLandroidDayCodes dayCode) {
+        return scheduledDays2.get(dayCode);
+    }
+
+    public void putScheduledDay2(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
+        scheduledDays2.put(dayCode, scheduledDay);
 
     }
 

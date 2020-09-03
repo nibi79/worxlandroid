@@ -54,7 +54,20 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_RAIN_DELAY = "cfgCommon#rainDelay";
 
     // cfgSc
+    public static final String CHANNELNAME_SC_PREFIX = "cfgSc";
     public static final String CHANNELNAME_SC_TIME_EXTENSION = "cfgSc#scheduleTimeExtension";
+    public static final String CHANNELNAME_SC_MODE = "cfgSc#scheduleMode";
+
+    // cfgScXXXday
+    public static final String CHANNELNAME_SC_ENABLE_SUFFIX = "enable";
+    public static final String CHANNELNAME_SC_START_HOUR_SUFFIX = "scheduleStartHour";
+    public static final String CHANNELNAME_SC_START_MINUTES_SUFFIX = "scheduleStartMinutes";
+    public static final String CHANNELNAME_SC_DURATION_SUFFIX = "scheduleDuration";
+    public static final String CHANNELNAME_SC_EDGECUT_SUFFIX = "scheduleEdgecut";
+
+    // cfgOneTime
+    public static final String CHANNELNAME_ONE_TIME_SC_EDGECUT = "cfgOneTimeSc#scheduleEdgecut";
+    public static final String CHANNELNAME_ONE_TIME_SC_DURATION = "cfgOneTimeSc#scheduleDuration";
 
     // datCommon
     public static final String CHANNELNAME_MAC_ADRESS = "datCommon#macAdress";
@@ -71,6 +84,7 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNELNAME_BATTERY_VOLTAGE = "datBattery#batteryVoltage";
     public static final String CHANNELNAME_BATTERY_LEVEL = "datBattery#batteryLevel";
     public static final String CHANNELNAME_BATTERY_CHARGE_CYCLE = "datBattery#batteryChargeCycle";
+    public static final String CHANNELNAME_BATTERY_CHARGE_CYCLE_CURRENT = "datBattery#batteryChargeCycleCurrent";
     public static final String CHANNELNAME_BATTERY_CHARGING = "datBattery#batteryCharging";
 
     // datDmp
@@ -80,8 +94,13 @@ public class WorxLandroidBindingConstants {
 
     // datSt
     public static final String CHANNELNAME_TOTAL_BLADE_TIME = "datSt#totalBladeTime";
+    public static final String CHANNELNAME_CURRENT_BLADE_TIME = "datSt#currentBladeTime";
     public static final String CHANNELNAME_TOTAL_DISTANCE = "datSt#totalDistance";
     public static final String CHANNELNAME_TOTAL_TIME = "datSt#totalTime";
+
+    // datRain
+    public static final String CHANNELNAME_RAIN_STATE = "datRain#state";
+    public static final String CHANNELNAME_RAIN_COUNTER = "datRain#counter";
 
     //
     public static final String CHANNELNAME_PREFIX_ALLOCATION = "cfgMultiZones#allocation";
