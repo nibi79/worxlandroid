@@ -7,18 +7,18 @@
 	<!-- Sample Thing Type -->
 	<thing-type id="mower">
 		<supported-bridge-type-refs>
-			<bridge-type-ref id="worxlandroidBridge" />
+			<bridge-type-ref id="worxlandroidBridge"/>
 		</supported-bridge-type-refs>
 		<label>Worx Landroid Mower</label>
 		<description>Worx Landroid Mower</description>
 
 		<channel-groups>
-			<channel-group id="common" typeId="common-type" />
+			<channel-group id="common" typeId="common-type"/>
 
-			<channel-group id="cfgCommon" typeId="cfgCommon-type" />
-			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type" />
+			<channel-group id="cfgCommon" typeId="cfgCommon-type"/>
+			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type"/>
 
-			<channel-group id="cfgSc" typeId="cfgSc-type" />
+			<channel-group id="cfgSc" typeId="cfgSc-type"/>
 
 			<channel-group id="cfgScSunday" typeId="cfgScDay-type">
 				<label>Configuration schedule channels Sunday</label>
@@ -69,13 +69,13 @@
 				<label>Configuration schedule channels Saturday Slot 2</label>
 			</channel-group>
 
-			<channel-group id="cfgOneTimeSc" typeId="cfgOneTimeSc-type" />
+			<channel-group id="cfgOneTimeSc" typeId="cfgOneTimeSc-type"/>
 
-			<channel-group id="datCommon" typeId="datCommon-type" />
-			<channel-group id="datBattery" typeId="datBattery-type" />
-			<channel-group id="datDmp" typeId="datDmp-type" />
-			<channel-group id="datSt" typeId="datSt-type" />
-			<channel-group id="datRain" typeId="datRain-type" />
+			<channel-group id="datCommon" typeId="datCommon-type"/>
+			<channel-group id="datBattery" typeId="datBattery-type"/>
+			<channel-group id="datDmp" typeId="datDmp-type"/>
+			<channel-group id="datSt" typeId="datSt-type"/>
+			<channel-group id="datRain" typeId="datRain-type"/>
 
 		</channel-groups>
 
@@ -90,7 +90,8 @@
 
 			<parameter name="pollingInterval" unit="s" type="integer" min="30" max="599">
 				<label>Polling interval</label>
-				<description>Interval for polling in seconds (after 10 minutes / 600 seconds of inactivity, the connection is closed)</description>
+				<description>Interval for polling in seconds (after 10 minutes / 600 seconds of inactivity, the connection is
+					closed)</description>
 				<default>300</default>
 				<required>true</required>
 			</parameter>
@@ -103,14 +104,14 @@
 		<label>Common channels</label>
 		<description>Common channels of your mower</description>
 		<channels>
-			<channel id="online" typeId="chOnline" />
-			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus" />
-			<channel id="poll" typeId="chPoll" />
-			<channel id="action" typeId="chAction" />
+			<channel id="online" typeId="chOnline"/>
+			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus"/>
+			<channel id="poll" typeId="chPoll"/>
+			<channel id="action" typeId="chAction"/>
 			<channel id="enable" typeId="chEnable">
 				<label>Mowing enabled</label>
 			</channel>
-			<channel id="lock" typeId="chLock" />
+			<channel id="lock" typeId="chLock"/>
 		</channels>
 	</channel-group-type>
 
@@ -118,12 +119,12 @@
 		<label>Configuration common channels</label>
 		<description>Configuration common channels of your mower</description>
 		<channels>
-			<channel id="id" typeId="chId" />
-			<channel id="serialNumber" typeId="chSerialNumber" />
-			<channel id="language" typeId="chLanguage" />
-			<channel id="lastUpdate" typeId="chLastUpdate" />
-			<channel id="command" typeId="chCommand" />
-			<channel id="rainDelay" typeId="chRainDelay" />
+			<channel id="id" typeId="chId"/>
+			<channel id="serialNumber" typeId="chSerialNumber"/>
+			<channel id="language" typeId="chLanguage"/>
+			<channel id="lastUpdate" typeId="chLastUpdate"/>
+			<channel id="command" typeId="chCommand"/>
+			<channel id="rainDelay" typeId="chRainDelay"/>
 		</channels>
 	</channel-group-type>
 
@@ -185,14 +186,14 @@
 		<label>Data common channels</label>
 		<description>Data common channels of your mower</description>
 		<channels>
-			<channel id="macAdress" typeId="chMacAdress" />
-			<channel id="firmware" typeId="chFirmware" />
-			<channel id="wifiQuality" typeId="chWifiQuality" />
-			<channel id="statusCode" typeId="chStatusCode" />
-			<channel id="statusDescription" typeId="chStatusDescription" />
-			<channel id="errorCode" typeId="chErrorCode" />
-			<channel id="errorDescription" typeId="chErrorDescription" />
-			<channel id="lastZone" typeId="chLastZone" />
+			<channel id="macAdress" typeId="chMacAdress"/>
+			<channel id="firmware" typeId="chFirmware"/>
+			<channel id="wifiQuality" typeId="chWifiQuality"/>
+			<channel id="statusCode" typeId="chStatusCode"/>
+			<channel id="statusDescription" typeId="chStatusDescription"/>
+			<channel id="errorCode" typeId="chErrorCode"/>
+			<channel id="errorDescription" typeId="chErrorDescription"/>
+			<channel id="lastZone" typeId="chLastZone"/>
 		</channels>
 	</channel-group-type>
 
@@ -200,16 +201,16 @@
 		<label>Data battery channels</label>
 		<description>Data battery channels of your mower</description>
 		<channels>
-			<channel id="batteryTemperature" typeId="chBatteryTemperature" />
-			<channel id="batteryVoltage" typeId="chBatteryVoltage" />
-			<channel id="batteryLevel" typeId="chBatteryLevel" />
+			<channel id="batteryTemperature" typeId="chBatteryTemperature"/>
+			<channel id="batteryVoltage" typeId="chBatteryVoltage"/>
+			<channel id="batteryLevel" typeId="chBatteryLevel"/>
 			<channel id="batteryChargeCycle" typeId="chBatteryChargeCycle">
 				<label>Battery Charge Cycle Total</label>
 			</channel>
 			<channel id="batteryChargeCycleCurrent" typeId="chBatteryChargeCycle">
 				<label>Battery Charge Cycle Current</label>
 			</channel>
-			<channel id="batteryCharging" typeId="chBatteryCharging" />
+			<channel id="batteryCharging" typeId="chBatteryCharging"/>
 		</channels>
 	</channel-group-type>
 
@@ -217,9 +218,9 @@
 		<label>Data dmp channels</label>
 		<description>Data dmp channels of your mower</description>
 		<channels>
-			<channel id="pitch" typeId="chPitch" />
-			<channel id="roll" typeId="chRoll" />
-			<channel id="yaw" typeId="chYaw" />
+			<channel id="pitch" typeId="chPitch"/>
+			<channel id="roll" typeId="chRoll"/>
+			<channel id="yaw" typeId="chYaw"/>
 		</channels>
 	</channel-group-type>
 
@@ -233,7 +234,7 @@
 			<channel id="currentBladeTime" typeId="chTimeMinutes">
 				<label>Current Blade Time</label>
 			</channel>
-			<channel id="totalDistance" typeId="chTotalDistance" />
+			<channel id="totalDistance" typeId="chTotalDistance"/>
 			<channel id="totalTime" typeId="chTimeMinutes">
 				<label>Total Time</label>
 			</channel>
@@ -244,8 +245,8 @@
 		<label>Data rain channels</label>
 		<description>Data rain channels of your mower</description>
 		<channels>
-			<channel id="state" typeId="chRainState" />
-			<channel id="counter" typeId="chRainCounter" />
+			<channel id="state" typeId="chRainState"/>
+			<channel id="counter" typeId="chRainCounter"/>
 		</channels>
 	</channel-group-type>
 
@@ -253,8 +254,8 @@
 		<label>Configuration schedule channels</label>
 		<description>Configuration schedule channels of your mower</description>
 		<channels>
-			<channel id="scheduleMode" typeId="chScheduleMode" />
-			<channel id="scheduleTimeExtension" typeId="chScheduleTimeExtension" />
+			<channel id="scheduleMode" typeId="chScheduleMode"/>
+			<channel id="scheduleTimeExtension" typeId="chScheduleTimeExtension"/>
 		</channels>
 	</channel-group-type>
 
@@ -262,8 +263,8 @@
 		<label>Configuration one time schedule channels</label>
 		<description>Configuration one time schedule channels of your mower</description>
 		<channels>
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut"/>
+			<channel id="scheduleDuration" typeId="chScheduleDuration"/>
 		</channels>
 	</channel-group-type>
 
@@ -272,11 +273,11 @@
 		<label>Configuration schedule channels for each day</label>
 		<description>Configuration schedule channels for each day</description>
 		<channels>
-			<channel id="enable" typeId="chEnable" />
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour" />
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes" />
-			<channel id="scheduleDuration" typeId="chScheduleDuration" />
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut" />
+			<channel id="enable" typeId="chEnable"/>
+			<channel id="scheduleStartHour" typeId="chScheduleStartHour"/>
+			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes"/>
+			<channel id="scheduleDuration" typeId="chScheduleDuration"/>
+			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut"/>
 		</channels>
 	</channel-group-type>
 
@@ -284,168 +285,168 @@
 		<item-type>Switch</item-type>
 		<label>Online</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chLastUpdateOnlineStatus">
 		<item-type>DateTime</item-type>
 		<label>Last Update Online Status</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chId">
 		<item-type>Number</item-type>
 		<label>Id</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chLanguage">
 		<item-type>String</item-type>
 		<label>Language</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chLastUpdate">
 		<item-type>DateTime</item-type>
 		<label>Last Update</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chCommand">
 		<item-type>Number</item-type>
 		<label>Command</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chRainDelay">
 		<item-type>Number</item-type>
 		<label>Rain Delay</label>
 		<category>Info</category>
-		<state min="0" max="750" step="30" pattern="%d min" />
+		<state min="0" max="750" step="30" pattern="%d min"/>
 	</channel-type>
 
 	<channel-type id="chSerialNumber">
 		<item-type>String</item-type>
 		<label>Serial Number</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chMacAdress">
 		<item-type>String</item-type>
 		<label>MacAdress</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chFirmware">
 		<item-type>Number</item-type>
 		<label>Firmware</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f" />
+		<state readOnly="true" pattern="%.2f"/>
 	</channel-type>
 
 	<channel-type id="chBatteryTemperature">
 		<item-type>Number</item-type>
 		<label>Battery Temperature</label>
 		<category>Temperature</category>
-		<state readOnly="true" pattern="%.1f°C" />
+		<state readOnly="true" pattern="%.1f°C"/>
 	</channel-type>
 
 	<channel-type id="chBatteryVoltage">
 		<item-type>Number</item-type>
 		<label>Battery Voltage</label>
 		<category>Voltage</category>
-		<state readOnly="true" pattern="%.2fV" />
+		<state readOnly="true" pattern="%.2fV"/>
 	</channel-type>
 
 	<channel-type id="chBatteryLevel">
 		<item-type>Number</item-type>
 		<label>Battery Level</label>
 		<category>Battery</category>
-		<state readOnly="true" pattern="%d%%" />
+		<state readOnly="true" pattern="%d%%"/>
 	</channel-type>
 
 	<channel-type id="chBatteryChargeCycle">
 		<item-type>Number</item-type>
 		<label>Battery Charge Cycle</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chBatteryCharging">
 		<item-type>Switch</item-type>
 		<label>Battery Charging</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chPitch">
 		<item-type>Number</item-type>
 		<label>Pitch</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f" />
+		<state readOnly="true" pattern="%.2f"/>
 	</channel-type>
 
 	<channel-type id="chRoll">
 		<item-type>Number</item-type>
 		<label>Roll</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f" />
+		<state readOnly="true" pattern="%.2f"/>
 	</channel-type>
 
 	<channel-type id="chYaw">
 		<item-type>Number</item-type>
 		<label>Yaw</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f" />
+		<state readOnly="true" pattern="%.2f"/>
 	</channel-type>
 
 	<channel-type id="chTotalDistance">
 		<item-type>Number</item-type>
 		<label>Total Distance</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%d m" />
+		<state readOnly="true" pattern="%d m"/>
 	</channel-type>
 
 	<channel-type id="chTimeMinutes">
 		<item-type>Number</item-type>
 		<label>Time</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%d min" />
+		<state readOnly="true" pattern="%d min"/>
 	</channel-type>
 
 	<channel-type id="chStatusCode">
 		<item-type>Number</item-type>
 		<label>Status Code</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chStatusDescription">
 		<item-type>String</item-type>
 		<label>Status Description</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chErrorCode">
 		<item-type>Number</item-type>
 		<label>Error Code</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chErrorDescription">
 		<item-type>String</item-type>
 		<label>Error Description</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chLastZone">
@@ -466,14 +467,14 @@
 		<item-type>Number</item-type>
 		<label>Wifi Quality</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chScheduleTimeExtension">
 		<item-type>Number</item-type>
 		<label>Schedule Time Extension</label>
 		<category>Info</category>
-		<state readOnly="false" min="-100" max="100" step="10" pattern="%d%%" />
+		<state readOnly="false" min="-100" max="100" step="10" pattern="%d%%"/>
 	</channel-type>
 
 	<channel-type id="chScheduleMode">
@@ -492,35 +493,35 @@
 		<item-type>Number</item-type>
 		<label>Schedule Start Hour</label>
 		<category>Info</category>
-		<state readOnly="false" min="0" max="23" step="1" pattern="%d h" />
+		<state readOnly="false" min="0" max="23" step="1" pattern="%d h"/>
 	</channel-type>
 
 	<channel-type id="chScheduleStartMinutes">
 		<item-type>Number</item-type>
 		<label>Schedule Start Minutes</label>
 		<category>Info</category>
-		<state readOnly="false" min="0" max="45" step="15" pattern="%d min" />
+		<state readOnly="false" min="0" max="45" step="15" pattern="%d min"/>
 	</channel-type>
 
 	<channel-type id="chScheduleDuration">
 		<item-type>Number</item-type>
 		<label>Schedule Duration</label>
 		<category>Info</category>
-		<state readOnly="false" min="0" max="1425" step="15" pattern="%d min" />
+		<state readOnly="false" min="0" max="1425" step="15" pattern="%d min"/>
 	</channel-type>
 
 	<channel-type id="chScheduleEdgecut">
 		<item-type>Switch</item-type>
 		<label>Schedule Edgecut</label>
 		<category>Info</category>
-		<state readOnly="false" />
+		<state readOnly="false"/>
 	</channel-type>
 
 	<channel-type id="chZoneMeter">
 		<item-type>Number</item-type>
 		<label>Meters of zone</label>
 		<category>Info</category>
-		<state readOnly="false" min="0" step="1" pattern="%d m" />
+		<state readOnly="false" min="0" step="1" pattern="%d m"/>
 	</channel-type>
 
 	<channel-type id="chAllocation">
@@ -572,13 +573,13 @@
 		<item-type>Switch</item-type>
 		<label>Rain state</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chRainCounter">
 		<item-type>Number</item-type>
 		<label>Rain counter</label>
 		<category>Info</category>
-		<state readOnly="true" />
+		<state readOnly="true"/>
 	</channel-type>
 </thing:thing-descriptions>

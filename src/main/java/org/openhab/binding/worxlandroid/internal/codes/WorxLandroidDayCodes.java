@@ -49,5 +49,4 @@ public enum WorxLandroidDayCodes implements Codes {
     public String toString() {
         return String.format("%s | DayCode: %d - %s", this.name(), this.getCode(), this.getDescription());
     }
-
 }

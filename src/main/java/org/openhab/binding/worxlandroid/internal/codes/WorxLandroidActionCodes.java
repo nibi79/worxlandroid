@@ -48,5 +48,4 @@ public enum WorxLandroidActionCodes implements Codes {
     public String toString() {
         return String.format("%s | ActionCode: %d - %s", this.name(), this.getCode(), this.getDescription());
     }
-
 }

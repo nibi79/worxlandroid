@@ -34,7 +34,6 @@ public class UsersMeRequest extends WebApiRequest<UsersMeResponse> {
      */
     public UsersMeRequest(HttpClient httpClient) {
         super(httpClient);
-
     }
 
     /**
@@ -46,5 +45,4 @@ public class UsersMeRequest extends WebApiRequest<UsersMeResponse> {
 
         return callWebApiGet(APIURL_USER_ME, auth);
     }
-
 }

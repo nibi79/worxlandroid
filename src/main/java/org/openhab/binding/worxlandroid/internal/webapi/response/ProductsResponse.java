@@ -29,5 +29,4 @@ public class ProductsResponse extends WebApiResponse {
     public ProductsResponse(String jsonResponse) {
         super(jsonResponse);
     }
-
 }

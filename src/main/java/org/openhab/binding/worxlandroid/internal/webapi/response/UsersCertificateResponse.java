@@ -46,5 +46,4 @@ public class UsersCertificateResponse extends WebApiResponse {
         String active = getJsonResponseAsJsonObject().get("active").getAsString();
         return Boolean.parseBoolean(active);
     }
-
 }

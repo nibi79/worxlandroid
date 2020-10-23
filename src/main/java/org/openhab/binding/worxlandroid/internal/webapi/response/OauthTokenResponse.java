@@ -36,7 +36,6 @@ public class OauthTokenResponse extends WebApiResponse {
     public String getAccessType() {
 
         return getJsonResponseAsJsonObject().getAsJsonPrimitive("token_type").getAsString();
-
     }
 
     /**

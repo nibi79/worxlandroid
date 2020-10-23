@@ -45,5 +45,4 @@ public class ProductItemsRequest extends WebApiRequest<ProductItemsResponse> {
 
         return callWebApiGet(APIURL_PRODUCTITEMS, auth);
     }
-
 }
