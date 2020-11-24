@@ -83,5 +83,4 @@ public class ProductItemsResponse extends WebApiResponse {
 
         return super.getDataAsPropertyMap(null, "UNKNOWN", jsonObject);
     }
-
 }

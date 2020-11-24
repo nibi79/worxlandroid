@@ -171,7 +171,6 @@ public class Mower {
 
     public void put(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
         scheduledDays.put(dayCode, scheduledDay);
-
     }
 
     /**
@@ -185,7 +184,6 @@ public class Mower {
 
     public void putScheduledDay2(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
         scheduledDays2.put(dayCode, scheduledDay);
-
     }
 
     /**
@@ -341,5 +339,4 @@ public class Mower {
     public void setStatus(long status) {
         this.status = status;
     }
-
 }

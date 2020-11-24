@@ -69,5 +69,4 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
 
         return callWebApi(request);
     }
-
 }

@@ -78,5 +78,4 @@ public interface WorxLandroidApi {
      * @throws WebApiException
      */
     public ProductItemsStatusResponse retrieveDeviceStatus(String serialNumber) throws WebApiException;
-
 }

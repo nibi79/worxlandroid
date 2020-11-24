@@ -33,5 +33,4 @@ public class ProductItemsStatusResponse extends WebApiResponse {
     public ProductItemsStatusResponse(String jsonResponse) {
         super(jsonResponse);
     }
-
 }

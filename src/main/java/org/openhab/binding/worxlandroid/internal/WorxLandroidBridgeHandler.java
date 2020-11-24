@@ -27,12 +27,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
-import org.eclipse.smarthome.core.thing.Bridge;
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
-import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.worxlandroid.internal.config.BridgeConfiguration;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
@@ -43,6 +37,12 @@ import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificateResponse;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.binding.BaseBridgeHandler;
+import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,7 +157,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
             logger.error("Iniialization error - toString: {}", e.toString());
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Error: " + e.getMessage());
         }
-
     }
 
     @Override
@@ -222,7 +221,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
         logger.debug("publish topic -> {}", awsMessage.getTopic());
         logger.debug("publish message -> {}", awsMessage.getStringPayload());
         awsClient.publish(awsMessage);
-
     }
 
     @Override
@@ -241,6 +239,5 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
     public void onAWSConnectionClosed() {
         logger.debug("AWS connection closed");
         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "AWS connection closed!");
-
     }
 }

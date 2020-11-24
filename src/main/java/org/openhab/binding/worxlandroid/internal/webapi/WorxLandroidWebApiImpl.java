@@ -65,7 +65,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
             logger.error("Error connecting to Worx Landroid WebApi! Error = {}", e.getErrorMsg());
             return false;
         }
-
     }
 
     @Override
@@ -77,7 +76,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
         UsersCertificateRequest awsCertificateRequest = new UsersCertificateRequest(httpClient);
         return awsCertificateRequest.call(apiAuth);
-
     }
 
     @Override
@@ -89,7 +87,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
         UsersMeRequest webInfoRequest = new UsersMeRequest(httpClient);
         return webInfoRequest.call(apiAuth);
-
     }
 
     @Override
@@ -101,7 +98,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
         ProductItemsRequest productItemsRequest = new ProductItemsRequest(httpClient);
         return productItemsRequest.call(apiAuth);
-
     }
 
     @Override
@@ -113,7 +109,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
         ProductItemsStatusRequest productItemsStatusRequest = new ProductItemsStatusRequest(httpClient);
         return productItemsStatusRequest.call(apiAuth, serialNumber);
-
     }
 
     @Override
@@ -125,7 +120,5 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
         ProductsRequest productsRequest = new ProductsRequest(httpClient);
         return productsRequest.call(apiAuth);
-
     }
-
 }

@@ -34,7 +34,6 @@ public class UsersCertificateRequest extends WebApiRequest<UsersCertificateRespo
      */
     public UsersCertificateRequest(HttpClient httpClient) {
         super(httpClient);
-
     }
 
     /**
@@ -46,5 +45,4 @@ public class UsersCertificateRequest extends WebApiRequest<UsersCertificateRespo
 
         return callWebApiGet(APIURL_USERS_CERTIFICATE, auth);
     }
-
 }

@@ -22,5 +22,4 @@ public interface ApiResponse {
 
     // MemberNames
     public static final String MN_MQTTENDPOINT = "mqtt_endpoint";
-
 }

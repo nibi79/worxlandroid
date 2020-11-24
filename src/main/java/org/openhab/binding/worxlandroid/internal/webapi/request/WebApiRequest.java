@@ -121,6 +121,5 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
                 | SecurityException e) {
             throw new WebApiException(e);
         }
-
     }
 }

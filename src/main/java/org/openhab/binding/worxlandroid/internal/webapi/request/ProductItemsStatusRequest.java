@@ -46,5 +46,4 @@ public class ProductItemsStatusRequest extends WebApiRequest<ProductItemsStatusR
 
         return callWebApiGet(String.format("%s/%s/status", APIURL_PRODUCTITEMS, serialNumber), auth);
     }
-
 }
