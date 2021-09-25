@@ -145,7 +145,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
             } catch (AWSIotException e) {
                 logger.debug("PollingRunnable {}: {}", e.getLocalizedMessage(), mower.getSerialNumber());
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getLocalizedMessage());
             }
         }
     };
