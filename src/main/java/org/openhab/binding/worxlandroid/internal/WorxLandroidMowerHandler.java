@@ -111,13 +111,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     boolean online = mowerDataJson != null && mowerDataJson.get("online").getAsBoolean();
                     mower.setOnline(online);
                     updateState(CHANNELNAME_ONLINE, OnOffType.from(online));
-                    DateTimeType d = new DateTimeType();
                     updateState(CHANNELNAME_LAST_UPDATE_ONLINE_STATUS, new DateTimeType());
                     updateStatus(online ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
                 }
-            } catch (IllegalStateException e) {
-                logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE",
-                        mower.getSerialNumber());
+            } catch (WebApiException | IllegalStateException e) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
             } catch (Exception e) {
                 logger.error("RefreshStatusRunnable {}: Unknown error", mower.getSerialNumber(), e);
             }
