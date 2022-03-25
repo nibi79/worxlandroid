@@ -105,6 +105,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                 if (isBridgeOnline() && apiHandler != null) {
 
+                    if (!apiHandler.refreshToken()) {
+                        logger.debug("Refresh Access Token failed.")
+                    }
+
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
                     JsonObject mowerDataJson = productItemsResponse.getMowerDataById(mower.getSerialNumber());
 

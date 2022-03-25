@@ -13,6 +13,8 @@
 package org.openhab.binding.worxlandroid.internal.webapi;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * {@link WebApiAuth} authorization data dor Worx Ladroid API.
@@ -25,6 +27,8 @@ public class WebApiAuth {
 
     private String accessType;
     private String accessToken;
+    private String refreshToken;
+    private LocalDateTime expire;
 
     /**
      * @param accessType
@@ -50,6 +54,30 @@ public class WebApiAuth {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public LocalDateTime getExpireDate() {
+        return expire;
+    }
+
+    public void setExpire(int expire) {
+        this.expire = LocalDateTime.now().plusSeconds(expire);
+    }
+
+    public boolean isTokenValid() {
+        if ( this.expire == null || LocalDateTime.now().isAfter(this.expire) ) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

@@ -68,6 +68,29 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
     }
 
     @Override
+    public boolean refreshToken() {
+
+        if (!apiAuth.isTokenValid()) {
+
+            try {
+                OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
+                OauthTokenResponse authResponse = authRequest.refresh(apiAuth.getRefreshToken());
+
+                apiAuth.setAccessToken(authResponse.getAccessToken());
+                apiAuth.setRefreshToken(authResponse.getRefreshToken());
+                apiAuth.setExpire(authResponse.getExpiresIn());
+
+                return true;
+
+            } catch (WebApiException e) {
+
+                logger.error("Error connecting to Worx Landroid WebApi! Error = {}", e.getErrorMsg());
+                return false;
+            }
+        }
+    }
+
+    @Override
     public UsersCertificateResponse retrieveAwsCertificate() throws WebApiException {
 
         if (apiAuth == null) {

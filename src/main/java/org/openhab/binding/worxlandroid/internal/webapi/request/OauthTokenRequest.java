@@ -69,4 +69,27 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
 
         return callWebApi(request);
     }
+
+    /**
+     * @param username
+     * @param password
+     * @return
+     * @throws WebApiException
+     */
+    public OauthTokenResponse refresh(String refreshToken) throws WebApiException {
+
+        Request request = getHttpClient().POST(APIURL_OAUTH_TOKEN);
+
+        String secret = new String(Base64.getDecoder().decode(WEBAPI_SECRET_BASE64));
+
+        JsonObject jsonContent = new JsonObject();
+        jsonContent.add("grant_type", new JsonPrimitive("refresh_token"));
+        jsonContent.add("client_secret", new JsonPrimitive(secret));
+        jsonContent.add("refresh_token", new JsonPrimitive(refreshToken));
+        jsonContent.add("client_id", new JsonPrimitive(1));
+
+        request.content(new StringContentProvider(jsonContent.toString()), "application/json");
+
+        return callWebApi(request);
+    }
 }
