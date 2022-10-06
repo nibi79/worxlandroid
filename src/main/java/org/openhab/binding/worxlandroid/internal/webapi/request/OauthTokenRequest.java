@@ -33,7 +33,7 @@ import com.google.gson.JsonPrimitive;
 @NonNullByDefault
 public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
 
-    private static final String APIURL_OAUTH_TOKEN = APIURL_BASE + "oauth/token";
+    private static final String APIURL_OAUTH_TOKEN = "https://id.eu.worx.com/" + "oauth/token";
 
     private static final String WEBAPI_SECRET_BASE64 = "bkNIM0EwV3ZNWW42NnZHb3JqU3JuR1oyWXRqUVdEaUN2amc3ak54Sw==";
 
@@ -62,8 +62,31 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
         jsonContent.add("username", new JsonPrimitive(username));
         jsonContent.add("password", new JsonPrimitive(password));
         jsonContent.add("scope", new JsonPrimitive("*"));
-        jsonContent.add("client_id", new JsonPrimitive(1));
+        jsonContent.add("client_id", new JsonPrimitive("150da4d2-bb44-433b-9429-3773adc70a2a"));
         jsonContent.add("type", new JsonPrimitive("app"));
+
+        request.content(new StringContentProvider(jsonContent.toString()), "application/json");
+
+        return callWebApi(request);
+    }
+
+    /**
+     * @param username
+     * @param password
+     * @return
+     * @throws WebApiException
+     */
+    public OauthTokenResponse refresh(String refreshToken) throws WebApiException {
+
+        Request request = getHttpClient().POST(APIURL_OAUTH_TOKEN);
+
+        String secret = new String(Base64.getDecoder().decode(WEBAPI_SECRET_BASE64));
+
+        JsonObject jsonContent = new JsonObject();
+        jsonContent.add("grant_type", new JsonPrimitive("refresh_token"));
+        jsonContent.add("client_secret", new JsonPrimitive(secret));
+        jsonContent.add("refresh_token", new JsonPrimitive(refreshToken));
+        jsonContent.add("client_id", new JsonPrimitive("150da4d2-bb44-433b-9429-3773adc70a2a"));
 
         request.content(new StringContentProvider(jsonContent.toString()), "application/json");
 

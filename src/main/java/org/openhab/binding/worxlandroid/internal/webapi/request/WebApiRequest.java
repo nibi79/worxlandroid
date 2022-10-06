@@ -89,6 +89,7 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
             if (logger.isDebugEnabled()) {
                 logger.debug("URI: {}", request.getURI().toString());
             }
+
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {

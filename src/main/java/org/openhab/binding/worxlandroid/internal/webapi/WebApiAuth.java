@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi;
 
+import java.time.LocalDateTime;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
@@ -25,15 +27,20 @@ public class WebApiAuth {
 
     private String accessType;
     private String accessToken;
+    private String refreshToken;
+    private LocalDateTime expire;
 
     /**
      * @param accessType
      * @param accessToken
+     * @param refreshToken
+     * @param i
      */
-    public WebApiAuth(String accessType, String accessToken) {
-        super();
+    public WebApiAuth(String accessType, String accessToken, String refreshToken, int i) {
         this.accessType = accessType;
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        setExpire(i);
     }
 
     public String getAccessType() {
@@ -50,6 +57,30 @@ public class WebApiAuth {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public LocalDateTime getExpireDate() {
+        return expire;
+    }
+
+    public void setExpire(int expire) {
+        this.expire = LocalDateTime.now().plusSeconds(expire);
+    }
+
+    public boolean isTokenValid() {
+        if (this.expire == null || LocalDateTime.now().isAfter(this.expire)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

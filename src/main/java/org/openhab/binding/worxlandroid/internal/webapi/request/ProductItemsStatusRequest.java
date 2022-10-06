@@ -44,6 +44,6 @@ public class ProductItemsStatusRequest extends WebApiRequest<ProductItemsStatusR
      */
     public ProductItemsStatusResponse call(WebApiAuth auth, String serialNumber) throws WebApiException {
 
-        return callWebApiGet(String.format("%s/%s/status", APIURL_PRODUCTITEMS, serialNumber), auth);
+        return callWebApiGet(String.format("%s?status=1", APIURL_PRODUCTITEMS), auth);
     }
 }
