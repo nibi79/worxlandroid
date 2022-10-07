@@ -115,15 +115,15 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     boolean online = mowerDataJson != null && mowerDataJson.get("online").getAsBoolean();
                     mower.setOnline(online);
                     updateState(CHANNELNAME_ONLINE, OnOffType.from(online));
-                    DateTimeType d = new DateTimeType();
                     updateState(CHANNELNAME_LAST_UPDATE_ONLINE_STATUS, new DateTimeType());
                     updateStatus(online ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
                 }
-            } catch (IllegalStateException e) {
+            } catch (WebApiException | IllegalStateException e) {
                 logger.debug("\"RefreshStatusRunnable {}: Refreshing Thing failed, handler might be OFFLINE",
                         mower.getSerialNumber());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
             } catch (Exception e) {
-                logger.error("RefreshStatusRunnable {}: Unknown error", mower.getSerialNumber(), e);
+                logger.warn("RefreshStatusRunnable {}: Unknown error", mower.getSerialNumber(), e);
             }
         }
     };
@@ -148,7 +148,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     }
                 }
             } catch (AWSIotException e) {
-                logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), mower.getSerialNumber());
+                logger.debug("PollingRunnable {}: {}", e.getLocalizedMessage(), mower.getSerialNumber());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getLocalizedMessage());
             }
         }
     };
@@ -334,21 +335,18 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     } else {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
-                        return;
                     }
 
                 } catch (WebApiException | AWSIotException e) {
-                    logger.error("initialize mower: id {} - {}::{}", mower.getSerialNumber(), getThing().getLabel(),
+                    logger.debug("initialize mower: id {} - {}::{}", mower.getSerialNumber(), getThing().getLabel(),
                             getThing().getUID());
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
                 }
-
-                updateStatus(ThingStatus.ONLINE);
-
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
             }
         } else {
-            updateStatus(ThingStatus.OFFLINE);
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
         }
 
         if (logger.isDebugEnabled()) {
@@ -418,14 +416,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             }
 
             if (getThing().getStatus() != ThingStatus.ONLINE) {
-                logger.error("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
+                logger.debug("handleCommand mower: {} ({}) is offline!", getThing().getLabel(),
                         mower.getSerialNumber());
                 return;
             }
 
             WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
             if (bridgeHandler == null) {
-                logger.error("no bridgeHandler");
+                logger.debug("no bridgeHandler");
                 return;
             }
 
@@ -589,7 +587,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         } catch (
 
         AWSIotException e) {
-            logger.error("error: {}", e.getLocalizedMessage());
+            logger.debug("error: {}", e.getLocalizedMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getLocalizedMessage());
         }
     }
 
