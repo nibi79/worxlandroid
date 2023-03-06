@@ -12,20 +12,15 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import software.amazon.awssdk.crt.mqtt.MqttMessage;
+
 /**
- * {@link AWSClientCallback} Callback for AWS connection events
  *
- * @author Nils - Initial contribution
+ * @author Nils
  */
-public interface AWSClientCallback {
+public interface AWSTopicI {
 
-    /**
-     * callback method on connection success
-     */
-    public void onAWSConnectionSuccess();
+    public String getTopic();
 
-    /**
-     * callback method on connection closed
-     */
-    public void onAWSConnectionClosed();
+    public void onMessage(MqttMessage t);
 }

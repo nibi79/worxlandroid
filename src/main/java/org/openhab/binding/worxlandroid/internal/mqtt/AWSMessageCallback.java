@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,10 +12,6 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
-import org.eclipse.jdt.annotation.Nullable;
-
-import com.amazonaws.services.iot.client.AWSIotMessage;
-
 /**
  * {@link AWSMessageCallback}
  *
@@ -26,5 +22,5 @@ public interface AWSMessageCallback {
     /**
      * callback method to process Message
      */
-    public void processMessage(@Nullable AWSIotMessage message);
+    public void processMessage(AWSMessageI awsMessage);
 }

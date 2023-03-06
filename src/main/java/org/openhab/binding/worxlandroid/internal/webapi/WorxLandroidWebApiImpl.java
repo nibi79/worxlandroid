@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -40,6 +40,11 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     private final HttpClient httpClient;
     private WebApiAuth apiAuth;
+    private OauthTokenResponse authResponse;
+
+    public OauthTokenResponse getAuthResponse() {
+        return authResponse;
+    }
 
     /**
      * @param httpClient
@@ -54,7 +59,7 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
         try {
             OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
-            OauthTokenResponse authResponse = authRequest.call(username, password);
+            authResponse = authRequest.call(username, password);
 
             apiAuth = new WebApiAuth(authResponse.getAccessType(), authResponse.getAccessToken(),
                     authResponse.getRefreshToken(), authResponse.getExpiresIn());
@@ -68,14 +73,31 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
         }
     }
 
+    /**
+     * @return
+     */
+    public String getAccessToken() {
+        // TODO NB
+        return apiAuth.getAccessToken();
+    }
+
+    /**
+     * @return
+     */
+    public boolean isTokenValid() {
+        // TODO NB
+        return apiAuth.isTokenValid();
+    }
+
     @Override
     public boolean refreshToken() {
-
+        // TODO NB
+        logger.debug("refreshToken -> token is: {}", apiAuth.isTokenValid());
         if (!apiAuth.isTokenValid()) {
 
             try {
                 OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
-                OauthTokenResponse authResponse = authRequest.refresh(apiAuth.getRefreshToken());
+                OauthTokenResponse authResponse = authRequest.refresh(apiAuth);
 
                 apiAuth.setAccessToken(authResponse.getAccessToken());
                 apiAuth.setRefreshToken(authResponse.getRefreshToken());

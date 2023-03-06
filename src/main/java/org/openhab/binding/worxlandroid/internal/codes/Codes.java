@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -13,6 +13,8 @@
 package org.openhab.binding.worxlandroid.internal.codes;
 
 import java.util.stream.Stream;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * The {@link Codes} is an interface for error codes
@@ -39,7 +41,18 @@ public interface Codes {
      * @param code
      * @return
      */
-    static <E extends Enum<E> & Codes> E lookup(Class<E> e, int code) {
-        return Stream.of(e.getEnumConstants()).filter(x -> x.getCode() == code).findAny().orElse(null);
+    @Nullable
+    static <E extends Enum<E> & Codes> E lookup(@Nullable Class<E> e, int code) {
+        if (e == null) {
+            return null;
+        }
+
+        E[] ec = e.getEnumConstants();
+
+        if (ec == null) {
+            return null;
+        } else {
+            return Stream.of(ec).filter(x -> x.getCode() == code).findAny().orElse(null);
+        }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,14 +12,14 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import java.nio.charset.StandardCharsets;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.services.iot.client.AWSIotMessage;
-import com.amazonaws.services.iot.client.AWSIotQos;
-import com.amazonaws.services.iot.client.AWSIotTopic;
+import software.amazon.awssdk.crt.mqtt.MqttMessage;
 
 /**
  * {@link AWSTopic} AWS topic
@@ -27,29 +27,39 @@ import com.amazonaws.services.iot.client.AWSIotTopic;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public class AWSTopic extends AWSIotTopic {
+public class AWSTopic implements AWSTopicI {
 
     private final Logger logger = LoggerFactory.getLogger(AWSTopic.class);
     private AWSMessageCallback callback;
+
+    private String topic;
 
     /**
      * @param topic
      * @param qos
      * @param awsMessageCallback
      */
-    public AWSTopic(String topic, AWSIotQos qos, AWSMessageCallback awsMessageCallback) {
-        super(topic, qos);
+    public AWSTopic(String topic, AWSMessageCallback awsMessageCallback) {
+        this.topic = topic;
         callback = awsMessageCallback;
     }
 
     @Override
-    public void onMessage(@Nullable AWSIotMessage message) {
+    public void onMessage(@Nullable MqttMessage mqttMessage) {
 
-        if (message == null) {
+        if (mqttMessage == null) {
             logger.warn("onMessage: message == null");
             return;
         }
-        logger.debug("onMessage: {}", message.getStringPayload());
-        callback.processMessage(message);
+
+        String payload = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
+        logger.debug("onMessage: {}", payload);
+        AWSMessage awsMessage = new AWSMessage(mqttMessage.getTopic(), payload);
+        callback.processMessage(awsMessage);
+    }
+
+    @Override
+    public String getTopic() {
+        return topic;
     }
 }

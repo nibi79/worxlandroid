@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.webapi;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * The {@link WebApiException} is a class for handling the Worx Landroid API exceptions
@@ -27,6 +28,7 @@ public class WebApiException extends Exception {
     private static final int UNKNOWN = 0;
 
     private final int errorCode;
+    @Nullable
     private final String errorMsg;
 
     public WebApiException(int errorCode, String errorMsg, Throwable cause) {
@@ -63,6 +65,7 @@ public class WebApiException extends Exception {
         return errorCode;
     }
 
+    @Nullable
     public String getErrorMsg() {
         return errorMsg;
     }

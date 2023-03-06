@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -13,8 +13,10 @@
 package org.openhab.binding.worxlandroid.internal.webapi;
 
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * {@link WebApiAuth} authorization data dor Worx Ladroid API.
@@ -28,7 +30,8 @@ public class WebApiAuth {
     private String accessType;
     private String accessToken;
     private String refreshToken;
-    private LocalDateTime expire;
+    private int expireIn;
+    private @Nullable LocalDateTime expire;
 
     /**
      * @param accessType
@@ -67,20 +70,37 @@ public class WebApiAuth {
         this.refreshToken = refreshToken;
     }
 
-    public LocalDateTime getExpireDate() {
+    /**
+     * @return
+     */
+    public int getExpireIn() {
+        // TODO NB
+        return expireIn;
+    }
+
+    public @Nullable LocalDateTime getExpireDate() {
         return expire;
     }
 
     public void setExpire(int expire) {
-        this.expire = LocalDateTime.now().plusSeconds(expire);
+        // TODO NB
+        this.expire = LocalDateTime.now().plusSeconds(expire - 120);
     }
 
     public boolean isTokenValid() {
-        if (this.expire == null || LocalDateTime.now().isAfter(this.expire)) {
+
+        ChronoLocalDateTime<?> c = this.expire;
+
+        if (c == null) {
             return false;
-        } else {
-            return true;
         }
+
+        if (c != null) {
+            if (LocalDateTime.now().isAfter(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

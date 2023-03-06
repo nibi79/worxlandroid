@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,12 +12,11 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.request;
 
-import java.util.Base64;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiAuth;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.response.OauthTokenResponse;
 
@@ -33,9 +32,9 @@ import com.google.gson.JsonPrimitive;
 @NonNullByDefault
 public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
 
+    private static final String CONTENT_PROVIDER = "application/json";
+    private static final String CLIENT_ID = "013132A8-DB34-4101-B993-3C8348EA0EBC";
     private static final String APIURL_OAUTH_TOKEN = "https://id.eu.worx.com/" + "oauth/token";
-
-    private static final String WEBAPI_SECRET_BASE64 = "bkNIM0EwV3ZNWW42NnZHb3JqU3JuR1oyWXRqUVdEaUN2amc3ak54Sw==";
 
     /**
      * @param httpClient
@@ -53,19 +52,16 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
     public OauthTokenResponse call(String username, String password) throws WebApiException {
 
         Request request = getHttpClient().POST(APIURL_OAUTH_TOKEN);
-
-        String secret = new String(Base64.getDecoder().decode(WEBAPI_SECRET_BASE64));
+        request.header("Content-Type", "application/json; utf-8");
 
         JsonObject jsonContent = new JsonObject();
         jsonContent.add("grant_type", new JsonPrimitive("password"));
-        jsonContent.add("client_secret", new JsonPrimitive(secret));
         jsonContent.add("username", new JsonPrimitive(username));
         jsonContent.add("password", new JsonPrimitive(password));
         jsonContent.add("scope", new JsonPrimitive("*"));
-        jsonContent.add("client_id", new JsonPrimitive("150da4d2-bb44-433b-9429-3773adc70a2a"));
-        jsonContent.add("type", new JsonPrimitive("app"));
+        jsonContent.add("client_id", new JsonPrimitive(CLIENT_ID));
 
-        request.content(new StringContentProvider(jsonContent.toString()), "application/json");
+        request.content(new StringContentProvider(jsonContent.toString()), CONTENT_PROVIDER);
 
         return callWebApi(request);
     }
@@ -76,19 +72,19 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
      * @return
      * @throws WebApiException
      */
-    public OauthTokenResponse refresh(String refreshToken) throws WebApiException {
+    public OauthTokenResponse refresh(WebApiAuth auth) throws WebApiException {
 
         Request request = getHttpClient().POST(APIURL_OAUTH_TOKEN);
-
-        String secret = new String(Base64.getDecoder().decode(WEBAPI_SECRET_BASE64));
+        // TODO NB
+        request.header("Authorization", auth.getAuthorization());
+        request.header("Content-Type", "application/json; utf-8");
 
         JsonObject jsonContent = new JsonObject();
         jsonContent.add("grant_type", new JsonPrimitive("refresh_token"));
-        jsonContent.add("client_secret", new JsonPrimitive(secret));
-        jsonContent.add("refresh_token", new JsonPrimitive(refreshToken));
-        jsonContent.add("client_id", new JsonPrimitive("150da4d2-bb44-433b-9429-3773adc70a2a"));
+        jsonContent.add("refresh_token", new JsonPrimitive(auth.getRefreshToken()));
+        jsonContent.add("client_id", new JsonPrimitive(CLIENT_ID));
 
-        request.content(new StringContentProvider(jsonContent.toString()), "application/json");
+        request.content(new StringContentProvider(jsonContent.toString()), CONTENT_PROVIDER);
 
         return callWebApi(request);
     }

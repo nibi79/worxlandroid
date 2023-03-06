@@ -13,19 +13,9 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 /**
- * {@link AWSClientCallback} Callback for AWS connection events
  *
- * @author Nils - Initial contribution
+ * @author Nils
  */
-public interface AWSClientCallback {
+public class AWSException extends Exception {
 
-    /**
-     * callback method on connection success
-     */
-    public void onAWSConnectionSuccess();
-
-    /**
-     * callback method on connection closed
-     */
-    public void onAWSConnectionClosed();
 }

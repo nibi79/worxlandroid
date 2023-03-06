@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,51 +12,43 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.amazonaws.services.iot.client.AWSIotMessage;
-import com.amazonaws.services.iot.client.AWSIotQos;
 
 /**
  * {@link AWSMessage} AWS message
  *
  * @author Nils - Initial contribution
  */
-@NonNullByDefault
-public class AWSMessage extends AWSIotMessage {
+public class AWSMessage implements AWSMessageI {
 
     private final Logger logger = LoggerFactory.getLogger(AWSMessage.class);
 
     public static final String EMPTY_PAYLOAD = "{}";
     public static final String CMD_START = String.format("{\"cmd\":%d}", WorxLandroidActionCodes.START.getCode());
 
+    private String topic;
+
+    private String payload;
+
     /**
      * @param topic
      * @param qos
      * @param payload
      */
-    public AWSMessage(String topic, AWSIotQos qos, String payload) {
-        super(topic, qos, payload);
+    public AWSMessage(String topic, String payload) {
+        this.topic = topic;
+        this.payload = payload;
     }
 
     @Override
-    public void onSuccess() {
-        // called when message publishing succeeded
-        logger.debug("AWS message publishing succeeded");
+    public String getTopic() {
+        return topic;
     }
 
     @Override
-    public void onFailure() {
-        // called when message publishing failed
-        logger.warn("AWS message publishing failed");
-    }
-
-    @Override
-    public void onTimeout() {
-        // called when message publishing timed out
-        logger.warn("AWS message publishing timed out");
+    public String getPayload() {
+        return payload;
     }
 }

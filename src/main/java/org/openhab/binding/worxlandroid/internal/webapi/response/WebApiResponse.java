@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -68,8 +69,7 @@ public abstract class WebApiResponse implements ApiResponse {
      * @return
      */
     public JsonObject getJsonResponseAsJsonObject() {
-
-        if (jsonResponse.isJsonObject()) {
+        if (!jsonResponse.isJsonArray() && jsonResponse.isJsonObject()) {
             return jsonResponse.getAsJsonObject();
         } else {
             logger.warn("Cannot get response as JsonObject");
@@ -101,6 +101,21 @@ public abstract class WebApiResponse implements ApiResponse {
     }
 
     /**
+     * Transfer json arrays to property map.
+     *
+     * @return the property map
+     */
+    public Map<String, String> getArrayDataAsPropertyMap() {
+        if (jsonResponse.isJsonArray()) {
+            // TODO handle this Array correct / hack use the first one
+            return getDataAsPropertyMap(null, "UNKNOWN", jsonResponse.getAsJsonArray().get(0).getAsJsonObject());
+        } else {
+            logger.warn("Cannot get response as Property Map");
+            return new HashMap<String, String>();
+        }
+    }
+
+    /**
      * Transfer json data (except arrays) to property map.
      *
      * @param props
@@ -116,6 +131,7 @@ public abstract class WebApiResponse implements ApiResponse {
 
         if (obj instanceof JsonObject) {
             JsonObject jsonObject = (JsonObject) obj;
+            // JsonArray jsonArray = jsonObject.getAsJsonArray();
             for (Entry<String, JsonElement> jsonEntry : jsonObject.entrySet()) {
                 getDataAsPropertyMap(props, jsonEntry.getKey(), jsonEntry.getValue());
             }
