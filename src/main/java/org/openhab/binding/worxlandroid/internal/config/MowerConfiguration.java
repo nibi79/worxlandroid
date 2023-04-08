@@ -21,6 +21,7 @@ public class MowerConfiguration {
 
     public int refreshStatusInterval = 60;
     public int pollingInterval = 300;
+    public int reconnectInterval = 300;
 
     public int getRefreshStatusInterval() {
         return refreshStatusInterval;
@@ -38,9 +39,17 @@ public class MowerConfiguration {
         this.pollingInterval = pollingInterval;
     }
 
+    public int getReconnectInterval() {
+        return reconnectInterval;
+    }
+
+    public void setReconnectInterval(int pollingInterval) {
+        this.reconnectInterval = reconnectInterval;
+    }
+
     @Override
     public String toString() {
-        return String.format("MowerConfiguration [pollingInterval='%d', refreshStatusInterval='%d']", pollingInterval,
-                refreshStatusInterval);
+        return String.format("MowerConfiguration [pollingInterval='%d', refreshStatusInterval='%d', reconnectInterval='%d']", pollingInterval,
+                refreshStatusInterval, reconnectInterval);
     }
 }
