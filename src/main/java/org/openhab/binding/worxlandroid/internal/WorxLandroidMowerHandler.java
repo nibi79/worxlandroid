@@ -397,7 +397,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, config.getPollingInterval(),
                 TimeUnit.SECONDS);
 
-        reconnectJob = scheduler.scheduleWithFixedDelay(reconnectRunnable, 60, config.getReconnectInterval(), TimeUnit.SECONDS);
+        reconnectJob = scheduler.scheduleWithFixedDelay(reconnectRunnable, 60, config.getReconnectInterval(),
+                TimeUnit.SECONDS);
     }
 
     /**

@@ -49,7 +49,8 @@ public class MowerConfiguration {
 
     @Override
     public String toString() {
-        return String.format("MowerConfiguration [pollingInterval='%d', refreshStatusInterval='%d', reconnectInterval='%d']", pollingInterval,
-                refreshStatusInterval, reconnectInterval);
+        return String.format(
+                "MowerConfiguration [pollingInterval='%d', refreshStatusInterval='%d', reconnectInterval='%d']",
+                pollingInterval, refreshStatusInterval, reconnectInterval);
     }
 }
