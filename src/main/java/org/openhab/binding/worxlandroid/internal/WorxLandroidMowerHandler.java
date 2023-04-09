@@ -85,6 +85,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     private @Nullable ScheduledFuture<?> refreshStatusJob;
     private @Nullable ScheduledFuture<?> pollingJob;
+    private @Nullable ScheduledFuture<?> reconnectJob;
 
     private boolean restoreZoneMeter = false;
     private int[] zoneMeterRestoreValues = {};
@@ -154,6 +155,21 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
             } catch (AWSException e) {
                 logger.error("PollingRunnable {}: {}", e.getLocalizedMessage(), mower.getSerialNumber());
+            }
+        }
+    };
+
+    /**
+     * Defines a runnable for a polling job.
+     * Polls AWS mqtt.
+     */
+    private Runnable reconnectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+            if (bridgeHandler != null) {
+                logger.info("reconnecting");
+                bridgeHandler.reconnectToWorx();
             }
         }
     };
@@ -380,6 +396,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
         pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, config.getPollingInterval(),
                 TimeUnit.SECONDS);
+
+        reconnectJob = scheduler.scheduleWithFixedDelay(reconnectRunnable, 60, config.getReconnectInterval(),
+                TimeUnit.SECONDS);
     }
 
     /**
@@ -408,6 +427,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
         if (pollingJob != null) {
             pollingJob.cancel(true);
+        }
+
+        if (reconnectJob != null) {
+            reconnectJob.cancel(true);
         }
     }
 

@@ -88,9 +88,16 @@
 				<required>true</required>
 			</parameter>
 
-			<parameter name="pollingInterval" unit="s" type="integer" min="30" max="599">
+			<parameter name="pollingInterval" unit="s" type="integer" min="30" max="7200">
 				<label>Polling interval</label>
-				<description>Interval for polling in seconds (after 10 minutes / 600 seconds of inactivity, the connection is
+				<description>Interval for polling in seconds</description>
+				<default>599</default>
+				<required>true</required>
+			</parameter>
+
+			<parameter name="reconnectInterval" unit="s" type="integer" min="30" max="599">
+				<label>Reconnect interval</label>
+				<description>Interval for reconnecting in seconds (after 10 minutes / 600 seconds of inactivity, the connection is
 					closed)</description>
 				<default>300</default>
 				<required>true</required>

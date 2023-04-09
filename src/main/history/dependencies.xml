@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="org.openhab.binding.worxlandroid-3.4.1">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="org.openhab.binding.worxlandroid-3.4.3-SNAPSHOT">
     <feature version="0.0.0">
         <feature>openhab-runtime-base</feature>
         <feature>wrap</feature>
         <bundle>mvn:com.fasterxml.jackson.core/jackson-core/2.12.0</bundle>
         <bundle>mvn:com.google.code.gson/gson/2.10.1</bundle>
-        <bundle>mvn:org.openhab.addons.bundles/org.openhab.binding.worxlandroid/3.4.1</bundle>
+        <bundle>mvn:org.openhab.addons.bundles/org.openhab.binding.worxlandroid/3.4.3-SNAPSHOT</bundle>
         <bundle>wrap:mvn:org.lastnpe.eea/eea-all/2.2.1</bundle>
         <bundle>wrap:mvn:software.amazon.awssdk.crt/aws-crt/0.21.7</bundle>
         <bundle>wrap:mvn:software.amazon.awssdk.iotdevicesdk/aws-iot-device-sdk/1.11.5</bundle>
