@@ -14,7 +14,6 @@ package org.openhab.binding.worxlandroid.internal;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -56,8 +55,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
     private @Nullable MowerDiscoveryService discoveryService;
 
     private @Nullable AWSClientI awsClient;
-
-    private @Nullable ScheduledFuture<?> refreshConnectionTokenJob;
 
     /**
      * Defines a runnable for a discovery
@@ -147,8 +144,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
                 logger.debug("AWS connected: {}", awsConnected);
 
                 // TODO NB start referesh token job, maybe expire_in and one shot instead of use periodic trigger
-                refreshConnectionTokenJob = scheduler.scheduleWithFixedDelay(refreshConnectionToken, 60, 60,
-                        TimeUnit.SECONDS);
+                scheduler.scheduleWithFixedDelay(refreshConnectionToken, 60, 60, TimeUnit.SECONDS);
 
                 // Trigger discovery of mowers
                 scheduler.submit(runnable);
@@ -266,7 +262,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
 
     @Override
     public void onAWSConnectionSuccess() {
-        logger.debug("AWS connection success");
+        logger.debug("AWS connection is available");
         if (!isBridgeOnline()) {
             updateStatus(ThingStatus.ONLINE);
         }

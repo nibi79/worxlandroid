@@ -61,7 +61,7 @@ public class ProductItemsResponse extends WebApiResponse {
                     if (jsonElement.isJsonObject()) {
                         JsonObject jsonObject = jsonElement.getAsJsonObject();
                         String id = jsonObject.get("serial_number").getAsString();
-                        if (id != null && id.equals(serialNumber)) {
+                        if (id.equals(serialNumber)) {
                             return jsonObject;
                         }
                     }

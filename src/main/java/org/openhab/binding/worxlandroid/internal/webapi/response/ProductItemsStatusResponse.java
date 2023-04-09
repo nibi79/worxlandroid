@@ -13,8 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The {@link ProductItemsStatusResponse} class
@@ -24,8 +22,6 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class ProductItemsStatusResponse extends WebApiResponse {
-
-    private final Logger logger = LoggerFactory.getLogger(ProductItemsStatusResponse.class);
 
     /**
      * @param jsonResponse

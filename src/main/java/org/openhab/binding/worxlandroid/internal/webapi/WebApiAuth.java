@@ -95,11 +95,10 @@ public class WebApiAuth {
             return false;
         }
 
-        if (c != null) {
-            if (LocalDateTime.now().isAfter(c)) {
-                return false;
-            }
+        if (LocalDateTime.now().isAfter(c)) {
+            return false;
         }
+
         return true;
     }
 

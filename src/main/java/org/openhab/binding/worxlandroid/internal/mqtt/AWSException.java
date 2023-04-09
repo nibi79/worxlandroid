@@ -18,4 +18,8 @@ package org.openhab.binding.worxlandroid.internal.mqtt;
  */
 public class AWSException extends Exception {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 }

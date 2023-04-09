@@ -13,17 +13,17 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.common.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,6 @@ public class AWSClient implements AWSClientI {
     private HashSet<AWSTopicI> subscriptions = new HashSet<>();
 
     protected final ScheduledExecutorService scheduler = ThreadPoolManager.getScheduledPool("AWSClient");
-    private @Nullable ScheduledFuture<?> checkImmediatlyResumedJob;
 
     private Runnable checkImmediatlyResumed = new Runnable() {
         @Override
@@ -102,9 +101,10 @@ public class AWSClient implements AWSClientI {
         String customAuthorizerSig = tok[2];
         String jwt = tok[0] + "." + tok[1];
 
-        connection = AwsIotMqttConnectionBuilder.newDefaultBuilder().withWebsockets(true).withClientId(clientId)
-                .withCleanSession(false).withEndpoint(endpoint).withUsername(usernameMqtt)
-                .withConnectionEventCallbacks(this)// .withKeepAliveSecs(60)
+        connection = AwsIotMqttConnectionBuilder.newDefaultBuilder()
+                .withCustomAuthorizer(usernameMqtt, customAuthorizerName, customAuthorizerSig, null)
+                .withWebsockets(true).withClientId(clientId).withCleanSession(false).withEndpoint(endpoint)
+                .withUsername(usernameMqtt).withConnectionEventCallbacks(this).withKeepAliveSecs(1200)
                 .withWebsocketHandshakeTransform((handshakeArgs) -> {
                     HttpRequest httpRequest = handshakeArgs.getHttpRequest();
                     httpRequest.addHeader("x-amz-customauthorizer-name", customAuthorizerName);
@@ -154,8 +154,7 @@ public class AWSClient implements AWSClientI {
 
         logger.debug("connection interrupted errorcode: {}", errorCode);
         if (errorCode != 0) {
-            disconnect();
-            checkImmediatlyResumedJob = scheduler.schedule(checkImmediatlyResumed, 5, TimeUnit.SECONDS);
+            scheduler.schedule(checkImmediatlyResumed, 10, TimeUnit.SECONDS);
         }
     }
 
@@ -179,10 +178,8 @@ public class AWSClient implements AWSClientI {
     @Override
     public void onConnectionResumed(boolean sessionPresent) {
         lastResumed = LocalDateTime.now();
+        logger.debug("last connection resume {}", lastResumed);
         clientCallback.onAWSConnectionSuccess();
-        // TODO NB
-        // resubsribeTopics();
-        logger.debug("connection resumed {}", lastResumed);
     }
 
     @Override

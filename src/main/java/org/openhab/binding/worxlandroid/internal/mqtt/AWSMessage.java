@@ -13,8 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link AWSMessage} AWS message
@@ -22,8 +20,6 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  */
 public class AWSMessage implements AWSMessageI {
-
-    private final Logger logger = LoggerFactory.getLogger(AWSMessage.class);
 
     public static final String EMPTY_PAYLOAD = "{}";
     public static final String CMD_START = String.format("{\"cmd\":%d}", WorxLandroidActionCodes.START.getCode());

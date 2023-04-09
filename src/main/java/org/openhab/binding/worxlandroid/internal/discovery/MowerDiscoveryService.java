@@ -88,9 +88,6 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
         try {
             WorxLandroidWebApiImpl apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
-            if (apiHandler == null) {
-                return;
-            }
 
             ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
 
@@ -98,25 +95,23 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
                 JsonArray mowers = productItemsResponse.getJsonResponse().getAsJsonArray();
                 ThingUID bridgeUID = bridgeHandler.getThing().getUID();
 
-                if (mowers != null) {
-                    for (JsonElement mowerElement : mowers) {
-                        if (mowerElement.isJsonObject()) {
-                            JsonObject mower = mowerElement.getAsJsonObject();
+                for (JsonElement mowerElement : mowers) {
+                    if (mowerElement.isJsonObject()) {
+                        JsonObject mower = mowerElement.getAsJsonObject();
 
-                            String serialNumber = mower.get("serial_number").getAsString();
+                        String serialNumber = mower.get("serial_number").getAsString();
 
-                            ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, serialNumber);
+                        ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, serialNumber);
 
-                            Map<String, Object> properties = null;
+                        Map<String, Object> properties = null;
 
-                            DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                                    .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
-                                    .withLabel(mower.get("name").getAsString()).build();
+                        DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                                .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
+                                .withLabel(mower.get("name").getAsString()).build();
 
-                            thingDiscovered(discoveryResult);
+                        thingDiscovered(discoveryResult);
 
-                            logger.debug("Discovered a mower thing with ID '{}'", serialNumber);
-                        }
+                        logger.debug("Discovered a mower thing with ID '{}'", serialNumber);
                     }
                 }
             }

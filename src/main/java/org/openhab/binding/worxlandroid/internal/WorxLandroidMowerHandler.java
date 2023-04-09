@@ -662,6 +662,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         ScheduledDay scheduledDayUpdated = scDaysSlot == 1 ? mower.getScheduledDay(dayCodeUpdated)
                 : mower.getScheduledDay2(dayCodeUpdated);
 
+        if (scheduledDayUpdated == null) {
+            return;
+        }
+
         String chName = channelUID.getId().split("#")[1];
         switch (chName) {
             case CHANNELNAME_SC_ENABLE_SUFFIX:
@@ -731,6 +735,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             JsonArray scDay = new JsonArray();
             ScheduledDay scheduledDay = scDSlot == 1 ? mower.getScheduledDay(dayCode) : mower.getScheduledDay2(dayCode);
 
+            if (scheduledDay == null) {
+                return jsonArray;
+            }
+
             String minutes = scheduledDay.getMinutes() < 10 ? "0" + scheduledDay.getMinutes()
                     : String.valueOf(scheduledDay.getMinutes());
             scDay.add(String.format("%d:%s", scheduledDay.getHour(), minutes));
@@ -771,8 +779,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         logger.debug("send command: {}", cmd);
 
         WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
-        AWSMessage message = new AWSMessage(mqttCommandIn, cmd);
-        bridgeHandler.publishMessage(message);
+
+        if (bridgeHandler != null) {
+            AWSMessage message = new AWSMessage(mqttCommandIn, cmd);
+            bridgeHandler.publishMessage(message);
+        }
     }
 
     @Override
@@ -780,7 +791,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
         updateStatus(ThingStatus.ONLINE);
 
-        JsonElement jsonElement = new JsonParser().parse(message.getPayload());
+        JsonElement jsonElement = JsonParser.parseString(message.getPayload());
 
         if (jsonElement.isJsonObject()) {
             processStatusMessage(jsonElement.getAsJsonObject());
@@ -1117,6 +1128,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             JsonArray shedule = scDJson.get(dayCode.getCode()).getAsJsonArray();
 
             ScheduledDay scheduledDay = scDSlot == 1 ? mower.getScheduledDay(dayCode) : mower.getScheduledDay2(dayCode);
+
+            if (scheduledDay == null) {
+                return;
+            }
+
             String channelNamePrefix = String.format("%s%s%s", CHANNELNAME_SC_PREFIX, dayCode.getDescription(),
                     scDSlot == 1 ? "" : String.valueOf(scDSlot));
 
