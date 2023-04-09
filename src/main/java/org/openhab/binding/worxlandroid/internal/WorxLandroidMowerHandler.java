@@ -385,20 +385,29 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     }
 
     /**
-     * Start scheduled jobs
+     * Start scheduled jobs.
+     * Jobs are only started if interval > 0
      */
     private void startScheduledJobs() {
 
         MowerConfiguration config = getConfigAs(MowerConfiguration.class);
 
-        refreshStatusJob = scheduler.scheduleWithFixedDelay(refreshStatusRunnable, 30,
-                config.getRefreshStatusInterval(), TimeUnit.SECONDS);
+        int refreshStatusInterval = config.getRefreshStatusInterval();
+        if (refreshStatusInterval > 0) {
+            refreshStatusJob = scheduler.scheduleWithFixedDelay(refreshStatusRunnable, 30, refreshStatusInterval,
+                    TimeUnit.SECONDS);
+        }
 
-        pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, config.getPollingInterval(),
-                TimeUnit.SECONDS);
+        int pollingIntervall = config.getPollingInterval();
+        if (pollingIntervall > 0) {
+            pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, config.getPollingInterval(),
+                    TimeUnit.SECONDS);
+        }
 
-        reconnectJob = scheduler.scheduleWithFixedDelay(reconnectRunnable, 60, config.getReconnectInterval(),
-                TimeUnit.SECONDS);
+        int reconnectInterval = config.getReconnectInterval();
+        if (reconnectInterval > 0) {
+            reconnectJob = scheduler.scheduleWithFixedDelay(reconnectRunnable, 60, reconnectInterval, TimeUnit.SECONDS);
+        }
     }
 
     /**

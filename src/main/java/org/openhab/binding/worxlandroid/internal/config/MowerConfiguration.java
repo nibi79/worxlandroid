@@ -19,9 +19,9 @@ package org.openhab.binding.worxlandroid.internal.config;
  */
 public class MowerConfiguration {
 
-    public int refreshStatusInterval = 60;
-    public int pollingInterval = 300;
-    public int reconnectInterval = 300;
+    public int refreshStatusInterval = 600;
+    public int pollingInterval = 3600;
+    public int reconnectInterval = 0;
 
     public int getRefreshStatusInterval() {
         return refreshStatusInterval;
@@ -43,7 +43,7 @@ public class MowerConfiguration {
         return reconnectInterval;
     }
 
-    public void setReconnectInterval(int pollingInterval) {
+    public void setReconnectInterval(int reconnectInterval) {
         this.reconnectInterval = reconnectInterval;
     }
 

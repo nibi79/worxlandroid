@@ -13,8 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashSet;
