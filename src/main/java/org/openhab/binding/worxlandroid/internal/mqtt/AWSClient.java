@@ -102,7 +102,7 @@ public class AWSClient implements AWSClientI {
         connection = AwsIotMqttConnectionBuilder.newDefaultBuilder()
                 .withCustomAuthorizer(usernameMqtt, customAuthorizerName, customAuthorizerSig, null)
                 .withWebsockets(true).withClientId(clientId).withCleanSession(false).withEndpoint(endpoint)
-                .withUsername(usernameMqtt).withConnectionEventCallbacks(this).withKeepAliveSecs(1200)
+                .withUsername(usernameMqtt).withConnectionEventCallbacks(this)// .withKeepAliveSecs(600)
                 .withWebsocketHandshakeTransform((handshakeArgs) -> {
                     HttpRequest httpRequest = handshakeArgs.getHttpRequest();
                     httpRequest.addHeader("x-amz-customauthorizer-name", customAuthorizerName);
