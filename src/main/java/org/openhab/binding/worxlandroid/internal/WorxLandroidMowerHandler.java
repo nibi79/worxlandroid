@@ -168,7 +168,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         public void run() {
             WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
             if (bridgeHandler != null) {
-                logger.info("reconnecting");
+                logger.debug("reconnecting");
                 bridgeHandler.reconnectToWorx();
             }
         }
