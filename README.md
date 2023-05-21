@@ -57,6 +57,16 @@ Following options can be set for the **WorxLandroid Mower**:
 | pollingInterval | Interval for polling in seconds (min="30" max="7200"). |
 | reconnectInterval | Interval for reconnecting to AWS in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
 
+In order to prevent a 24h ban from worx, the following recommended settings seem to work:
+| Property  | Value |
+|-----------|-----------|
+| refreshStatusInterval | 1200 |
+| pollingInterval | 3600 |
+| reconnectInterval | 0 |
+
+Lower polling and refresh values will likely result in a 24h ban for your account.
+
+
 ## Properties
 
 The binding retrieves properties from the API. To view the properties open the thing in PaperUI and click on 'SHOW PROPERTIES':
