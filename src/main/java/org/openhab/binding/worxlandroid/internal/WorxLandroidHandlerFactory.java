@@ -14,13 +14,10 @@ package org.openhab.binding.worxlandroid.internal;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.*;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
@@ -48,8 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(configurationPid = "binding.worxlandroid", service = ThingHandlerFactory.class)
 public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections
-            .unmodifiableSet(Stream.of(THING_TYPE_MOWER, THING_TYPE_BRIDGE).collect(Collectors.toSet()));
+    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_MOWER, THING_TYPE_BRIDGE);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private HttpClient httpClient;
 

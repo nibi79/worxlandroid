@@ -124,22 +124,19 @@ public abstract class WebApiResponse implements ApiResponse {
      * @return the property map
      */
     protected Map<String, String> getDataAsPropertyMap(@Nullable Map<String, String> props, String key, Object obj) {
-
-        if (props == null) {
-            props = new LinkedHashMap<>();
-        }
+        Map<String, String> result = (props == null) ? new LinkedHashMap<>() : props;
 
         if (obj instanceof JsonObject) {
             JsonObject jsonObject = (JsonObject) obj;
             // JsonArray jsonArray = jsonObject.getAsJsonArray();
             for (Entry<String, JsonElement> jsonEntry : jsonObject.entrySet()) {
-                getDataAsPropertyMap(props, jsonEntry.getKey(), jsonEntry.getValue());
+                getDataAsPropertyMap(result, jsonEntry.getKey(), jsonEntry.getValue());
             }
         } else if (obj instanceof JsonPrimitive) {
-            props.put(key, ((JsonPrimitive) obj).getAsString());
+            result.put(key, ((JsonPrimitive) obj).getAsString());
         } else if (obj instanceof JsonNull) {
-            props.put(key, "");
+            result.put(key, "");
         }
-        return props;
+        return result;
     }
 }

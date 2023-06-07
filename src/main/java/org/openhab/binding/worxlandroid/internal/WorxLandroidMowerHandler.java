@@ -79,7 +79,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private Mower mower = new Mower("NOT_INITIALIZED");
     private @Nullable WorxLandroidWebApiImpl apiHandler;
 
-    @SuppressWarnings("unused")
     private @Nullable AWSTopic awsTopic;
     private @Nullable String mqttCommandIn;
 
@@ -185,8 +184,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @return
      */
     private boolean isBridgeOnline() {
-
-        return getWorxLandroidBridgeHandler().isBridgeOnline();
+        WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+        return bridgeHandler != null ? bridgeHandler.isBridgeOnline() : false;
     }
 
     @SuppressWarnings("null")
@@ -454,7 +453,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         if (ThingStatus.ONLINE.equals(bridgeStatusInfo.getStatus())) {
             try {
                 // awsTopic = new AWSTopic(awsTopic.getTopic(), this);
-                getWorxLandroidBridgeHandler().subcribeTopic(awsTopic);
+                WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+                if (bridgeHandler != null) {
+                    bridgeHandler.subcribeTopic(awsTopic);
+                }
             } catch (AWSException e) {
 
             }

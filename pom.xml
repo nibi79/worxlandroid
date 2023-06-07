@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.openhab.addons.bundles</groupId>
     <artifactId>org.openhab.addons.reactor.bundles</artifactId>
-    <version>3.4.1</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>org.openhab.binding.worxlandroid</artifactId>
@@ -27,11 +27,6 @@
       <version>0.21.11</version>
     </dependency>
 
-    <!-- nicht nötig für 4.0.0 -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.10.1</version>
-    </dependency>
   </dependencies>
+
 </project>

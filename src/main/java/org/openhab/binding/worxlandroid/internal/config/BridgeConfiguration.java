@@ -12,17 +12,21 @@
  */
 package org.openhab.binding.worxlandroid.internal.config;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * The {@link BridgeConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class BridgeConfiguration {
 
-    public String webapiUsername;
-    public String webapiPassword;
+    public @Nullable String webapiUsername;
+    public @Nullable String webapiPassword;
 
-    public String getWebapiUsername() {
+    public @Nullable String getWebapiUsername() {
         return webapiUsername;
     }
 
@@ -30,7 +34,7 @@ public class BridgeConfiguration {
         this.webapiUsername = webapiUsername;
     }
 
-    public String getWebapiPassword() {
+    public @Nullable String getWebapiPassword() {
         return webapiPassword;
     }
 

@@ -46,8 +46,7 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(MowerDiscoveryService.class);
 
-    @Nullable
-    private WorxLandroidBridgeHandler bridgeHandler = null;
+    private @Nullable WorxLandroidBridgeHandler bridgeHandler = null;
 
     /**
      * Maximum time to search for devices in seconds.
@@ -77,23 +76,23 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
-
-        if (bridgeHandler == null) {
+        WorxLandroidBridgeHandler localBridgeHandler = bridgeHandler;
+        if (localBridgeHandler == null) {
             return;
         }
         // Trigger no scan if offline
-        if (bridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
+        if (localBridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
             return;
         }
 
         try {
-            WorxLandroidWebApiImpl apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
+            WorxLandroidWebApiImpl apiHandler = localBridgeHandler.getWorxLandroidWebApiImpl();
 
             ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
 
             if (productItemsResponse.getJsonResponse().isJsonArray()) {
                 JsonArray mowers = productItemsResponse.getJsonResponse().getAsJsonArray();
-                ThingUID bridgeUID = bridgeHandler.getThing().getUID();
+                ThingUID bridgeUID = localBridgeHandler.getThing().getUID();
 
                 for (JsonElement mowerElement : mowers) {
                     if (mowerElement.isJsonObject()) {
@@ -106,7 +105,7 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
                         Map<String, Object> properties = null;
 
                         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                                .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
+                                .withProperties(properties).withBridge(localBridgeHandler.getThing().getUID())
                                 .withLabel(mower.get("name").getAsString()).build();
 
                         thingDiscovered(discoveryResult);

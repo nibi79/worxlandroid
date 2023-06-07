@@ -102,56 +102,65 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
 
             BridgeConfiguration config = getConfigAs(BridgeConfiguration.class);
             logger.debug("try to connect to API...");
-            boolean connected = apiHandler.connect(config.getWebapiUsername(), config.getWebapiPassword());
-            if (!connected) {
-                logger.debug("API not connected - retry...");
-                connected = apiHandler.connect(config.getWebapiUsername(), config.getWebapiPassword());
-            }
-
-            logger.debug("API connected: {}", connected);
-
-            if (connected) {
-
-                UsersMeResponse usersMeResponse = apiHandler.retrieveWebInfo();
-
-                Map<String, String> props = usersMeResponse.getDataAsPropertyMap();
-                @Nullable
-                String userId = props.get("id");
-
-                if (userId == null) {
-                    // TODO NB
-                    return;
+            String username = config.getWebapiUsername();
+            String password = config.getWebapiPassword();
+            if (username != null && password != null) {
+                boolean connected = apiHandler.connect(username, password);
+                if (!connected) {
+                    logger.debug("API not connected - retry...");
+                    connected = apiHandler.connect(username, password);
                 }
 
-                updateThing(editThing().withProperties(props).build());
+                logger.debug("API connected: {}", connected);
 
-                ProductItemsStatusResponse productItemsStatusResponse = apiHandler.retrieveDeviceStatus(userId);
-                Map<String, String> firstDeviceProps = productItemsStatusResponse.getArrayDataAsPropertyMap();
+                if (connected) {
 
-                @Nullable
-                String awsMqttEndpoint = firstDeviceProps.get("mqtt_endpoint");
-                @Nullable
-                String deviceId = firstDeviceProps.get("uuid");
-                String customAuthorizerName = "com-worxlandroid-customer";
-                String usernameMqtt = "openhab";
-                String clientId = String.format("WX/USER/%s/%s/%s", userId, usernameMqtt, deviceId);
+                    UsersMeResponse usersMeResponse = apiHandler.retrieveWebInfo();
 
-                awsClient = new AWSClient(awsMqttEndpoint, clientId, this, usernameMqtt, customAuthorizerName,
-                        apiHandler.getAccessToken());
+                    Map<String, String> props = usersMeResponse.getDataAsPropertyMap();
+                    @Nullable
+                    String userId = props.get("id");
 
-                logger.debug("try to connect to AWS...");
-                boolean awsConnected = awsClient.connect();
-                logger.debug("AWS connected: {}", awsConnected);
+                    if (userId == null) {
+                        // TODO NB
+                        return;
+                    }
 
-                // TODO NB start referesh token job, maybe expire_in and one shot instead of use periodic trigger
-                scheduler.scheduleWithFixedDelay(refreshConnectionToken, 60, 60, TimeUnit.SECONDS);
+                    updateThing(editThing().withProperties(props).build());
 
-                // Trigger discovery of mowers
-                scheduler.submit(runnable);
+                    ProductItemsStatusResponse productItemsStatusResponse = apiHandler.retrieveDeviceStatus(userId);
+                    Map<String, String> firstDeviceProps = productItemsStatusResponse.getArrayDataAsPropertyMap();
 
+                    @Nullable
+                    String awsMqttEndpoint = firstDeviceProps.get("mqtt_endpoint");
+                    @Nullable
+                    String deviceId = firstDeviceProps.get("uuid");
+                    String customAuthorizerName = "com-worxlandroid-customer";
+                    String usernameMqtt = "openhab";
+                    String clientId = String.format("WX/USER/%s/%s/%s", userId, usernameMqtt, deviceId);
+
+                    AWSClient localAwsClient = new AWSClient(awsMqttEndpoint, clientId, this, usernameMqtt,
+                            customAuthorizerName, apiHandler.getAccessToken());
+                    awsClient = localAwsClient;
+
+                    logger.debug("try to connect to AWS...");
+                    boolean awsConnected = localAwsClient.connect();
+
+                    logger.debug("AWS connected: {}", awsConnected);
+
+                    // TODO NB start referesh token job, maybe expire_in and one shot instead of use periodic trigger
+                    scheduler.scheduleWithFixedDelay(refreshConnectionToken, 60, 60, TimeUnit.SECONDS);
+
+                    // Trigger discovery of mowers
+                    scheduler.submit(runnable);
+
+                } else {
+                    updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.COMMUNICATION_ERROR,
+                            "Error connecting to Worx Landroid WebApi!");
+                }
             } else {
-                updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.COMMUNICATION_ERROR,
-                        "Error connecting to Worx Landroid WebApi!");
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                        "Username and Password are mandatory.");
             }
         } catch (WebApiException | UnsupportedEncodingException e) {
             logger.error("Iniialization error - class: {}", e.getClass().getName());
@@ -208,10 +217,10 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
                     apiHandler.refreshToken();
                 }
             }
-
-            if (apiHandler.isTokenValid()) {
+            AWSClientI localAwsClient = awsClient;
+            if (apiHandler.isTokenValid() && localAwsClient != null) {
                 logger.debug("try to reconnect to AWS...");
-                boolean connected = awsClient.refreshConnection(apiHandler.getAccessToken());
+                boolean connected = localAwsClient.refreshConnection(apiHandler.getAccessToken());
                 logger.debug("AWS reconnected: {}", connected);
                 return connected;
             }
@@ -235,12 +244,13 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
         if (awsTopic == null) {
             return;
         }
-        if (awsClient == null) {
+        AWSClientI localAwsClient = awsClient;
+        if (localAwsClient == null) {
             logger.error("MqttClient is not initialized. Cannot subsribe to topic -> {}", awsTopic.getTopic());
             return;
         }
         logger.debug("subsribe to topic -> {}", awsTopic.getTopic());
-        awsClient.subscribe(awsTopic);
+        localAwsClient.subscribe(awsTopic);
     }
 
     /**

@@ -15,6 +15,7 @@ package org.openhab.binding.worxlandroid.internal.webapi.request;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -50,10 +51,12 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public WebApiRequest(HttpClient httpClient) {
         super();
+        Type superClass = getClass().getGenericSuperclass();
+        if (superClass == null) {
+            throw new IllegalArgumentException("Generic superclass should not be null.");
+        }
 
-        this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
-                .getActualTypeArguments()[0]);
-
+        this.typeParameterClass = ((Class) ((ParameterizedType) superClass).getActualTypeArguments()[0]);
         this.httpClient = httpClient;
     }
 
