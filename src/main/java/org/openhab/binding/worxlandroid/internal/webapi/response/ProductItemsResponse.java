@@ -31,7 +31,6 @@ import com.google.gson.JsonObject;
  */
 @NonNullByDefault
 public class ProductItemsResponse extends WebApiResponse {
-
     private final Logger logger = LoggerFactory.getLogger(ProductItemsResponse.class);
 
     /**
@@ -48,13 +47,10 @@ public class ProductItemsResponse extends WebApiResponse {
      * @return
      */
     public @Nullable JsonObject getMowerDataById(@Nullable String serialNumber) {
-
         if (serialNumber != null) {
-
             JsonElement jsonResponse = getJsonResponse();
 
             if (jsonResponse.isJsonArray()) {
-
                 JsonArray jsonArray = jsonResponse.getAsJsonArray();
                 for (JsonElement jsonElement : jsonArray) {
 
@@ -77,7 +73,6 @@ public class ProductItemsResponse extends WebApiResponse {
      * @return
      */
     public Map<String, String> getDataAsPropertyMap(@Nullable String serialNumber) {
-
         JsonObject jsonObject = getMowerDataById(serialNumber);
         jsonObject = jsonObject == null ? EMPTY_JSON_OBJECT : jsonObject;
 

@@ -21,7 +21,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.common.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,21 +38,21 @@ import software.amazon.awssdk.iot.AwsIotMqttConnectionBuilder;
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class AWSClient implements AWSClientI {
     private final Logger logger = LoggerFactory.getLogger(AWSClient.class);
 
     private static final QualityOfService QOS = QualityOfService.AT_MOST_ONCE;
-    private MqttClientConnection connection;
+    private @Nullable MqttClientConnection connection;
     private AWSClientCallback clientCallback;
-    private String endpoint;
+    private @Nullable String endpoint;
 
     private String clientId;
     private String usernameMqtt;
     private String customAuthorizerName;
 
-    private LocalDateTime lastResumed;
-    private LocalDateTime interrupted;
-    private CompletableFuture<Boolean> connected;
+    private @Nullable LocalDateTime lastResumed;
+    private @Nullable LocalDateTime interrupted;
     private HashSet<AWSTopicI> subscriptions = new HashSet<>();
 
     protected final ScheduledExecutorService scheduler = ThreadPoolManager.getScheduledPool("AWSClient");
@@ -75,8 +76,8 @@ public class AWSClient implements AWSClientI {
      * @param jwt
      * @throws UnsupportedEncodingException
      */
-    public AWSClient(String clientEndpoint, String clientId, AWSClientCallback clientCallback, String usernameMqtt,
-            String customAuthorizerName, String token) throws UnsupportedEncodingException {
+    public AWSClient(@Nullable String clientEndpoint, String clientId, AWSClientCallback clientCallback,
+            String usernameMqtt, String customAuthorizerName, String token) throws UnsupportedEncodingException {
         this.clientCallback = clientCallback;
         this.endpoint = clientEndpoint;
         this.clientId = clientId;
@@ -109,7 +110,7 @@ public class AWSClient implements AWSClientI {
     }
 
     @Override
-    public String getEndpoint() {
+    public @Nullable String getEndpoint() {
         return endpoint;
     }
 
@@ -125,18 +126,19 @@ public class AWSClient implements AWSClientI {
 
     @Override
     public boolean connect() {
-        try {
-            connected = connection.connect();
+        MqttClientConnection localConnection = connection;
+        if (localConnection != null) {
+            try {
+                CompletableFuture<Boolean> connected = localConnection.connect();
+                boolean sessionPresent = connected.get();
+                logger.debug("connected to {} session!", (!sessionPresent ? "new" : "existing"));
+                onConnectionResumed(sessionPresent);
 
-            boolean sessionPresent = connected.get();
-            logger.debug("connected to {} session!", (!sessionPresent ? "new" : "existing"));
-            onConnectionResumed(sessionPresent);
-
-            return true;
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error("Exception: {}", e.getLocalizedMessage());
+                return true;
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Exception: {}", e.getLocalizedMessage());
+            }
         }
-
         return false;
     }
 
@@ -158,12 +160,16 @@ public class AWSClient implements AWSClientI {
      */
     private boolean isImmediatlyResumed() {
         // is lastResumed betweeen interrupted und now?
-        logger.debug("lastResumed: {}  interrupted {} im: {}", lastResumed, interrupted,
-                lastResumed != null && lastResumed.isAfter(interrupted) && lastResumed.isBefore(LocalDateTime.now()));
-        if (lastResumed != null && lastResumed.isAfter(interrupted) && lastResumed.isBefore(LocalDateTime.now())) {
-            return true;
+        LocalDateTime localInterrupted = interrupted;
+        LocalDateTime localLastResumed = lastResumed;
+        if (localInterrupted != null && localLastResumed != null) {
+            logger.debug("lastResumed: {}  interrupted {} im: {}", lastResumed, interrupted, lastResumed != null
+                    && lastResumed.isAfter(localInterrupted) && localLastResumed.isBefore(LocalDateTime.now()));
+            if (lastResumed != null && lastResumed.isAfter(localInterrupted)
+                    && localLastResumed.isBefore(LocalDateTime.now())) {
+                return true;
+            }
         }
-
         return false;
     }
 
@@ -175,35 +181,43 @@ public class AWSClient implements AWSClientI {
     }
 
     @Override
-    public CompletableFuture<Void> disconnect() {
+    public @Nullable CompletableFuture<Void> disconnect() {
         unsubsribeTopics();
-        return connection.disconnect();
+        MqttClientConnection localConnection = connection;
+        return localConnection != null ? localConnection.disconnect() : null;
     }
 
     @Override
-    public void subscribe(@NonNull AWSTopicI awsTopic) {
+    public void subscribe(AWSTopicI awsTopic) {
         subscriptions.add(awsTopic);
-        connection.subscribe(awsTopic.getTopic(), QOS, t -> awsTopic.onMessage(t));
+        MqttClientConnection localConnection = connection;
+        if (localConnection != null) {
+            localConnection.subscribe(awsTopic.getTopic(), QOS, t -> awsTopic.onMessage(t));
+        }
     }
 
     @Override
     public void publish(AWSMessageI awsMessageI) {
-        byte[] bytes = awsMessageI.getPayload().getBytes(StandardCharsets.UTF_8);
-        MqttMessage mqttMessage = new MqttMessage(awsMessageI.getTopic(), bytes, QOS);
+        MqttClientConnection localConnection = connection;
+        if (localConnection != null) {
+            byte[] bytes = awsMessageI.getPayload().getBytes(StandardCharsets.UTF_8);
+            MqttMessage mqttMessage = new MqttMessage(awsMessageI.getTopic(), bytes, QOS);
 
-        connection.publish(mqttMessage);
+            localConnection.publish(mqttMessage);
+        }
     }
 
     @Override
     public boolean refreshConnection(String token) throws UnsupportedEncodingException {
-        if (connection == null) {
+        MqttClientConnection localConnection = connection;
+        if (localConnection == null) {
             return false;
         }
 
         logger.debug("reconnecting...");
 
         disconnect();
-        connection.close();
+        localConnection.close();
 
         createNewConnection(token);
         boolean result = connect();
@@ -220,8 +234,11 @@ public class AWSClient implements AWSClientI {
     }
 
     private void unsubsribeTopics() {
-        for (AWSTopicI awsTopic : subscriptions) {
-            connection.unsubscribe(awsTopic.getTopic());
+        MqttClientConnection localConnection = connection;
+        if (localConnection != null) {
+            for (AWSTopicI awsTopic : subscriptions) {
+                localConnection.unsubscribe(awsTopic.getTopic());
+            }
         }
     }
 }

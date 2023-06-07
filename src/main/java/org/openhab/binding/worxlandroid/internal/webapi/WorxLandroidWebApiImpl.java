@@ -60,10 +60,10 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
     public boolean connect(String username, String password) {
         try {
             OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
-            authResponse = authRequest.call(username, password);
-
-            apiAuth = new WebApiAuth(authResponse.getAccessType(), authResponse.getAccessToken(),
-                    authResponse.getRefreshToken(), authResponse.getExpiresIn());
+            OauthTokenResponse localAuthResponse = authRequest.call(username, password);
+            authResponse = localAuthResponse;
+            apiAuth = new WebApiAuth(authResponse.getAccessType(), localAuthResponse.getAccessToken(),
+                    localAuthResponse.getRefreshToken(), localAuthResponse.getExpiresIn());
 
             return true;
 
@@ -73,93 +73,95 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
         }
     }
 
-    /**
-     * @return
-     */
-    public String getAccessToken() {
-        // TODO NB
-        return apiAuth.getAccessToken();
+    public @Nullable String getAccessToken() {
+        WebApiAuth localApiAuth = apiAuth;
+        return localApiAuth != null ? localApiAuth.getAccessToken() : null;
     }
 
-    /**
-     * @return
-     */
     public boolean isTokenValid() {
-        // TODO NB
-        return apiAuth.isTokenValid();
+        WebApiAuth localApiAuth = apiAuth;
+        return localApiAuth != null ? localApiAuth.isTokenValid() : false;
     }
 
     @Override
     public boolean refreshToken() {
-        // TODO NB
-        logger.debug("refreshToken -> token is: {}", apiAuth.isTokenValid());
-        if (!apiAuth.isTokenValid()) {
-            try {
-                OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
-                OauthTokenResponse authResponse = authRequest.refresh(apiAuth);
+        WebApiAuth localApiAuth = apiAuth;
+        if (localApiAuth != null) {
+            logger.debug("refreshToken -> token is: {}", localApiAuth.isTokenValid());
+            if (!localApiAuth.isTokenValid()) {
+                try {
+                    OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
+                    OauthTokenResponse authResponse = authRequest.refresh(localApiAuth);
 
-                apiAuth.setAccessToken(authResponse.getAccessToken());
-                apiAuth.setRefreshToken(authResponse.getRefreshToken());
-                apiAuth.setExpire(authResponse.getExpiresIn());
+                    localApiAuth.setAccessToken(authResponse.getAccessToken());
+                    localApiAuth.setRefreshToken(authResponse.getRefreshToken());
+                    localApiAuth.setExpire(authResponse.getExpiresIn());
 
-                return true;
+                    return true;
 
-            } catch (WebApiException e) {
-                logger.error("Error connecting to Worx Landroid WebApi! Error = {}", e.getErrorMsg());
-                return false;
+                } catch (WebApiException e) {
+                    logger.error("Error connecting to Worx Landroid WebApi! Error = {}", e.getErrorMsg());
+                    return false;
+                }
             }
+        } else {
+            return false;
         }
-
         return true;
     }
 
     @Override
     public UsersCertificateResponse retrieveAwsCertificate() throws WebApiException {
-        if (apiAuth == null) {
+        WebApiAuth localApiAuth = apiAuth;
+        if (localApiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         UsersCertificateRequest awsCertificateRequest = new UsersCertificateRequest(httpClient);
-        return awsCertificateRequest.call(apiAuth);
+        return awsCertificateRequest.call(localApiAuth);
     }
 
     @Override
     public UsersMeResponse retrieveWebInfo() throws WebApiException {
-        if (apiAuth == null) {
+        WebApiAuth localApiAuth = apiAuth;
+        if (localApiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         UsersMeRequest webInfoRequest = new UsersMeRequest(httpClient);
-        return webInfoRequest.call(apiAuth);
+        return webInfoRequest.call(localApiAuth);
     }
 
     @Override
     public ProductItemsResponse retrieveUserDevices() throws WebApiException {
-        if (apiAuth == null) {
+        WebApiAuth localApiAuth = apiAuth;
+        if (localApiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         ProductItemsRequest productItemsRequest = new ProductItemsRequest(httpClient);
-        return productItemsRequest.call(apiAuth);
+        return productItemsRequest.call(localApiAuth);
     }
 
     @Override
     public ProductItemsStatusResponse retrieveDeviceStatus(String serialNumber) throws WebApiException {
-        if (apiAuth == null) {
+        WebApiAuth localApiAuth = apiAuth;
+        if (localApiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         ProductItemsStatusRequest productItemsStatusRequest = new ProductItemsStatusRequest(httpClient);
-        return productItemsStatusRequest.call(apiAuth, serialNumber);
+        return productItemsStatusRequest.call(localApiAuth, serialNumber);
     }
 
     @Override
     public ProductsResponse retrieveDevices() throws WebApiException {
-        if (apiAuth == null) {
+        WebApiAuth localApiAuth = apiAuth;
+        if (localApiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
 
         ProductsRequest productsRequest = new ProductsRequest(httpClient);
-        return productsRequest.call(apiAuth);
+        return productsRequest.call(localApiAuth);
     }
 }

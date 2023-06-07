@@ -13,7 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.codes;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * The {@link WorxLandroidErrorCodes} hosts error codes
@@ -66,8 +65,9 @@ public enum WorxLandroidErrorCodes implements Codes {
      * @param code
      * @return
      */
-    public static @Nullable WorxLandroidErrorCodes getByCode(int code) {
-        return Codes.lookup(WorxLandroidErrorCodes.class, code);
+    public static WorxLandroidErrorCodes getByCode(int code) {
+        WorxLandroidErrorCodes result = Codes.lookup(WorxLandroidErrorCodes.class, code);
+        return result != null ? result : WorxLandroidErrorCodes.UNKNOWN;
     }
 
     @Override

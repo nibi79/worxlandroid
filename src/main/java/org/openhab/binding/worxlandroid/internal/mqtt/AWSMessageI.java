@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  *
@@ -21,7 +22,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public interface AWSMessageI {
 
-    public String getTopic();
+    public @Nullable String getTopic();
 
     public String getPayload();
 }

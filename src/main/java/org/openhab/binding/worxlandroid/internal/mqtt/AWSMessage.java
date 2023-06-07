@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 
 /**
@@ -25,7 +26,7 @@ public class AWSMessage implements AWSMessageI {
     public static final String EMPTY_PAYLOAD = "{}";
     public static final String CMD_START = String.format("{\"cmd\":%d}", WorxLandroidActionCodes.START.getCode());
 
-    private String topic;
+    private @Nullable String topic;
 
     private String payload;
 
@@ -34,13 +35,13 @@ public class AWSMessage implements AWSMessageI {
      * @param qos
      * @param payload
      */
-    public AWSMessage(String topic, String payload) {
+    public AWSMessage(@Nullable String topic, String payload) {
         this.topic = topic;
         this.payload = payload;
     }
 
     @Override
-    public String getTopic() {
+    public @Nullable String getTopic() {
         return topic;
     }
 

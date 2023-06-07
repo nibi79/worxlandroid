@@ -109,8 +109,9 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
                 }
 
                 logger.debug("API connected: {}", connected);
+                String token = apiHandler.getAccessToken();
 
-                if (connected) {
+                if (connected && token != null) {
                     UsersMeResponse usersMeResponse = apiHandler.retrieveWebInfo();
 
                     Map<String, String> props = usersMeResponse.getDataAsPropertyMap();
@@ -136,7 +137,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
                     String clientId = String.format("WX/USER/%s/%s/%s", userId, usernameMqtt, deviceId);
 
                     AWSClient localAwsClient = new AWSClient(awsMqttEndpoint, clientId, this, usernameMqtt,
-                            customAuthorizerName, apiHandler.getAccessToken());
+                            customAuthorizerName, token);
                     awsClient = localAwsClient;
 
                     logger.debug("try to connect to AWS...");
@@ -211,10 +212,13 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
             }
             AWSClientI localAwsClient = awsClient;
             if (apiHandler.isTokenValid() && localAwsClient != null) {
-                logger.debug("try to reconnect to AWS...");
-                boolean connected = localAwsClient.refreshConnection(apiHandler.getAccessToken());
-                logger.debug("AWS reconnected: {}", connected);
-                return connected;
+                String accessToken = apiHandler.getAccessToken();
+                if (accessToken != null) {
+                    logger.debug("try to reconnect to AWS...");
+                    boolean connected = localAwsClient.refreshConnection(accessToken);
+                    logger.debug("AWS reconnected: {}", connected);
+                    return connected;
+                }
             }
         } catch (UnsupportedEncodingException e) {
             logger.error("Iniialization error - class: {}", e.getClass().getName());

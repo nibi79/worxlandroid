@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 import software.amazon.awssdk.crt.mqtt.MqttClientConnectionEvents;
 
@@ -26,7 +27,7 @@ import software.amazon.awssdk.crt.mqtt.MqttClientConnectionEvents;
 @NonNullByDefault
 public interface AWSClientI extends MqttClientConnectionEvents {
 
-    public String getEndpoint();
+    public @Nullable String getEndpoint();
 
     public String getClientId();
 
@@ -34,7 +35,7 @@ public interface AWSClientI extends MqttClientConnectionEvents {
 
     public boolean connect();
 
-    public CompletableFuture<Void> disconnect();
+    public @Nullable CompletableFuture<Void> disconnect();
 
     public void subscribe(AWSTopicI awsTopic);
 
