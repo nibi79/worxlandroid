@@ -12,11 +12,14 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link WorxLandroidActionCodes} hosts action codes
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public enum WorxLandroidActionCodes implements Codes {
 
     START(1, "start"),

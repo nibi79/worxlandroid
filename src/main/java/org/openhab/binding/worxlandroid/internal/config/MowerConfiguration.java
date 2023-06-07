@@ -12,11 +12,14 @@
  */
 package org.openhab.binding.worxlandroid.internal.config;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link MowerConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class MowerConfiguration {
 
     public int refreshStatusInterval = 600;

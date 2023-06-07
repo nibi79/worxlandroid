@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 
 /**
@@ -19,8 +20,8 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class AWSMessage implements AWSMessageI {
-
     public static final String EMPTY_PAYLOAD = "{}";
     public static final String CMD_START = String.format("{\"cmd\":%d}", WorxLandroidActionCodes.START.getCode());
 

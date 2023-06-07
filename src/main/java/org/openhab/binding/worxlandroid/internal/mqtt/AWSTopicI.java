@@ -12,12 +12,15 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import software.amazon.awssdk.crt.mqtt.MqttMessage;
 
 /**
  *
- * @author Nils
+ * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public interface AWSTopicI {
 
     public String getTopic();

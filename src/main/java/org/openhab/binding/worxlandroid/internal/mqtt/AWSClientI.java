@@ -15,14 +15,15 @@ package org.openhab.binding.worxlandroid.internal.mqtt;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CompletableFuture;
 
-import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 import software.amazon.awssdk.crt.mqtt.MqttClientConnectionEvents;
 
 /**
  *
- * @author Nils
+ * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public interface AWSClientI extends MqttClientConnectionEvents {
 
     public String getEndpoint();
@@ -35,7 +36,7 @@ public interface AWSClientI extends MqttClientConnectionEvents {
 
     public CompletableFuture<Void> disconnect();
 
-    public void subscribe(@NonNull AWSTopicI awsTopic);
+    public void subscribe(AWSTopicI awsTopic);
 
     public void publish(AWSMessageI awsMessageI);
 

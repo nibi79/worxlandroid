@@ -14,6 +14,7 @@ package org.openhab.binding.worxlandroid.internal.codes;
 
 import java.util.stream.Stream;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -21,6 +22,7 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public interface Codes {
 
     /**

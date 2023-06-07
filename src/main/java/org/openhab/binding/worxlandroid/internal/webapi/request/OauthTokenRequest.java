@@ -31,7 +31,6 @@ import com.google.gson.JsonPrimitive;
  */
 @NonNullByDefault
 public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
-
     private static final String CONTENT_PROVIDER = "application/json";
     private static final String CLIENT_ID = "013132A8-DB34-4101-B993-3C8348EA0EBC";
     private static final String APIURL_OAUTH_TOKEN = "https://id.eu.worx.com/" + "oauth/token";
@@ -50,7 +49,6 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
      * @throws WebApiException
      */
     public OauthTokenResponse call(String username, String password) throws WebApiException {
-
         Request request = getHttpClient().POST(APIURL_OAUTH_TOKEN);
         request.header("Content-Type", "application/json; utf-8");
 
@@ -73,7 +71,6 @@ public class OauthTokenRequest extends WebApiRequest<OauthTokenResponse> {
      * @throws WebApiException
      */
     public OauthTokenResponse refresh(WebApiAuth auth) throws WebApiException {
-
         Request request = getHttpClient().POST(APIURL_OAUTH_TOKEN);
         // TODO NB
         request.header("Authorization", auth.getAuthorization());

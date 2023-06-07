@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public abstract class WebApiRequest<T extends WebApiResponse> {
-
     private final Logger logger = LoggerFactory.getLogger(WebApiRequest.class);
 
     protected static final String APIURL_BASE = "https://api.worxlandroid.com/api/v2/";
@@ -74,7 +73,6 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
      * @throws WebApiException
      */
     protected T callWebApiGet(String url, WebApiAuth auth) throws WebApiException {
-
         Request request = getHttpClient().newRequest(url).method("GET");
         request.header("Authorization", auth.getAuthorization());
         request.header("Content-Type", "application/json; utf-8");

@@ -46,7 +46,6 @@ public class AWSTopic implements AWSTopicI {
 
     @Override
     public void onMessage(@Nullable MqttMessage mqttMessage) {
-
         if (mqttMessage == null) {
             logger.warn("onMessage: message == null");
             return;

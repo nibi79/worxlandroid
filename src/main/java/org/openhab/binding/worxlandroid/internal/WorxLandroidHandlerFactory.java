@@ -19,9 +19,11 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
+import org.openhab.core.auth.client.oauth2.OAuthFactory;
 import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.io.net.http.HttpClientFactory;
 import org.openhab.core.thing.Bridge;
@@ -32,6 +34,7 @@ import org.openhab.core.thing.binding.BaseThingHandlerFactory;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -41,21 +44,20 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Nils - Initial contribution
  */
-// @NonNullByDefault
+@NonNullByDefault
 @Component(configurationPid = "binding.worxlandroid", service = ThingHandlerFactory.class)
 public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
 
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_MOWER, THING_TYPE_BRIDGE);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
-    private HttpClient httpClient;
+    private final HttpClient httpClient;
+    private final OAuthFactory oAuthFactory;
 
-    @Reference
-    protected void setHttpClientFactory(HttpClientFactory httpClientFactory) {
+    @Activate
+    public WorxLandroidHandlerFactory(final @Reference HttpClientFactory httpClientFactory,
+            final @Reference OAuthFactory oAuthFactory) {
         this.httpClient = httpClientFactory.getCommonHttpClient();
-    }
-
-    protected void unsetHttpClientFactory(HttpClientFactory httpClientFactory) {
-        this.httpClient = null;
+        this.oAuthFactory = oAuthFactory;
     }
 
     @Override
@@ -75,7 +77,6 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
                     DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
 
             return bridgeHandler;
-
         } else if (thingTypeUID.equals(THING_TYPE_MOWER)) {
             return new WorxLandroidMowerHandler(thing);
         }

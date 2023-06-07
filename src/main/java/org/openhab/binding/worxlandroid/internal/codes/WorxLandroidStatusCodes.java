@@ -12,11 +12,15 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * The {@link WorxLandroidStatusCodes} hosts status codes
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public enum WorxLandroidStatusCodes implements Codes {
 
     UNKNOWN(-1, "UNKNOWN"),
@@ -62,8 +66,7 @@ public enum WorxLandroidStatusCodes implements Codes {
      * @param code
      * @return
      */
-    public static WorxLandroidStatusCodes getByCode(int code) {
-
+    public static @Nullable WorxLandroidStatusCodes getByCode(int code) {
         return Codes.lookup(WorxLandroidStatusCodes.class, code);
     }
 

@@ -34,7 +34,6 @@ public class OauthTokenResponse extends WebApiResponse {
      * @return "token_type" from api response
      */
     public String getAccessType() {
-
         return getJsonResponseAsJsonObject().getAsJsonPrimitive("token_type").getAsString();
     }
 
@@ -42,7 +41,6 @@ public class OauthTokenResponse extends WebApiResponse {
      * @return "access_token" from api response
      */
     public String getAccessToken() {
-
         return getJsonResponseAsJsonObject().getAsJsonPrimitive("access_token").getAsString();
     }
 
@@ -50,7 +48,6 @@ public class OauthTokenResponse extends WebApiResponse {
      * @return "expires_in" from api response
      */
     public int getExpiresIn() {
-
         return getJsonResponseAsJsonObject().getAsJsonPrimitive("expires_in").getAsInt();
     }
 
@@ -58,7 +55,6 @@ public class OauthTokenResponse extends WebApiResponse {
      * @return "refresh_token" from api response
      */
     public String getRefreshToken() {
-
         return getJsonResponseAsJsonObject().getAsJsonPrimitive("refresh_token").getAsString();
     }
 }

@@ -12,14 +12,13 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  *
- * @author Nils
+ * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class AWSException extends Exception {
-
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 }

@@ -94,7 +94,6 @@ public class Mower {
      * @param timeExtension
      */
     public void setTimeExtension(int timeExtension) {
-
         if (timeExtension == TIME_EXTENSION_DISABLE) {
             storeTimeExtension();
             this.enable = false;
@@ -199,7 +198,6 @@ public class Mower {
      * @param multiZoneEnable
      */
     public void setMultiZoneEnable(boolean multiZoneEnable) {
-
         this.multiZoneEnable = multiZoneEnable;
 
         if (multiZoneEnable && isZoneMeterDisabled()) {
@@ -269,7 +267,6 @@ public class Mower {
      * @param enable
      */
     public void setEnable(boolean enable) {
-
         this.enable = enable;
 
         if (enable && timeExtension == TIME_EXTENSION_DISABLE) {
@@ -316,7 +313,6 @@ public class Mower {
      * @return false if less than 2 meters are 0
      */
     private boolean isZoneMeterDisabled() {
-
         int count0 = 0;
         for (int i = 0; i < zoneMeter.length; i++) {
 

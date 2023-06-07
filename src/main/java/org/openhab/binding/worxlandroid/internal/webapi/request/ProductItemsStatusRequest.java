@@ -26,7 +26,6 @@ import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsSta
  */
 @NonNullByDefault
 public class ProductItemsStatusRequest extends WebApiRequest<ProductItemsStatusResponse> {
-
     private static final String APIURL_PRODUCTITEMS = APIURL_BASE + "product-items";
 
     /**
@@ -43,7 +42,6 @@ public class ProductItemsStatusRequest extends WebApiRequest<ProductItemsStatusR
      * @throws WebApiException
      */
     public ProductItemsStatusResponse call(WebApiAuth auth, String serialNumber) throws WebApiException {
-
         return callWebApiGet(String.format("%s?status=1", APIURL_PRODUCTITEMS), auth);
     }
 }

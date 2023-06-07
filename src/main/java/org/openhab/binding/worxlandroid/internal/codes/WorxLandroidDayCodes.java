@@ -12,11 +12,14 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link WorxLandroidDayCodes} hosts action codes
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public enum WorxLandroidDayCodes implements Codes {
 
     SUNDAY(0, "Sunday"),

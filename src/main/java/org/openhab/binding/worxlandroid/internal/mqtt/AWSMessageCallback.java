@@ -12,11 +12,14 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * {@link AWSMessageCallback}
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public interface AWSMessageCallback {
 
     /**

@@ -59,9 +59,7 @@ public class AWSClient implements AWSClientI {
     private Runnable checkImmediatlyResumed = new Runnable() {
         @Override
         public void run() {
-
             if (!isImmediatlyResumed()) {
-
                 clientCallback.onAWSConnectionClosed();
             }
         }
@@ -79,7 +77,6 @@ public class AWSClient implements AWSClientI {
      */
     public AWSClient(String clientEndpoint, String clientId, AWSClientCallback clientCallback, String usernameMqtt,
             String customAuthorizerName, String token) throws UnsupportedEncodingException {
-
         this.clientCallback = clientCallback;
         this.endpoint = clientEndpoint;
         this.clientId = clientId;
@@ -94,7 +91,6 @@ public class AWSClient implements AWSClientI {
      * @throws UnsupportedEncodingException
      */
     private void createNewConnection(String token) throws UnsupportedEncodingException {
-
         String[] tok = token.replaceAll("_", "/").replaceAll("-", "+").split("\\.");
         String customAuthorizerSig = tok[2];
         String jwt = tok[0] + "." + tok[1];
@@ -137,7 +133,6 @@ public class AWSClient implements AWSClientI {
             onConnectionResumed(sessionPresent);
 
             return true;
-
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Exception: {}", e.getLocalizedMessage());
         }
@@ -147,7 +142,6 @@ public class AWSClient implements AWSClientI {
 
     @Override
     public void onConnectionInterrupted(int errorCode) {
-
         interrupted = LocalDateTime.now();
 
         logger.debug("connection interrupted errorcode: {}", errorCode);
@@ -202,7 +196,6 @@ public class AWSClient implements AWSClientI {
 
     @Override
     public boolean refreshConnection(String token) throws UnsupportedEncodingException {
-
         if (connection == null) {
             return false;
         }

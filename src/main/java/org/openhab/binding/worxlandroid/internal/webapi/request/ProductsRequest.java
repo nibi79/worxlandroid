@@ -26,7 +26,6 @@ import org.openhab.binding.worxlandroid.internal.webapi.response.ProductsRespons
  */
 @NonNullByDefault
 public class ProductsRequest extends WebApiRequest<ProductsResponse> {
-
     private static final String APIURL_PRODUCTS = APIURL_BASE + "products";
 
     /**
@@ -42,7 +41,6 @@ public class ProductsRequest extends WebApiRequest<ProductsResponse> {
      * @throws WebApiException
      */
     public ProductsResponse call(WebApiAuth auth) throws WebApiException {
-
         return callWebApiGet(APIURL_PRODUCTS, auth);
     }
 }

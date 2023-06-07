@@ -71,7 +71,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
     private Runnable refreshConnectionToken = new Runnable() {
         @Override
         public void run() {
-
             if (isBridgeOnline()) {
                 // TODO NB
                 if (!apiHandler.isTokenValid()) {
@@ -97,9 +96,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
 
     @Override
     public void initialize() {
-
         try {
-
             BridgeConfiguration config = getConfigAs(BridgeConfiguration.class);
             logger.debug("try to connect to API...");
             String username = config.getWebapiUsername();
@@ -114,7 +111,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
                 logger.debug("API connected: {}", connected);
 
                 if (connected) {
-
                     UsersMeResponse usersMeResponse = apiHandler.retrieveWebInfo();
 
                     Map<String, String> props = usersMeResponse.getDataAsPropertyMap();
@@ -153,7 +149,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
 
                     // Trigger discovery of mowers
                     scheduler.submit(runnable);
-
                 } else {
                     updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.COMMUNICATION_ERROR,
                             "Error connecting to Worx Landroid WebApi!");
@@ -173,7 +168,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
 
     @Override
     public void dispose() {
-
         if (awsClient != null) {
             awsClient.disconnect();
         }
@@ -184,7 +178,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
      * @return
      */
     public WorxLandroidWebApiImpl getWorxLandroidWebApiImpl() {
-
         return apiHandler;
     }
 
@@ -208,7 +201,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
      */
     public boolean reconnectToWorx() {
         try {
-
             // TODO NB
             if (!apiHandler.isTokenValid()) {
                 logger.debug("first try to refresh token...");
@@ -240,7 +232,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
      * @throws AWSIotException
      */
     public void subcribeTopic(@Nullable AWSTopicI awsTopic) throws AWSException {
-
         if (awsTopic == null) {
             return;
         }
@@ -259,7 +250,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler implements AWSC
      */
     @SuppressWarnings("null")
     public void publishMessage(AWSMessageI awsMessage) throws AWSException {
-
         if (awsClient == null) {
             logger.error("MqttClient is not initialized. Cannot publish message to topic -> {}", awsMessage.getTopic());
             return;

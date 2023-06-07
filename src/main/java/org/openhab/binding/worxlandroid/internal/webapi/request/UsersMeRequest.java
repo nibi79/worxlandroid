@@ -26,7 +26,6 @@ import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse
  */
 @NonNullByDefault
 public class UsersMeRequest extends WebApiRequest<UsersMeResponse> {
-
     private static final String APIURL_USER_ME = APIURL_BASE + "users/me";
 
     /**
@@ -42,7 +41,6 @@ public class UsersMeRequest extends WebApiRequest<UsersMeResponse> {
      * @throws WebApiException
      */
     public UsersMeResponse call(WebApiAuth auth) throws WebApiException {
-
         return callWebApiGet(APIURL_USER_ME, auth);
     }
 }

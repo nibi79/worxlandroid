@@ -12,11 +12,14 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * {@link AWSClientCallback} Callback for AWS connection events
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public interface AWSClientCallback {
 
     /**

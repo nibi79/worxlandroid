@@ -12,12 +12,15 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * {@link ApiResponse}
  *
  * @author Nils - Initial contribution
  *
  */
+@NonNullByDefault
 public interface ApiResponse {
 
     // MemberNames

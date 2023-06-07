@@ -26,7 +26,6 @@ import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificat
  */
 @NonNullByDefault
 public class UsersCertificateRequest extends WebApiRequest<UsersCertificateResponse> {
-
     private static final String APIURL_USERS_CERTIFICATE = APIURL_BASE + "users/certificate";
 
     /**
@@ -42,7 +41,6 @@ public class UsersCertificateRequest extends WebApiRequest<UsersCertificateRespo
      * @throws WebApiException
      */
     public UsersCertificateResponse call(WebApiAuth auth) throws WebApiException {
-
         return callWebApiGet(APIURL_USERS_CERTIFICATE, auth);
     }
 }

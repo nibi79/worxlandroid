@@ -1,6 +1,7 @@
 <img src="openhab-conf/icons/landroid.png">
 
 # WorxLandroid Binding
+
 This binding connects openHAB with your WorxLandroid Mower using the API and MQTT.
 
 # Table of contents
@@ -301,6 +302,7 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | scheduleEdgecut | `Number` | cfgScSaturday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgMultiZones
+
 If Multi Zones are supported, you are able to define 4 separate Zones and split working times by 10 to those.
 
 | Channel   | Type | ChannelName |
@@ -337,19 +339,23 @@ You have to have Persistence Service configured in order to use statistic graphs
 It's recommended to use rr4dj
 
 ### .persist
+
 ```
 MowerBat_Chart*, MowerBatTemp_Chart*, MowerBatStatus_Chart* : strategy = everyMinute
 ```
 
 ### .things
+
 ```
 Bridge worxlandroid:worxlandroidBridge:MyWorxBridge "MyWorx Bridge" [ webapiUsername="my username", webapiPassword="my password" ] {
     Thing mower MySerialNumber "MyLandroid Shaun" [ refreshStatusInterval=60, pollingInterval=300 ]
 }
 ```
+
 'MySerialNumber' is the serial number of the mower.
 
 ### .items
+
 ```
 Group All
     Group Mower                    (All)
@@ -536,6 +542,7 @@ Switch          LandroidScheduleSunday2Edgecut           "Edgecut"              
 ```
 
 ### .sitemap
+
 ```
 sitemap landroid label="Landroid"
 {
@@ -753,6 +760,7 @@ sitemap landroid label="Landroid"
 <img src="images/SC_BasicUI_Main_Home.png" width="50%">
 
 #### "Start Zone" will change to "Orientation" once Mower is underway
+
 <br>
 <img src="images/SC_BasicUI_Main_Action.png" width="50%">
 <br>

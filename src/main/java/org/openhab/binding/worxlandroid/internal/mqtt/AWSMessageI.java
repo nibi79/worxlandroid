@@ -12,10 +12,13 @@
  */
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  *
- * @author Nils
+ * @author Nils - Initial Contribution
  */
+@NonNullByDefault
 public interface AWSMessageI {
 
     public String getTopic();

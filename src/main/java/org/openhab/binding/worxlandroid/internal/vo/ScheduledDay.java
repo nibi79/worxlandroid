@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.worxlandroid.internal.vo;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * {@link ScheduledDay}
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class ScheduledDay {
-
     private static final int DURATION_0 = 0;
     private static final int DURATION_DEFAULT = 15;
 
@@ -29,9 +31,6 @@ public class ScheduledDay {
     private int durationRestore = DURATION_DEFAULT;
     private boolean edgecut;
 
-    /**
-     *
-     */
     public ScheduledDay() {
         super();
     }
@@ -63,7 +62,6 @@ public class ScheduledDay {
      * @param duration
      */
     public void setDuration(int duration) {
-
         if (duration == DURATION_0) {
             storeDuration();
             this.enable = false;
@@ -92,7 +90,6 @@ public class ScheduledDay {
      * @param enable
      */
     public void setEnable(boolean enable) {
-
         this.enable = enable;
 
         if (enable && duration == DURATION_0) {

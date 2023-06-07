@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.worxlandroid.internal.webapi.request.OauthTokenRequest;
 import org.openhab.binding.worxlandroid.internal.webapi.request.ProductItemsRequest;
@@ -34,15 +36,15 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  *
  */
+@NonNullByDefault
 public class WorxLandroidWebApiImpl implements WorxLandroidApi {
-
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidWebApiImpl.class);
 
     private final HttpClient httpClient;
-    private WebApiAuth apiAuth;
-    private OauthTokenResponse authResponse;
+    private @Nullable WebApiAuth apiAuth;
+    private @Nullable OauthTokenResponse authResponse;
 
-    public OauthTokenResponse getAuthResponse() {
+    public @Nullable OauthTokenResponse getAuthResponse() {
         return authResponse;
     }
 
@@ -56,7 +58,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public boolean connect(String username, String password) {
-
         try {
             OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
             authResponse = authRequest.call(username, password);
@@ -67,7 +68,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
             return true;
 
         } catch (WebApiException e) {
-
             logger.error("Error connecting to Worx Landroid WebApi! Error = {}", e.getErrorMsg());
             return false;
         }
@@ -94,7 +94,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
         // TODO NB
         logger.debug("refreshToken -> token is: {}", apiAuth.isTokenValid());
         if (!apiAuth.isTokenValid()) {
-
             try {
                 OauthTokenRequest authRequest = new OauthTokenRequest(httpClient);
                 OauthTokenResponse authResponse = authRequest.refresh(apiAuth);
@@ -106,7 +105,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
                 return true;
 
             } catch (WebApiException e) {
-
                 logger.error("Error connecting to Worx Landroid WebApi! Error = {}", e.getErrorMsg());
                 return false;
             }
@@ -117,7 +115,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public UsersCertificateResponse retrieveAwsCertificate() throws WebApiException {
-
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
@@ -128,7 +125,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public UsersMeResponse retrieveWebInfo() throws WebApiException {
-
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
@@ -139,7 +135,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public ProductItemsResponse retrieveUserDevices() throws WebApiException {
-
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
@@ -150,7 +145,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public ProductItemsStatusResponse retrieveDeviceStatus(String serialNumber) throws WebApiException {
-
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }
@@ -161,7 +155,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public ProductsResponse retrieveDevices() throws WebApiException {
-
         if (apiAuth == null) {
             throw new WebApiException("Worx Landroid WebApi not connected!");
         }

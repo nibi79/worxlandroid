@@ -26,7 +26,6 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @NonNullByDefault
 public class WebApiAuth {
-
     private String accessType;
     private String accessToken;
     private String refreshToken;
@@ -88,18 +87,9 @@ public class WebApiAuth {
     }
 
     public boolean isTokenValid() {
-
         ChronoLocalDateTime<?> c = this.expire;
 
-        if (c == null) {
-            return false;
-        }
-
-        if (LocalDateTime.now().isAfter(c)) {
-            return false;
-        }
-
-        return true;
+        return (c == null || LocalDateTime.now().isAfter(c)) ? false : true;
     }
 
     /**

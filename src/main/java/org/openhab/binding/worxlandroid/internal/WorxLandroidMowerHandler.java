@@ -139,14 +139,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private Runnable pollingRunnable = new Runnable() {
         @Override
         public void run() {
-
             try {
-
                 if (isBridgeOnline()) {
-
                     WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
                     if (bridgeHandler != null) {
-
                         AWSMessage message = new AWSMessage(mqttCommandIn, AWSMessage.EMPTY_PAYLOAD);
                         bridgeHandler.publishMessage(message);
                         logger.debug("send polling message");
@@ -191,7 +187,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     @SuppressWarnings("null")
     @Override
     public void initialize() {
-
         mower = new Mower(getThing().getUID().getId());
 
         String serialNumber = mower.getSerialNumber();
@@ -203,16 +198,13 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
 
             if (bridgeHandler != null) {
-
                 apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
 
                 try {
-
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
                     JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
 
                     if (mowerDataJson != null) {
-
                         ThingBuilder thingBuilder = editThing();
 
                         // set mower properties
@@ -388,7 +380,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * Jobs are only started if interval > 0
      */
     private void startScheduledJobs() {
-
         MowerConfiguration config = getConfigAs(MowerConfiguration.class);
 
         int refreshStatusInterval = config.getRefreshStatusInterval();
@@ -413,7 +404,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @return
      */
     protected synchronized @Nullable WorxLandroidBridgeHandler getWorxLandroidBridgeHandler() {
-
         Bridge bridge = getBridge();
         if (bridge == null) {
             return null;
@@ -444,7 +434,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     @Override
     public void bridgeStatusChanged(ThingStatusInfo bridgeStatusInfo) {
-
         if (ThingStatus.OFFLINE.equals(bridgeStatusInfo.getStatus())) {
             mower.setOnline(false);
         }
@@ -461,15 +450,12 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             }
         }
-
         super.bridgeStatusChanged(bridgeStatusInfo);
     }
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-
         try {
-
             if (command instanceof RefreshType) {
                 return;
             }
@@ -489,7 +475,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             // return;
             // channel: multizone enable or multizone meters (mz)
             if (CHANNELNAME_MULTIZONE_ENABLE.equals(channelUID.getId())) {
-
                 mower.setMultiZoneEnable(OnOffType.ON.equals(command));
                 sendZoneMeter();
                 return;
@@ -497,7 +482,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             }
 
             if (CHANNELNAME_LAST_ZONE.equals(channelUID.getId())) {
-
                 if (mower.getStatus() != WorxLandroidStatusCodes.HOME.getCode()) {
                     logger.warn("Cannot start zone because mower must be at HOME!");
                     return;
@@ -517,7 +501,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 }
                 // start
                 sendCommand(AWSMessage.CMD_START);
-
                 return;
             }
             if (channelUID.getId().startsWith("cfgMultiZones#zone")) {
@@ -531,11 +514,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 mower.setZoneMeter(zone - 1, Integer.parseInt(command.toString()));
                 sendZoneMeter();
                 return;
-
             }
             // channel: multizone allocation (mzv)
             if (channelUID.getId().startsWith(CHANNELNAME_PREFIX_ALLOCATION)) {
-
                 JsonObject jsonObject = new JsonObject();
                 JsonArray mzv = new JsonArray();
 
@@ -573,13 +554,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             }
 
             if (CHANNELNAME_ONE_TIME_SC_DURATION.equals(channelUID.getId())) {
-
                 sendOneTimeSchedule(0, Integer.parseInt(command.toString()));
                 return;
             }
 
             if (CHANNELNAME_ONE_TIME_SC_EDGECUT.equals(channelUID.getId())) {
-
                 sendOneTimeSchedule(OnOffType.ON.equals(command) ? 1 : 0, 0);
                 return;
             }
@@ -591,14 +570,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                 // update enable mowing or schedule or timeExtension/enable?
                 if (CHANNELNAME_ENABLE.equals(channelUID.getId())) {
-
                     mower.setEnable(OnOffType.ON.equals(command));
                 } else if (CHANNELNAME_SC_TIME_EXTENSION.equals(channelUID.getId())) {
-
                     mower.setTimeExtension(Integer.parseInt(command.toString()));
 
                 } else {
-
                     setScheduledDays(channelUID, command);
                 }
 
@@ -609,7 +585,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             String cmd = AWSMessage.EMPTY_PAYLOAD;
 
             switch (channelUID.getId()) {
-
                 // start action
                 case CHANNELNAME_ACTION:
                     WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
@@ -640,9 +615,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                     logger.debug("command for ChannelUID not supported: {}", channelUID.getAsString());
                     break;
             }
-
             sendCommand(cmd);
-
         } catch (AWSException e) {
             logger.error("error: {}", e.getLocalizedMessage());
         }
@@ -654,7 +627,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @throws AWSIotException
      */
     private void sendOneTimeSchedule(int bc, int wtm) throws AWSException {
-
         // generate 'sc' message
         JsonObject jsonObject = new JsonObject();
         JsonObject sc = new JsonObject();
@@ -679,7 +651,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param command
      */
     private void setScheduledDays(ChannelUID channelUID, Command command) {
-
         // extract name of from channel
         Pattern pattern = Pattern.compile("cfgSc(.*?)#");
         Matcher matcher = pattern.matcher(channelUID.getId());
@@ -789,7 +760,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @throws AWSIotException
      */
     private void sendZoneMeter() throws AWSException {
-
         JsonObject jsonObject = new JsonObject();
         JsonArray mz = new JsonArray();
 
@@ -809,7 +779,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @throws AWSIotException
      */
     private void sendCommand(String cmd) throws AWSException {
-
         logger.debug("send command: {}", cmd);
 
         WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
@@ -822,7 +791,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     @Override
     public void processMessage(AWSMessageI message) {
-
         updateStatus(ThingStatus.ONLINE);
 
         JsonElement jsonElement = JsonParser.parseString(message.getPayload());
@@ -853,7 +821,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param dat
      */
     private void updateStateDat(JsonObject dat) {
-
         // dat/mac -> macAddress
         if (dat.get("mac") != null) {
             updateState(CHANNELNAME_MAC_ADRESS, new StringType(dat.get("mac").getAsString()));
@@ -1029,7 +996,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param cfg
      */
     private void updateStateCfg(JsonObject cfg) {
-
         // cfg/id -> id
         if (cfg.get("id") != null) {
             updateState(CHANNELNAME_ID, new DecimalType(cfg.get("id").getAsLong()));
@@ -1053,7 +1019,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
         // TODO cfg/sc
         if (cfg.get("sc") != null) {
-
             JsonObject sc = cfg.getAsJsonObject("sc");
 
             // cfg/sc/m -> scheduleMode
@@ -1103,14 +1068,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
 
         // cfg/cmd -> command
-        if (cfg.get("cmd") != null)
-
-        {
+        if (cfg.get("cmd") != null) {
             updateState(CHANNELNAME_COMMAND, new DecimalType(cfg.get("cmd").getAsLong()));
         }
 
         if (mower.isMultiZoneSupported()) {
-
             // zone meters
             if (cfg.get("mz") != null) {
                 JsonArray multizones = cfg.get("mz").getAsJsonArray();
@@ -1156,7 +1118,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param scDJson scheduled day JSON
      */
     private void updateStateCfgScDays(int scDSlot, JsonArray scDJson) {
-
         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
 
             JsonArray shedule = scDJson.get(dayCode.getCode()).getAsJsonArray();
