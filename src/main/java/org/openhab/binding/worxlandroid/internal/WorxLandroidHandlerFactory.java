@@ -43,13 +43,14 @@ import org.osgi.service.component.annotations.Reference;
  * handlers.
  *
  * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Added oAuthFactory
  */
 @NonNullByDefault
 @Component(configurationPid = "binding.worxlandroid", service = ThingHandlerFactory.class)
 public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
-
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_MOWER, THING_TYPE_BRIDGE);
-    private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+
+    private final Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private final HttpClient httpClient;
     private final OAuthFactory oAuthFactory;
 
@@ -69,15 +70,16 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(THING_TYPE_BRIDGE)) {
-            WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler((Bridge) thing, httpClient);
+        if (THING_TYPE_BRIDGE.equals(thingTypeUID)) {
+            WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler((Bridge) thing, httpClient,
+                    oAuthFactory);
             MowerDiscoveryService discoveryService = new MowerDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
-            this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(
-                    DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
+            discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(DiscoveryService.class.getName(),
+                    discoveryService, new Hashtable<>()));
 
             return bridgeHandler;
-        } else if (thingTypeUID.equals(THING_TYPE_MOWER)) {
+        } else if (THING_TYPE_MOWER.equals(thingTypeUID)) {
             return new WorxLandroidMowerHandler(thing);
         }
         return null;
@@ -85,11 +87,10 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
 
     @Override
     protected void removeHandler(ThingHandler handler) {
-        if (handler.getThing().getThingTypeUID().equals(THING_TYPE_BRIDGE)) {
-            ServiceRegistration<?> serviceReg = this.discoveryServiceRegs.get(handler.getThing().getUID());
+        if (handler instanceof WorxLandroidBridgeHandler) {
+            ServiceRegistration<?> serviceReg = discoveryServiceRegs.remove(handler.getThing().getUID());
             if (serviceReg != null) {
                 serviceReg.unregister();
-                discoveryServiceRegs.remove(handler.getThing().getUID());
             }
         }
         super.removeHandler(handler);

@@ -23,9 +23,9 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiAuth;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.response.WebApiResponse;
+import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,20 +36,14 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public abstract class WebApiRequest<T extends WebApiResponse> {
-    private final Logger logger = LoggerFactory.getLogger(WebApiRequest.class);
-
     protected static final String APIURL_BASE = "https://api.worxlandroid.com/api/v2/";
 
-    final Class<T> typeParameterClass;
+    private final Logger logger = LoggerFactory.getLogger(WebApiRequest.class);
+    private final Class<T> typeParameterClass;
+    private final HttpClient httpClient;
 
-    private HttpClient httpClient;
-
-    /**
-     * @param httpClient
-     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public WebApiRequest(HttpClient httpClient) {
-        super();
         Type superClass = getClass().getGenericSuperclass();
         if (superClass == null) {
             throw new IllegalArgumentException("Generic superclass should not be null.");
@@ -59,38 +53,23 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
         this.httpClient = httpClient;
     }
 
-    /**
-     * @return
-     */
-    public HttpClient getHttpClient() {
+    protected HttpClient getHttpClient() {
         return httpClient;
     }
 
-    /**
-     * @param uri
-     * @param auth
-     * @return
-     * @throws WebApiException
-     */
-    protected T callWebApiGet(String url, WebApiAuth auth) throws WebApiException {
+    protected T callWebApiGet(String url, AccessTokenResponse token) throws WebApiException {
         Request request = getHttpClient().newRequest(url).method("GET");
-        request.header("Authorization", auth.getAuthorization());
+        request.header("Authorization", "%s %s".formatted(token.getTokenType(), token.getAccessToken()));
         request.header("Content-Type", "application/json; utf-8");
 
         return callWebApi(request);
     }
 
-    /**
-     * @param request
-     * @return
-     * @throws WebApiException
-     */
     protected synchronized T callWebApi(Request request) throws WebApiException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("URI: {}", request.getURI().toString());
+        }
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("URI: {}", request.getURI().toString());
-            }
-
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {
@@ -108,18 +87,14 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
 
-                T vo = ctor.newInstance(new Object[] { result });
-
-                return vo;
-
+                return ctor.newInstance(new Object[] { result });
             } else {
                 throw new WebApiException(
                         String.format("Error calling Worx Landroid WebApi! HTTP Status = %s", response.getStatus()));
             }
-
-        } catch (InterruptedException | TimeoutException | ExecutionException | InstantiationException
-                | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                | SecurityException e) {
+        } catch (SecurityException | InterruptedException | TimeoutException | ExecutionException
+                | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             throw new WebApiException(e);
         }
     }

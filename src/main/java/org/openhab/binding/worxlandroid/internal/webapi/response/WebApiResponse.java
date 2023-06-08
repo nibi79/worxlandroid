@@ -36,20 +36,16 @@ import com.google.gson.JsonSyntaxException;
  */
 @NonNullByDefault
 public abstract class WebApiResponse implements ApiResponse {
+    protected static final JsonObject EMPTY_JSON_OBJECT = JsonParser.parseString("{}").getAsJsonObject();
 
     private final Logger logger = LoggerFactory.getLogger(WebApiResponse.class);
 
-    protected static final JsonObject EMPTY_JSON_OBJECT = JsonParser.parseString("{}").getAsJsonObject();
-
     private JsonElement jsonResponse = JsonParser.parseString("{}");
 
-    /**
-     * @param jsonResponse
-     */
     public WebApiResponse(String jsonResponse) {
         try {
             this.jsonResponse = JsonParser.parseString(jsonResponse);
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException ignore) {
             // keep default value
         }
     }
@@ -111,7 +107,7 @@ public abstract class WebApiResponse implements ApiResponse {
             return getDataAsPropertyMap(null, "UNKNOWN", jsonResponse.getAsJsonArray().get(0).getAsJsonObject());
         } else {
             logger.warn("Cannot get response as Property Map");
-            return new HashMap<String, String>();
+            return new HashMap<>();
         }
     }
 

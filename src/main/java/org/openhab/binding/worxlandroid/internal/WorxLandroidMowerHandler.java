@@ -153,24 +153,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
     };
 
-    /**
-     * Defines a runnable for a polling job.
-     * Polls AWS mqtt.
-     */
-    private Runnable reconnectRunnable = new Runnable() {
-        @Override
-        public void run() {
-            WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
-            if (bridgeHandler != null) {
-                logger.debug("reconnecting");
-                bridgeHandler.reconnectToWorx();
-            }
-        }
-    };
-
-    /**
-     * @param thing
-     */
     public WorxLandroidMowerHandler(Thing thing) {
         super(thing);
     }
@@ -183,13 +165,18 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     @SuppressWarnings("null")
     @Override
     public void initialize() {
-        mower = new Mower(getThing().getUID().getId());
+        MowerConfiguration config = getConfigAs(MowerConfiguration.class);
 
-        String serialNumber = mower.getSerialNumber();
+        if (config.serialNumber.isBlank()) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/conf-error-no-serial");
+            return;
+        }
 
-        logger.debug("Initializing WorxLandroidMowerHandler for serialNumber '{}'", serialNumber);
+        mower = new Mower(config.serialNumber);
 
-        if (isBridgeOnline() && serialNumber != null) {
+        logger.debug("Initializing WorxLandroidMowerHandler for serial number '{}'", config.serialNumber);
+
+        if (isBridgeOnline()) {
             WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
 
             if (bridgeHandler != null) {
@@ -197,13 +184,13 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                 try {
                     ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
-                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(serialNumber);
+                    JsonObject mowerDataJson = productItemsResponse.getMowerDataById(config.serialNumber);
 
                     if (mowerDataJson != null) {
                         ThingBuilder thingBuilder = editThing();
 
                         // set mower properties
-                        Map<String, String> props = productItemsResponse.getDataAsPropertyMap(serialNumber);
+                        Map<String, String> props = productItemsResponse.getDataAsPropertyMap(config.serialNumber);
                         thingBuilder.withProperties(props);
 
                         mqttCommandIn = props.get("command_in");
@@ -328,7 +315,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         updateThing(thingBuilder.build());
 
                         ProductItemsStatusResponse productItemsStatusResponse = apiHandler
-                                .retrieveDeviceStatus(serialNumber);
+                                .retrieveDeviceStatus(config.serialNumber);
                         processStatusMessage(productItemsStatusResponse.getJsonResponseAsJsonObject());
 
                         // handle AWS
@@ -350,7 +337,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         return;
                     }
                 } catch (WebApiException | AWSException e) {
-                    logger.error("initialize mower: id {} - {}::{}", serialNumber, getThing().getLabel(),
+                    logger.error("initialize mower: id {} - {}::{}", config.serialNumber, getThing().getLabel(),
                             getThing().getUID());
                 }
                 updateStatus(ThingStatus.ONLINE);
@@ -364,6 +351,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         if (logger.isDebugEnabled()) {
             logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
         }
+
     }
 
     /**
@@ -373,21 +361,26 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private void startScheduledJobs() {
         MowerConfiguration config = getConfigAs(MowerConfiguration.class);
 
-        int refreshStatusInterval = config.getRefreshStatusInterval();
+        int refreshStatusInterval = config.refreshStatusInterval;
         if (refreshStatusInterval > 0) {
             refreshStatusJob = scheduler.scheduleWithFixedDelay(refreshStatusRunnable, 30, refreshStatusInterval,
                     TimeUnit.SECONDS);
         }
 
-        int pollingIntervall = config.getPollingInterval();
+        int pollingIntervall = config.pollingInterval;
         if (pollingIntervall > 0) {
-            pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, config.getPollingInterval(),
-                    TimeUnit.SECONDS);
+            pollingJob = scheduler.scheduleWithFixedDelay(pollingRunnable, 60, pollingIntervall, TimeUnit.SECONDS);
         }
 
-        int reconnectInterval = config.getReconnectInterval();
+        int reconnectInterval = config.reconnectInterval;
         if (reconnectInterval > 0) {
-            reconnectJob = scheduler.scheduleWithFixedDelay(reconnectRunnable, 60, reconnectInterval, TimeUnit.SECONDS);
+            reconnectJob = scheduler.scheduleWithFixedDelay(() -> {
+                WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
+                if (bridgeHandler != null) {
+                    logger.debug("reconnecting");
+                    bridgeHandler.reconnectToWorx();
+                }
+            }, 60, reconnectInterval, TimeUnit.SECONDS);
         }
     }
 

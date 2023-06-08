@@ -40,16 +40,16 @@ import software.amazon.awssdk.iot.AwsIotMqttConnectionBuilder;
  */
 @NonNullByDefault
 public class AWSClient implements AWSClientI {
-    private final Logger logger = LoggerFactory.getLogger(AWSClient.class);
-
     private static final QualityOfService QOS = QualityOfService.AT_MOST_ONCE;
-    private @Nullable MqttClientConnection connection;
-    private AWSClientCallback clientCallback;
-    private @Nullable String endpoint;
 
-    private String clientId;
-    private String usernameMqtt;
-    private String customAuthorizerName;
+    private final Logger logger = LoggerFactory.getLogger(AWSClient.class);
+    private final String clientId;
+    private final String usernameMqtt;
+    private final String customAuthorizerName;
+    private final AWSClientCallback clientCallback;
+    private final @Nullable String endpoint;
+
+    private @Nullable MqttClientConnection connection;
 
     private @Nullable LocalDateTime lastResumed;
     private @Nullable LocalDateTime interrupted;
@@ -57,25 +57,6 @@ public class AWSClient implements AWSClientI {
 
     protected final ScheduledExecutorService scheduler = ThreadPoolManager.getScheduledPool("AWSClient");
 
-    private Runnable checkImmediatlyResumed = new Runnable() {
-        @Override
-        public void run() {
-            if (!isImmediatlyResumed()) {
-                clientCallback.onAWSConnectionClosed();
-            }
-        }
-    };
-
-    /**
-     * @param clientEndpoint
-     * @param clientId
-     * @param clientCallback
-     * @param usernameMqtt
-     * @param customAuthorizerName
-     * @param customAuthorizerSig
-     * @param jwt
-     * @throws UnsupportedEncodingException
-     */
     public AWSClient(@Nullable String clientEndpoint, String clientId, AWSClientCallback clientCallback,
             String usernameMqtt, String customAuthorizerName, String token) throws UnsupportedEncodingException {
         this.clientCallback = clientCallback;
@@ -148,7 +129,11 @@ public class AWSClient implements AWSClientI {
 
         logger.debug("connection interrupted errorcode: {}", errorCode);
         if (errorCode != 0) {
-            scheduler.schedule(checkImmediatlyResumed, 10, TimeUnit.SECONDS);
+            scheduler.schedule(() -> {
+                if (!isImmediatlyResumed()) {
+                    clientCallback.onAWSConnectionClosed();
+                }
+            }, 10, TimeUnit.SECONDS);
         }
     }
 

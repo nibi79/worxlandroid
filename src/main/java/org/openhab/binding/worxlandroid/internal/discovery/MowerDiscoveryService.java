@@ -14,13 +14,12 @@ package org.openhab.binding.worxlandroid.internal.discovery;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.THING_TYPE_MOWER;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBridgeHandler;
+import org.openhab.binding.worxlandroid.internal.config.MowerConfiguration;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
@@ -40,31 +39,23 @@ import com.google.gson.JsonObject;
  * The {@link MowerDiscoveryService} is a service for discovering your mowers through Worx Landroid API
  *
  * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Added representation property and serialNumber configuration element
  */
 @NonNullByDefault
 public class MowerDiscoveryService extends AbstractDiscoveryService {
-
-    private final Logger logger = LoggerFactory.getLogger(MowerDiscoveryService.class);
-
-    private @Nullable WorxLandroidBridgeHandler bridgeHandler = null;
-
     /**
      * Maximum time to search for devices in seconds.
      */
-    private static final int SEARCH_TIME = 20;
+    private static final int SEARCH_TIME_SEC = 20;
 
-    public MowerDiscoveryService() {
-        super(WorxLandroidBindingConstants.SUPPORTED_THING_TYPES, SEARCH_TIME);
-    }
+    private final Logger logger = LoggerFactory.getLogger(MowerDiscoveryService.class);
+    private final WorxLandroidBridgeHandler bridgeHandler;
 
-    public MowerDiscoveryService(WorxLandroidBridgeHandler bridgeHandler) throws IllegalArgumentException {
-        super(SEARCH_TIME);
+    public MowerDiscoveryService(WorxLandroidBridgeHandler bridgeHandler) {
+        super(WorxLandroidBindingConstants.SUPPORTED_THING_TYPES, SEARCH_TIME_SEC);
         this.bridgeHandler = bridgeHandler;
     }
 
-    /**
-     * Public method for triggering mower discovery
-     */
     public void discoverMowers() {
         startScan();
     }
@@ -76,23 +67,18 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
-        WorxLandroidBridgeHandler localBridgeHandler = bridgeHandler;
-        if (localBridgeHandler == null) {
-            return;
-        }
         // Trigger no scan if offline
-        if (localBridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
+        if (bridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
             return;
         }
 
+        WorxLandroidWebApiImpl apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
         try {
-            WorxLandroidWebApiImpl apiHandler = localBridgeHandler.getWorxLandroidWebApiImpl();
-
             ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
 
             if (productItemsResponse.getJsonResponse().isJsonArray()) {
                 JsonArray mowers = productItemsResponse.getJsonResponse().getAsJsonArray();
-                ThingUID bridgeUID = localBridgeHandler.getThing().getUID();
+                ThingUID bridgeUID = bridgeHandler.getThing().getUID();
 
                 for (JsonElement mowerElement : mowers) {
                     if (mowerElement.isJsonObject()) {
@@ -102,10 +88,10 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
                         ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, serialNumber);
 
-                        Map<String, Object> properties = null;
-
                         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                                .withProperties(properties).withBridge(localBridgeHandler.getThing().getUID())
+                                .withBridge(bridgeHandler.getThing().getUID())
+                                .withProperty(MowerConfiguration.SERIAL_NUMBER, serialNumber)
+                                .withRepresentationProperty(MowerConfiguration.SERIAL_NUMBER)
                                 .withLabel(mower.get("name").getAsString()).build();
 
                         thingDiscovered(discoveryResult);

@@ -14,9 +14,9 @@ package org.openhab.binding.worxlandroid.internal.webapi.request;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiAuth;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificateResponse;
+import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 
 /**
  * The {@link UsersCertificateRequest} class
@@ -28,19 +28,11 @@ import org.openhab.binding.worxlandroid.internal.webapi.response.UsersCertificat
 public class UsersCertificateRequest extends WebApiRequest<UsersCertificateResponse> {
     private static final String APIURL_USERS_CERTIFICATE = APIURL_BASE + "users/certificate";
 
-    /**
-     * @param httpClient
-     */
     public UsersCertificateRequest(HttpClient httpClient) {
         super(httpClient);
     }
 
-    /**
-     * @param auth
-     * @return
-     * @throws WebApiException
-     */
-    public UsersCertificateResponse call(WebApiAuth auth) throws WebApiException {
-        return callWebApiGet(APIURL_USERS_CERTIFICATE, auth);
+    public UsersCertificateResponse call(AccessTokenResponse token) throws WebApiException {
+        return callWebApiGet(APIURL_USERS_CERTIFICATE, token);
     }
 }

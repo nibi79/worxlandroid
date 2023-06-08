@@ -14,9 +14,9 @@ package org.openhab.binding.worxlandroid.internal.webapi.request;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiAuth;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductsResponse;
+import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 
 /**
  * The {@link ProductsRequest} class
@@ -28,19 +28,11 @@ import org.openhab.binding.worxlandroid.internal.webapi.response.ProductsRespons
 public class ProductsRequest extends WebApiRequest<ProductsResponse> {
     private static final String APIURL_PRODUCTS = APIURL_BASE + "products";
 
-    /**
-     * @param httpClient
-     */
     public ProductsRequest(HttpClient httpClient) {
         super(httpClient);
     }
 
-    /**
-     * @param auth
-     * @return
-     * @throws WebApiException
-     */
-    public ProductsResponse call(WebApiAuth auth) throws WebApiException {
-        return callWebApiGet(APIURL_PRODUCTS, auth);
+    public ProductsResponse call(AccessTokenResponse token) throws WebApiException {
+        return callWebApiGet(APIURL_PRODUCTS, token);
     }
 }

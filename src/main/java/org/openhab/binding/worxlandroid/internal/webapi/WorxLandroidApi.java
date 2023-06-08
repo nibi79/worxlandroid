@@ -34,7 +34,7 @@ public interface WorxLandroidApi {
      * @return
      * @throws WebApiException
      */
-    public boolean connect(String username, String password) throws WebApiException;
+    // public boolean connect(String username, String password) throws WebApiException;
 
     /**
      * Refresh Bearer Token to Worx Landroid Web API.
@@ -42,7 +42,7 @@ public interface WorxLandroidApi {
      * @return
      * @throws WebApiException
      */
-    public boolean refreshToken() throws WebApiException;
+    // public boolean refreshToken() throws WebApiException;
 
     /**
      * Retrieve AWS certificate

@@ -15,18 +15,20 @@ package org.openhab.binding.worxlandroid.internal.config;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link BridgeConfiguration} class contains fields mapping thing configuration parameters.
+ * The {@link ConfigurationLevel} describes configuration levels of a given account thing
  *
- * @author Nils - Initial contribution
- * @author Gaël L'hopital - Added NonNullByDefault, removed setters
+ * @author Gaël L'hopital - Initial contribution
  */
 @NonNullByDefault
-public class BridgeConfiguration {
-    public String webapiUsername = "";
-    public String webapiPassword = "";
+public enum ConfigurationLevel {
+    EMPTY_USERNAME("@text/conf-error-no-username"),
+    EMPTY_PASSWORD("@text/conf-error-no-password"),
+    REFRESH_TOKEN_NEEDED("@text/conf-error-grant-needed"),
+    COMPLETED("");
 
-    @Override
-    public String toString() {
-        return String.format("BridgeConfiguration [webapiPassword='%s', webapiPassword='*****']", webapiUsername);
+    public String message;
+
+    ConfigurationLevel(String message) {
+        this.message = message;
     }
 }
