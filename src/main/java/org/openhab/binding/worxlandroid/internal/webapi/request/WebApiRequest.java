@@ -71,19 +71,13 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
         }
         try {
             ContentResponse response = request.send();
-
             if (response.getStatus() == 200) {
-                byte[] rawResponse = response.getContent();
-                String result = new String(rawResponse);// , encoding);
+                String result = response.getContentAsString();
 
-                // hide secret data for log
-                String debugResultString = result;
-                debugResultString = debugResultString.replaceAll("_token\":\"[^\"]*\"",
-                        "_token\":\"***hidden for debug log***\"");
-                debugResultString = debugResultString.replaceAll("pkcs12\":\"[^\"]*\"",
-                        "pkcs12\":\"***hidden for debug log***\"");
-
-                logger.debug("Worx Landroid WebApi Response: {}", debugResultString);
+                // hiding secret data for log
+                logger.debug("Worx Landroid WebApi Response: {}",
+                        result.replaceAll("_token\":\"[^\"]*\"", "_token\":\"***hidden for log***\"")
+                                .replaceAll("pkcs12\":\"[^\"]*\"", "pkcs12\":\"***hidden for log***\""));
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
 

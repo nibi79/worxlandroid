@@ -57,7 +57,6 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
         } catch (OAuthException | IOException | OAuthResponseException e) {
             throw new WebApiException("Error reading access token response", e);
         }
-
     }
 
     public String getAccessToken() throws WebApiException {
@@ -66,42 +65,31 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public UsersCertificateResponse retrieveAwsCertificate() throws WebApiException {
-        AccessTokenResponse localToken = getAccessTokenResponse();
-
         UsersCertificateRequest awsCertificateRequest = new UsersCertificateRequest(httpClient);
-        return awsCertificateRequest.call(localToken);
+        return awsCertificateRequest.call(getAccessTokenResponse());
     }
 
     @Override
     public UsersMeResponse retrieveWebInfo() throws WebApiException {
-        AccessTokenResponse localToken = getAccessTokenResponse();
-
         UsersMeRequest webInfoRequest = new UsersMeRequest(httpClient);
-        return webInfoRequest.call(localToken);
+        return webInfoRequest.call(getAccessTokenResponse());
     }
 
     @Override
     public ProductItemsResponse retrieveUserDevices() throws WebApiException {
-        AccessTokenResponse localToken = getAccessTokenResponse();
-
         ProductItemsRequest productItemsRequest = new ProductItemsRequest(httpClient);
-        return productItemsRequest.call(localToken);
+        return productItemsRequest.call(getAccessTokenResponse());
     }
 
     @Override
     public ProductItemsStatusResponse retrieveDeviceStatus(String serialNumber) throws WebApiException {
-        AccessTokenResponse localToken = getAccessTokenResponse();
-
         ProductItemsStatusRequest productItemsStatusRequest = new ProductItemsStatusRequest(httpClient);
-        return productItemsStatusRequest.call(localToken, serialNumber);
+        return productItemsStatusRequest.call(getAccessTokenResponse(), serialNumber);
     }
 
     @Override
     public ProductsResponse retrieveDevices() throws WebApiException {
-        AccessTokenResponse localToken = getAccessTokenResponse();
-
         ProductsRequest productsRequest = new ProductsRequest(httpClient);
-        return productsRequest.call(localToken);
+        return productsRequest.call(getAccessTokenResponse());
     }
-
 }

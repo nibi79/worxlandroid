@@ -141,7 +141,6 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
             // Trigger discovery of mowers
             scheduler.submit(() -> discoveryService.ifPresent(MowerDiscoveryService::discoverMowers));
-
         } catch (OAuthException | IOException | WebApiException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
         } catch (OAuthResponseException e) {

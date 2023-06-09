@@ -351,7 +351,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         if (logger.isDebugEnabled()) {
             logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
         }
-
     }
 
     /**

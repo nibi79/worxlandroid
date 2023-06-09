@@ -12,19 +12,19 @@
 
   <artifactId>org.openhab.binding.worxlandroid</artifactId>
 
-  <name>openHAB Add-ons :: Bundles :: worxlandroid Binding</name>
+  <name>openHAB Add-ons :: Bundles :: Worx Landroid Binding</name>
 
   <dependencies>
 
     <dependency>
       <groupId>software.amazon.awssdk.iotdevicesdk</groupId>
       <artifactId>aws-iot-device-sdk</artifactId>
-      <version>1.11.6</version>
+      <version>1.13.1</version>
     </dependency>
     <dependency>
       <groupId>software.amazon.awssdk.crt</groupId>
       <artifactId>aws-crt</artifactId>
-      <version>0.21.11</version>
+      <version>0.22.1</version>
     </dependency>
 
   </dependencies>

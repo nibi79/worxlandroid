@@ -2,7 +2,7 @@
 <thing:thing-descriptions xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bindingId="worxlandroid"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
-	<bridge-type id="worxlandroidBridge">
+	<bridge-type id="bridge">
 		<label>Bridge Worx Landroid API</label>
 		<description>Represents the API and handler for Worx Landroid.</description>
 		<config-description>

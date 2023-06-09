@@ -7,7 +7,7 @@
 	<!-- Sample Thing Type -->
 	<thing-type id="mower">
 		<supported-bridge-type-refs>
-			<bridge-type-ref id="worxlandroidBridge"/>
+			<bridge-type-ref id="bridge"/>
 		</supported-bridge-type-refs>
 		<label>Worx Landroid Mower</label>
 		<description>Worx Landroid Mower</description>
@@ -81,8 +81,9 @@
 		<representation-property>serialNumber</representation-property>
 
 		<config-description>
-            <parameter name="serialNumber" type="text">
-            	<required>true</required></parameter>
+			<parameter name="serialNumber" type="text">
+				<required>true</required>
+			</parameter>
 
 			<parameter name="refreshStatusInterval" unit="s" type="integer" min="0">
 				<label>Refresh status interval</label>

@@ -102,7 +102,7 @@ public abstract class WebApiResponse implements ApiResponse {
      * @return the property map
      */
     public Map<String, String> getArrayDataAsPropertyMap() {
-        if (jsonResponse.isJsonArray()) {
+        if (jsonResponse.isJsonArray() && !jsonResponse.getAsJsonArray().isEmpty()) {
             // TODO handle this Array correct / hack use the first one
             return getDataAsPropertyMap(null, "UNKNOWN", jsonResponse.getAsJsonArray().get(0).getAsJsonObject());
         } else {
