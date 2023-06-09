@@ -13,7 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.webapi;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * The {@link WebApiException} is a class for handling the Worx Landroid API exceptions
@@ -22,51 +21,32 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @NonNullByDefault
 public class WebApiException extends Exception {
-
     private static final long serialVersionUID = 1L;
-
     private static final int UNKNOWN = 0;
 
     private final int errorCode;
-    @Nullable
-    private final String errorMsg;
-
-    public WebApiException(int errorCode, String errorMsg, Throwable cause) {
-        super(errorMsg, cause);
-        this.errorCode = errorCode;
-        this.errorMsg = errorMsg;
-    }
 
     public WebApiException(int errorCode, String errorMsg) {
         super(errorMsg);
         this.errorCode = errorCode;
-        this.errorMsg = errorMsg;
     }
 
     public WebApiException(String errorMsg, Throwable cause) {
         super(errorMsg);
         this.errorCode = UNKNOWN;
-        this.errorMsg = errorMsg;
     }
 
     public WebApiException(String errorMsg) {
         super(errorMsg);
         this.errorCode = UNKNOWN;
-        this.errorMsg = errorMsg;
     }
 
     public WebApiException(Throwable cause) {
         super(cause.getMessage(), cause);
         this.errorCode = UNKNOWN;
-        this.errorMsg = cause.getMessage();
     }
 
     public int getErrorCode() {
         return errorCode;
-    }
-
-    @Nullable
-    public String getErrorMsg() {
-        return errorMsg;
     }
 }

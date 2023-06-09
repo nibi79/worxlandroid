@@ -20,11 +20,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
-import org.openhab.binding.worxlandroid.internal.webapi.response.WebApiResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.ApiResponse;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +37,16 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public abstract class WebApiRequest<T extends WebApiResponse> {
+public abstract class WebApiRequest<T extends ApiResponse> {
     protected static final String APIURL_BASE = "https://api.worxlandroid.com/api/v2/";
 
     private final Logger logger = LoggerFactory.getLogger(WebApiRequest.class);
     private final Class<T> typeParameterClass;
     private final HttpClient httpClient;
+    private final @Nullable WebApiDeserializer deserializer;
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public WebApiRequest(HttpClient httpClient) {
+    public WebApiRequest(HttpClient httpClient, @Nullable WebApiDeserializer deserializer) {
         Type superClass = getClass().getGenericSuperclass();
         if (superClass == null) {
             throw new IllegalArgumentException("Generic superclass should not be null.");
@@ -51,24 +54,16 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
 
         this.typeParameterClass = ((Class) ((ParameterizedType) superClass).getActualTypeArguments()[0]);
         this.httpClient = httpClient;
+        this.deserializer = deserializer;
     }
 
-    protected HttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    protected T callWebApiGet(String url, AccessTokenResponse token) throws WebApiException {
-        Request request = getHttpClient().newRequest(url).method("GET");
+    @SuppressWarnings("unchecked")
+    protected <T extends ApiResponse> T callWebApiGet(String url, AccessTokenResponse token) throws WebApiException {
+        Request request = httpClient.newRequest(url).method("GET");
         request.header("Authorization", "%s %s".formatted(token.getTokenType(), token.getAccessToken()));
         request.header("Content-Type", "application/json; utf-8");
 
-        return callWebApi(request);
-    }
-
-    protected synchronized T callWebApi(Request request) throws WebApiException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("URI: {}", request.getURI().toString());
-        }
+        logger.debug("URI: {}", request.getURI().toString());
         try {
             ContentResponse response = request.send();
             if (response.getStatus() == 200) {
@@ -78,9 +73,10 @@ public abstract class WebApiRequest<T extends WebApiResponse> {
                 logger.debug("Worx Landroid WebApi Response: {}",
                         result.replaceAll("_token\":\"[^\"]*\"", "_token\":\"***hidden for log***\"")
                                 .replaceAll("pkcs12\":\"[^\"]*\"", "pkcs12\":\"***hidden for log***\""));
-
-                Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
-
+                if (deserializer != null) {
+                    return (T) deserializer.deserialize(typeParameterClass, result);
+                }
+                Constructor<T> ctor = (Constructor<T>) typeParameterClass.getConstructor(String.class);
                 return ctor.newInstance(new Object[] { result });
             } else {
                 throw new WebApiException(

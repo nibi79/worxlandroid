@@ -14,6 +14,7 @@ package org.openhab.binding.worxlandroid.internal.webapi.request;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
@@ -28,8 +29,8 @@ import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 public class UsersMeRequest extends WebApiRequest<UsersMeResponse> {
     private static final String APIURL_USER_ME = APIURL_BASE + "users/me";
 
-    public UsersMeRequest(HttpClient httpClient) {
-        super(httpClient);
+    public UsersMeRequest(HttpClient httpClient, WebApiDeserializer deserializer) {
+        super(httpClient, deserializer);
     }
 
     public UsersMeResponse call(AccessTokenResponse token) throws WebApiException {

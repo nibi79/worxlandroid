@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal;
+package org.openhab.binding.worxlandroid.internal.handler;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.*;
 
@@ -34,7 +34,6 @@ import org.openhab.binding.worxlandroid.internal.config.MowerConfiguration;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSException;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageCallback;
-import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageI;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.binding.worxlandroid.internal.vo.Mower;
 import org.openhab.binding.worxlandroid.internal.vo.ScheduledDay;
@@ -386,7 +385,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     /**
      * @return
      */
-    protected synchronized @Nullable WorxLandroidBridgeHandler getWorxLandroidBridgeHandler() {
+    private synchronized @Nullable WorxLandroidBridgeHandler getWorxLandroidBridgeHandler() {
         Bridge bridge = getBridge();
         if (bridge == null) {
             return null;
@@ -770,10 +769,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     }
 
     @Override
-    public void processMessage(AWSMessageI message) {
+    public void processMessage(AWSMessage message) {
         updateStatus(ThingStatus.ONLINE);
 
-        JsonElement jsonElement = JsonParser.parseString(message.getPayload());
+        JsonElement jsonElement = JsonParser.parseString(message.payload());
 
         if (jsonElement.isJsonObject()) {
             processStatusMessage(jsonElement.getAsJsonObject());
@@ -783,7 +782,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     /**
      * @param jsonMessage
      */
-    public void processStatusMessage(JsonObject jsonMessage) {
+    private void processStatusMessage(JsonObject jsonMessage) {
         // cfg
         if (jsonMessage.get("cfg") != null) {
             updateStateCfg(jsonMessage.get("cfg").getAsJsonObject());

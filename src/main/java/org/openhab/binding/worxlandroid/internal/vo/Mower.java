@@ -27,7 +27,6 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
  */
 @NonNullByDefault
 public class Mower {
-
     private static final int TIME_EXTENSION_DISABLE = -100;
     private static final int[] MULTI_ZONE_METER_DISABLE = { 0, 0, 0, 0 };
     private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 0, 0, 0 };
@@ -52,11 +51,11 @@ public class Mower {
     private boolean multiZoneEnable;
 
     // multizone meter
-    int[] zoneMeter = new int[4];
-    int[] zoneMeterRestore = new int[4];
+    private int[] zoneMeter = new int[4];
+    private int[] zoneMeterRestore = new int[4];
 
     // multizone allocations
-    int[] allocations = new int[10];
+    private int[] allocations = new int[10];
 
     private Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays = new LinkedHashMap<WorxLandroidDayCodes, ScheduledDay>();
     private Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays2 = new LinkedHashMap<WorxLandroidDayCodes, ScheduledDay>();

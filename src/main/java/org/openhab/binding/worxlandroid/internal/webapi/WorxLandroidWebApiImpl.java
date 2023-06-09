@@ -41,10 +41,13 @@ import org.openhab.core.auth.client.oauth2.OAuthResponseException;
 public class WorxLandroidWebApiImpl implements WorxLandroidApi {
     private final HttpClient httpClient;
     private final OAuthClientService oAuthClientService;
+    private final WebApiDeserializer deserializer;
 
-    public WorxLandroidWebApiImpl(HttpClient httpClient, OAuthClientService oAuthClientService) {
+    public WorxLandroidWebApiImpl(HttpClient httpClient, OAuthClientService oAuthClientService,
+            WebApiDeserializer deserializer) {
         this.httpClient = httpClient;
         this.oAuthClientService = oAuthClientService;
+        this.deserializer = deserializer;
     }
 
     public AccessTokenResponse getAccessTokenResponse() throws WebApiException {
@@ -71,8 +74,7 @@ public class WorxLandroidWebApiImpl implements WorxLandroidApi {
 
     @Override
     public UsersMeResponse retrieveWebInfo() throws WebApiException {
-        UsersMeRequest webInfoRequest = new UsersMeRequest(httpClient);
-        return webInfoRequest.call(getAccessTokenResponse());
+        return new UsersMeRequest(httpClient, deserializer).call(getAccessTokenResponse());
     }
 
     @Override

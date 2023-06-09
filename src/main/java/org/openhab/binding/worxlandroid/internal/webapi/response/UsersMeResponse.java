@@ -12,7 +12,11 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
+import java.time.ZonedDateTime;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 
 /**
  * The {@link UsersMeResponse} class
@@ -21,12 +25,20 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  *
  */
 @NonNullByDefault
-public class UsersMeResponse extends WebApiResponse {
+public class UsersMeResponse extends ApiResponse {
+    public String id = "";
+    public String user_type = "";
+    public boolean pushNotifications;
+    public String location = "";
+    public String mqqtEndpoint = "";
+    public String actionsOnGooglePinCode = "";
+    public @Nullable ZonedDateTime createdAt;
+    public @Nullable ZonedDateTime updatedAt;
 
-    /**
-     * @param jsonResponse
-     */
-    public UsersMeResponse(String jsonResponse) {
-        super(jsonResponse);
+    @Override
+    public void checkValid() throws WebApiException {
+        if (id.isEmpty()) {
+            throw new WebApiException("User ID is empty");
+        }
     }
 }

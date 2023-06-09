@@ -29,7 +29,7 @@ public class ProductItemsStatusRequest extends WebApiRequest<ProductItemsStatusR
     private static final String APIURL_PRODUCTITEMS = APIURL_BASE + "product-items";
 
     public ProductItemsStatusRequest(HttpClient httpClient) {
-        super(httpClient);
+        super(httpClient, null);
     }
 
     public ProductItemsStatusResponse call(AccessTokenResponse token, String serialNumber) throws WebApiException {

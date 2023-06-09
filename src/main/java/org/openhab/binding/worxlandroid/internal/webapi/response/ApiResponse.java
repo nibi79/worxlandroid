@@ -12,17 +12,16 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 
 /**
- * {@link ApiResponse}
+ * The {@link ApiResponse} base class for API answers
  *
- * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Initial contribution
  *
  */
-@NonNullByDefault
-public interface ApiResponse {
+public class ApiResponse {
 
-    // MemberNames
-    public static final String MN_MQTTENDPOINT = "mqtt_endpoint";
+    public void checkValid() throws WebApiException {
+    }
 }

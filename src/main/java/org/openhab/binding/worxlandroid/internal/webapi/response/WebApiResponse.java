@@ -35,7 +35,7 @@ import com.google.gson.JsonSyntaxException;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public abstract class WebApiResponse implements ApiResponse {
+public abstract class WebApiResponse extends ApiResponse {
     protected static final JsonObject EMPTY_JSON_OBJECT = JsonParser.parseString("{}").getAsJsonObject();
 
     private final Logger logger = LoggerFactory.getLogger(WebApiResponse.class);

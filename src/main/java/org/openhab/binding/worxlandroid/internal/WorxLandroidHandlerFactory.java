@@ -23,6 +23,9 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
+import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
+import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidMowerHandler;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
 import org.openhab.core.auth.client.oauth2.OAuthFactory;
 import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.io.net.http.HttpClientFactory;
@@ -53,12 +56,14 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
     private final Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private final HttpClient httpClient;
     private final OAuthFactory oAuthFactory;
+    private final WebApiDeserializer deserializer;
 
     @Activate
     public WorxLandroidHandlerFactory(final @Reference HttpClientFactory httpClientFactory,
-            final @Reference OAuthFactory oAuthFactory) {
+            final @Reference OAuthFactory oAuthFactory, final @Reference WebApiDeserializer deserializer) {
         this.httpClient = httpClientFactory.getCommonHttpClient();
         this.oAuthFactory = oAuthFactory;
+        this.deserializer = deserializer;
     }
 
     @Override
@@ -72,7 +77,7 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
 
         if (THING_TYPE_BRIDGE.equals(thingTypeUID)) {
             WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler((Bridge) thing, httpClient,
-                    oAuthFactory);
+                    oAuthFactory, deserializer);
             MowerDiscoveryService discoveryService = new MowerDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
             discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(DiscoveryService.class.getName(),

@@ -20,33 +20,10 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
  * {@link AWSMessage} AWS message
  *
  * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Changed to record
  */
 @NonNullByDefault
-public class AWSMessage implements AWSMessageI {
+public record AWSMessage(@Nullable String topic, String payload) {
     public static final String EMPTY_PAYLOAD = "{}";
-    public static final String CMD_START = String.format("{\"cmd\":%d}", WorxLandroidActionCodes.START.getCode());
-
-    private @Nullable String topic;
-
-    private String payload;
-
-    /**
-     * @param topic
-     * @param qos
-     * @param payload
-     */
-    public AWSMessage(@Nullable String topic, String payload) {
-        this.topic = topic;
-        this.payload = payload;
-    }
-
-    @Override
-    public @Nullable String getTopic() {
-        return topic;
-    }
-
-    @Override
-    public String getPayload() {
-        return payload;
-    }
+    public static final String CMD_START = "{\"cmd\":%d}".formatted(WorxLandroidActionCodes.START.getCode());
 }

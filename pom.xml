@@ -26,7 +26,6 @@
       <artifactId>aws-crt</artifactId>
       <version>0.22.1</version>
     </dependency>
-
   </dependencies>
 
 </project>

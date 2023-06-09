@@ -29,7 +29,7 @@ public class UsersCertificateRequest extends WebApiRequest<UsersCertificateRespo
     private static final String APIURL_USERS_CERTIFICATE = APIURL_BASE + "users/certificate";
 
     public UsersCertificateRequest(HttpClient httpClient) {
-        super(httpClient);
+        super(httpClient, null);
     }
 
     public UsersCertificateResponse call(AccessTokenResponse token) throws WebApiException {

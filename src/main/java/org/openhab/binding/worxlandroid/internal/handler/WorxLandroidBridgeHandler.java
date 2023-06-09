@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal;
+package org.openhab.binding.worxlandroid.internal.handler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,17 +21,18 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.worxlandroid.internal.config.BridgeConfiguration;
-import org.openhab.binding.worxlandroid.internal.config.ConfigurationLevel;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientCallback;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientI;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSException;
-import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessageI;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopicI;
+import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsStatusResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
 import org.openhab.core.auth.client.oauth2.AccessTokenRefreshListener;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.openhab.core.auth.client.oauth2.OAuthClientService;
@@ -64,16 +65,19 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
     private final OAuthFactory oAuthFactory;
     private final HttpClient httpClient;
+    private final WebApiDeserializer deserializer;
 
     private Optional<MowerDiscoveryService> discoveryService = Optional.empty();
     private @Nullable OAuthClientService oAuthClientService;
     private @Nullable AWSClientI awsClient;
     private @Nullable WorxLandroidWebApiImpl apiHandler;
 
-    public WorxLandroidBridgeHandler(Bridge bridge, HttpClient httpClient, OAuthFactory oAuthFactory) {
+    public WorxLandroidBridgeHandler(Bridge bridge, HttpClient httpClient, OAuthFactory oAuthFactory,
+            WebApiDeserializer deserializer) {
         super(bridge);
         this.oAuthFactory = oAuthFactory;
         this.httpClient = httpClient;
+        this.deserializer = deserializer;
     }
 
     public void setDiscovery(MowerDiscoveryService discoveryService) {
@@ -87,14 +91,12 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         BridgeConfiguration configuration = getConfigAs(BridgeConfiguration.class);
 
         if (configuration.webapiUsername.isBlank()) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                    ConfigurationLevel.EMPTY_USERNAME.message);
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/conf-error-no-username");
             return;
         }
 
         if (configuration.webapiPassword.isBlank()) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                    ConfigurationLevel.EMPTY_PASSWORD.message);
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/conf-error-no-password");
             return;
         }
 
@@ -102,31 +104,26 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
         OAuthClientService clientService = oAuthFactory.createOAuthClientService(getThing().getUID().getAsString(),
                 APIURL_OAUTH_TOKEN, null, CLIENT_ID, null, "*", true);
-        oAuthClientService = clientService;
+        clientService.addAccessTokenRefreshListener(this);
 
         try {
             AccessTokenResponse token = clientService.getAccessTokenByResourceOwnerPasswordCredentials(
                     configuration.webapiUsername, configuration.webapiPassword, "*");
-            clientService.addAccessTokenRefreshListener(this);
-            WorxLandroidWebApiImpl api = new WorxLandroidWebApiImpl(httpClient, clientService);
 
-            Map<String, String> props = api.retrieveWebInfo().getDataAsPropertyMap();
-
-            String userId = props.get("id");
-            if (userId == null) {
-                throw new WebApiException("No user id found");
-            }
+            WorxLandroidWebApiImpl api = new WorxLandroidWebApiImpl(httpClient, clientService, deserializer);
+            UsersMeResponse user = api.retrieveWebInfo();
+            Map<String, String> props = deserializer.toMap(user);
 
             updateThing(editThing().withProperties(props).build());
 
-            ProductItemsStatusResponse productItemsStatusResponse = api.retrieveDeviceStatus(userId);
+            ProductItemsStatusResponse productItemsStatusResponse = api.retrieveDeviceStatus(user.id);
             Map<String, String> firstDeviceProps = productItemsStatusResponse.getArrayDataAsPropertyMap();
 
             String awsMqttEndpoint = firstDeviceProps.get("mqtt_endpoint");
             String deviceId = firstDeviceProps.get("uuid");
             String customAuthorizerName = "com-worxlandroid-customer";
             String usernameMqtt = "openhab";
-            String clientId = "WX/USER/%s/%s/%s".formatted(userId, usernameMqtt, deviceId);
+            String clientId = "WX/USER/%s/%s/%s".formatted(user.id, usernameMqtt, deviceId);
 
             AWSClient localAwsClient = new AWSClient(awsMqttEndpoint, clientId, this, usernameMqtt,
                     customAuthorizerName, token.getAccessToken());
@@ -138,6 +135,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
             awsClient = localAwsClient;
             apiHandler = api;
+            oAuthClientService = clientService;
 
             // Trigger discovery of mowers
             scheduler.submit(() -> discoveryService.ifPresent(MowerDiscoveryService::discoverMowers));
@@ -214,14 +212,14 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
      * @throws AWSIotException
      */
     @SuppressWarnings("null")
-    public void publishMessage(AWSMessageI awsMessage) throws AWSException {
+    public void publishMessage(AWSMessage awsMessage) throws AWSException {
         if (awsClient == null) {
-            logger.error("MqttClient is not initialized. Cannot publish message to topic -> {}", awsMessage.getTopic());
+            logger.error("MqttClient is not initialized. Cannot publish message to topic -> {}", awsMessage.topic());
             return;
         }
 
-        logger.debug("publish topic -> {}", awsMessage.getTopic());
-        logger.debug("publish message -> {}", awsMessage.getPayload());
+        logger.debug("publish topic -> {}", awsMessage.topic());
+        logger.debug("publish message -> {}", awsMessage.payload());
         awsClient.publish(awsMessage);
     }
 

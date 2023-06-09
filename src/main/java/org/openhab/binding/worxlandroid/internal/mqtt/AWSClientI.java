@@ -39,7 +39,7 @@ public interface AWSClientI extends MqttClientConnectionEvents {
 
     public void subscribe(AWSTopicI awsTopic);
 
-    public void publish(AWSMessageI awsMessageI);
+    public void publish(AWSMessage awsMessage);
 
     public boolean refreshConnection(String token) throws UnsupportedEncodingException;
 }

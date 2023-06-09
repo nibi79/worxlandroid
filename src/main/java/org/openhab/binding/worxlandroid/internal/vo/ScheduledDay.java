@@ -31,10 +31,6 @@ public class ScheduledDay {
     private int durationRestore = DURATION_DEFAULT;
     private boolean edgecut;
 
-    public ScheduledDay() {
-        super();
-    }
-
     public int getHour() {
         return hour;
     }

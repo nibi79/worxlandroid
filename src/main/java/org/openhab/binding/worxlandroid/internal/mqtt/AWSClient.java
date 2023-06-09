@@ -55,7 +55,7 @@ public class AWSClient implements AWSClientI {
     private @Nullable LocalDateTime interrupted;
     private HashSet<AWSTopicI> subscriptions = new HashSet<>();
 
-    protected final ScheduledExecutorService scheduler = ThreadPoolManager.getScheduledPool("AWSClient");
+    private final ScheduledExecutorService scheduler = ThreadPoolManager.getScheduledPool("AWSClient");
 
     public AWSClient(@Nullable String clientEndpoint, String clientId, AWSClientCallback clientCallback,
             String usernameMqtt, String customAuthorizerName, String token) throws UnsupportedEncodingException {
@@ -78,7 +78,7 @@ public class AWSClient implements AWSClientI {
         String jwt = tok[0] + "." + tok[1];
 
         connection = AwsIotMqttConnectionBuilder.newDefaultBuilder()
-                .withCustomAuthorizer(usernameMqtt, customAuthorizerName, customAuthorizerSig, null)
+                .withCustomAuthorizer(usernameMqtt, customAuthorizerName, customAuthorizerSig, null, null, null)
                 .withWebsockets(true).withClientId(clientId).withCleanSession(false).withEndpoint(endpoint)
                 .withUsername(usernameMqtt).withConnectionEventCallbacks(this)// .withKeepAliveSecs(600)
                 .withWebsocketHandshakeTransform((handshakeArgs) -> {
@@ -167,9 +167,12 @@ public class AWSClient implements AWSClientI {
 
     @Override
     public @Nullable CompletableFuture<Void> disconnect() {
-        unsubsribeTopics();
         MqttClientConnection localConnection = connection;
-        return localConnection != null ? localConnection.disconnect() : null;
+        if (localConnection != null) {
+            subscriptions.forEach(topic -> localConnection.unsubscribe(topic.getTopic()));
+            return localConnection.disconnect();
+        }
+        return null;
     }
 
     @Override
@@ -182,11 +185,11 @@ public class AWSClient implements AWSClientI {
     }
 
     @Override
-    public void publish(AWSMessageI awsMessageI) {
+    public void publish(AWSMessage awsMessageI) {
         MqttClientConnection localConnection = connection;
         if (localConnection != null) {
-            byte[] bytes = awsMessageI.getPayload().getBytes(StandardCharsets.UTF_8);
-            MqttMessage mqttMessage = new MqttMessage(awsMessageI.getTopic(), bytes, QOS);
+            byte[] bytes = awsMessageI.payload().getBytes(StandardCharsets.UTF_8);
+            MqttMessage mqttMessage = new MqttMessage(awsMessageI.topic(), bytes, QOS);
 
             localConnection.publish(mqttMessage);
         }
@@ -195,35 +198,18 @@ public class AWSClient implements AWSClientI {
     @Override
     public boolean refreshConnection(String token) throws UnsupportedEncodingException {
         MqttClientConnection localConnection = connection;
-        if (localConnection == null) {
-            return false;
+        if (localConnection != null) {
+            disconnect();
+            localConnection.close();
         }
 
         logger.debug("reconnecting...");
 
-        disconnect();
-        localConnection.close();
-
         createNewConnection(token);
-        boolean result = connect();
-        subsribeTopics();
-
-        // TODO NB return?
-        return result;
-    }
-
-    private void subsribeTopics() {
-        for (AWSTopicI awsTopic : subscriptions) {
-            subscribe(awsTopic);
+        if (connect()) {
+            subscriptions.forEach(this::subscribe);
+            return true;
         }
-    }
-
-    private void unsubsribeTopics() {
-        MqttClientConnection localConnection = connection;
-        if (localConnection != null) {
-            for (AWSTopicI awsTopic : subscriptions) {
-                localConnection.unsubscribe(awsTopic.getTopic());
-            }
-        }
+        return false;
     }
 }
