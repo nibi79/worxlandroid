@@ -26,5 +26,4 @@ public interface AWSMessageCallback {
      * callback method to process Message
      */
     public void processMessage(AWSMessage awsMessage);
-
 }

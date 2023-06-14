@@ -112,9 +112,11 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
             WorxLandroidWebApiImpl api = new WorxLandroidWebApiImpl(httpClient, clientService, deserializer);
             UsersMeResponse user = api.retrieveWebInfo();
-            Map<String, String> props = deserializer.toMap(user);
 
-            updateThing(editThing().withProperties(props).build());
+            if (thing.getProperties().isEmpty()) {
+                Map<String, String> properties = deserializer.toMap(user);
+                updateProperties(properties);
+            }
 
             ProductItemsStatusResponse productItemsStatusResponse = api.retrieveDeviceStatus(user.id);
             Map<String, String> firstDeviceProps = productItemsStatusResponse.getArrayDataAsPropertyMap();
@@ -138,6 +140,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
             oAuthClientService = clientService;
 
             // Trigger discovery of mowers
+            // NB : not sure this should be kept, the discovery service will trigger by itself
             scheduler.submit(() -> discoveryService.ifPresent(MowerDiscoveryService::discoverMowers));
         } catch (OAuthException | IOException | WebApiException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());

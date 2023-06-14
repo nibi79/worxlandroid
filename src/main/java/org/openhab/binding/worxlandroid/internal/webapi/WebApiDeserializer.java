@@ -69,7 +69,7 @@ public class WebApiDeserializer {
     }
 
     public Map<String, String> toMap(Object object) {
-        Map<String, String> fromObject = gson.fromJson(gson.toJson(object), new TypeToken<HashMap<String, Object>>() {
+        Map<String, String> fromObject = gson.fromJson(gson.toJson(object), new TypeToken<HashMap<String, String>>() {
         }.getType());
         return fromObject != null ? Map.copyOf(fromObject) : Map.of();
     }

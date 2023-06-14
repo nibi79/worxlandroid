@@ -12,10 +12,7 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.response;
 
-import java.time.ZonedDateTime;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 
 /**
@@ -32,8 +29,8 @@ public class UsersMeResponse extends ApiResponse {
     public String location = "";
     public String mqqtEndpoint = "";
     public String actionsOnGooglePinCode = "";
-    public @Nullable ZonedDateTime createdAt;
-    public @Nullable ZonedDateTime updatedAt;
+    public String createdAt = "";
+    public String updatedAt = "";
 
     @Override
     public void checkValid() throws WebApiException {
