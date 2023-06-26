@@ -356,10 +356,10 @@
 	</channel-type>
 
 	<channel-type id="chFirmware">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>Firmware</label>
 		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="chBatteryTemperature">

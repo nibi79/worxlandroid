@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.webapi.response;
+package org.openhab.binding.worxlandroid.internal.webapi.dto;
 
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 

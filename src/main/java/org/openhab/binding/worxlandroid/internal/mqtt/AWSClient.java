@@ -78,7 +78,7 @@ public class AWSClient implements AWSClientI {
         String jwt = tok[0] + "." + tok[1];
 
         connection = AwsIotMqttConnectionBuilder.newDefaultBuilder()
-                .withCustomAuthorizer(usernameMqtt, customAuthorizerName, customAuthorizerSig, null, null, null)
+                .withCustomAuthorizer(usernameMqtt, customAuthorizerName, customAuthorizerSig, null)
                 .withWebsockets(true).withClientId(clientId).withCleanSession(false).withEndpoint(endpoint)
                 .withUsername(usernameMqtt).withConnectionEventCallbacks(this)// .withKeepAliveSecs(600)
                 .withWebsocketHandshakeTransform((handshakeArgs) -> {

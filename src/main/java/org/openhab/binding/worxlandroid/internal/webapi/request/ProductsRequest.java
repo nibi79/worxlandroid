@@ -29,7 +29,7 @@ public class ProductsRequest extends WebApiRequest<ProductsResponse> {
     private static final String APIURL_PRODUCTS = APIURL_BASE + "products";
 
     public ProductsRequest(HttpClient httpClient) {
-        super(httpClient, null);
+        super(httpClient, ProductsResponse.class, null);
     }
 
     public ProductsResponse call(AccessTokenResponse token) throws WebApiException {

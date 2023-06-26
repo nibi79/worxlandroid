@@ -12,11 +12,16 @@
  */
 package org.openhab.binding.worxlandroid.internal.webapi.request;
 
+import java.util.List;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
+import org.openhab.binding.worxlandroid.internal.deserializer.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
-import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsStatusResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.dto.ProductItemStatus;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
+
+import com.google.gson.reflect.TypeToken;
 
 /**
  * The {@link ProductItemsStatusRequest} class
@@ -25,14 +30,15 @@ import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
  *
  */
 @NonNullByDefault
-public class ProductItemsStatusRequest extends WebApiRequest<ProductItemsStatusResponse> {
+public class ProductItemsStatusRequest extends WebApiRequest<List<ProductItemStatus>> {
     private static final String APIURL_PRODUCTITEMS = APIURL_BASE + "product-items";
 
-    public ProductItemsStatusRequest(HttpClient httpClient) {
-        super(httpClient, null);
+    public ProductItemsStatusRequest(HttpClient httpClient, WebApiDeserializer deserializer) {
+        super(httpClient, new TypeToken<List<ProductItemStatus>>() {
+        }.getType(), deserializer);
     }
 
-    public ProductItemsStatusResponse call(AccessTokenResponse token, String serialNumber) throws WebApiException {
+    public List<ProductItemStatus> call(AccessTokenResponse token, String serialNumber) throws WebApiException {
         return callWebApiGet("%s?status=1".formatted(APIURL_PRODUCTITEMS), token);
     }
 }

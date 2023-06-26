@@ -21,7 +21,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  */
 @NonNullByDefault
 public enum WorxLandroidDayCodes implements Codes {
-
     SUNDAY(0, "Sunday"),
     MONDAY(1, "Monday"),
     TUESDAY(2, "Tuesday"),
@@ -50,6 +49,6 @@ public enum WorxLandroidDayCodes implements Codes {
 
     @Override
     public String toString() {
-        return String.format("%s | DayCode: %d - %s", this.name(), this.getCode(), this.getDescription());
+        return String.format("%s | DayCode: %d - %s", name(), getCode(), getDescription());
     }
 }

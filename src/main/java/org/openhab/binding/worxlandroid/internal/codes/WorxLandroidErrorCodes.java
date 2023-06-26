@@ -21,8 +21,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  */
 @NonNullByDefault
 public enum WorxLandroidErrorCodes implements Codes {
-
-    UNKNOWN(-1, "UNKNOWN"),
+    UNKNOWN(-1, "Unknown"),
     NO_ERR(0, "No error!"),
     TRAPPED(1, "Trapped"),
     LIFTED(2, "Lifted"),
@@ -60,11 +59,6 @@ public enum WorxLandroidErrorCodes implements Codes {
         return this.description;
     }
 
-    /**
-     *
-     * @param code
-     * @return
-     */
     public static WorxLandroidErrorCodes getByCode(int code) {
         WorxLandroidErrorCodes result = Codes.lookup(WorxLandroidErrorCodes.class, code);
         return result != null ? result : WorxLandroidErrorCodes.UNKNOWN;
@@ -72,6 +66,6 @@ public enum WorxLandroidErrorCodes implements Codes {
 
     @Override
     public String toString() {
-        return String.format("%s | ErrorCode: %d - %s", this.name(), this.getCode(), this.getDescription());
+        return String.format("%s | ErrorCode: %d - %s", name(), getCode(), getDescription());
     }
 }

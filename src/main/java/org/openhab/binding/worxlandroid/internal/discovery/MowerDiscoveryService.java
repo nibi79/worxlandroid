@@ -20,7 +20,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants;
 import org.openhab.binding.worxlandroid.internal.config.MowerConfiguration;
 import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
-import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
+import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApi;
 import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
@@ -72,7 +72,7 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
             return;
         }
 
-        WorxLandroidWebApiImpl apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
+        WorxLandroidWebApi apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
         try {
             ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
 

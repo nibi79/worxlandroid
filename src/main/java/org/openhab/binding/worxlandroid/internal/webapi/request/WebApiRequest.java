@@ -14,7 +14,6 @@ package org.openhab.binding.worxlandroid.internal.webapi.request;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -24,9 +23,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
+import org.openhab.binding.worxlandroid.internal.deserializer.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
-import org.openhab.binding.worxlandroid.internal.webapi.response.ApiResponse;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,28 +35,31 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public abstract class WebApiRequest<T extends ApiResponse> {
+public abstract class WebApiRequest<T> {
     protected static final String APIURL_BASE = "https://api.worxlandroid.com/api/v2/";
 
     private final Logger logger = LoggerFactory.getLogger(WebApiRequest.class);
-    private final Class<T> typeParameterClass;
+    private final @Nullable Class<?> typeParameterClass;
     private final HttpClient httpClient;
     private final @Nullable WebApiDeserializer deserializer;
+    private final @Nullable Type typeToken;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public WebApiRequest(HttpClient httpClient, @Nullable WebApiDeserializer deserializer) {
-        Type superClass = getClass().getGenericSuperclass();
-        if (superClass == null) {
-            throw new IllegalArgumentException("Generic superclass should not be null.");
-        }
+    public WebApiRequest(HttpClient httpClient, Class<?> clazz, @Nullable WebApiDeserializer deserializer) {
+        this.typeParameterClass = clazz;
+        this.httpClient = httpClient;
+        this.deserializer = deserializer;
+        typeToken = null;
+    }
 
-        this.typeParameterClass = ((Class) ((ParameterizedType) superClass).getActualTypeArguments()[0]);
+    public WebApiRequest(HttpClient httpClient, Type typeToken, WebApiDeserializer deserializer) {
+        this.typeParameterClass = null;
+        this.typeToken = typeToken;
         this.httpClient = httpClient;
         this.deserializer = deserializer;
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends ApiResponse> T callWebApiGet(String url, AccessTokenResponse token) throws WebApiException {
+    protected T callWebApiGet(String url, AccessTokenResponse token) throws WebApiException {
         Request request = httpClient.newRequest(url).method("GET");
         request.header("Authorization", "%s %s".formatted(token.getTokenType(), token.getAccessToken()));
         request.header("Content-Type", "application/json; utf-8");
@@ -74,7 +75,14 @@ public abstract class WebApiRequest<T extends ApiResponse> {
                         result.replaceAll("_token\":\"[^\"]*\"", "_token\":\"***hidden for log***\"")
                                 .replaceAll("pkcs12\":\"[^\"]*\"", "pkcs12\":\"***hidden for log***\""));
                 if (deserializer != null) {
-                    return (T) deserializer.deserialize(typeParameterClass, result);
+                    Class<?> typeParameter = typeParameterClass;
+                    if (typeParameter != null) {
+                        return (T) deserializer.deserialize(typeParameter, result);
+                    }
+                    Type localTypeToken = typeToken;
+                    if (localTypeToken != null) {
+                        return (T) deserializer.deserialize(localTypeToken, result);
+                    }
                 }
                 Constructor<T> ctor = (Constructor<T>) typeParameterClass.getConstructor(String.class);
                 return ctor.newInstance(new Object[] { result });

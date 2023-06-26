@@ -22,10 +22,10 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
+import org.openhab.binding.worxlandroid.internal.deserializer.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
 import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidMowerHandler;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
 import org.openhab.core.auth.client.oauth2.OAuthFactory;
 import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.io.net.http.HttpClientFactory;
@@ -85,7 +85,7 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
 
             return bridgeHandler;
         } else if (THING_TYPE_MOWER.equals(thingTypeUID)) {
-            return new WorxLandroidMowerHandler(thing);
+            return new WorxLandroidMowerHandler(thing, deserializer);
         }
         return null;
     }

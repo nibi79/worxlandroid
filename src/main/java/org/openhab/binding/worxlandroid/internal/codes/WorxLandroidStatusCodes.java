@@ -21,9 +21,8 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  */
 @NonNullByDefault
 public enum WorxLandroidStatusCodes implements Codes {
-
-    UNKNOWN(-1, "UNKNOWN"),
-    IDLE(0, "IDLE"),
+    UNKNOWN(-1, "Unknown"),
+    IDLE(0, "Idle"),
     HOME(1, "Home"),
     START_SEQUNCE(2, "Start sequence"),
     LEAVING_HOME(3, "Leaving home"),
@@ -72,6 +71,6 @@ public enum WorxLandroidStatusCodes implements Codes {
 
     @Override
     public String toString() {
-        return String.format("%s | StatusCode: %d - %s", this.name(), this.getCode(), this.getDescription());
+        return String.format("%s | StatusCode: %d - %s", name(), getCode(), getDescription());
     }
 }

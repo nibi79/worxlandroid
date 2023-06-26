@@ -14,6 +14,7 @@ package org.openhab.binding.worxlandroid.internal.handler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.worxlandroid.internal.config.BridgeConfiguration;
+import org.openhab.binding.worxlandroid.internal.deserializer.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientCallback;
@@ -28,11 +30,10 @@ import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientI;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSException;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopicI;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
-import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
-import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsStatusResponse;
-import org.openhab.binding.worxlandroid.internal.webapi.response.UsersMeResponse;
+import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApi;
+import org.openhab.binding.worxlandroid.internal.webapi.dto.ProductItemStatus;
+import org.openhab.binding.worxlandroid.internal.webapi.dto.UsersMeResponse;
 import org.openhab.core.auth.client.oauth2.AccessTokenRefreshListener;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.openhab.core.auth.client.oauth2.OAuthClientService;
@@ -70,7 +71,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     private Optional<MowerDiscoveryService> discoveryService = Optional.empty();
     private @Nullable OAuthClientService oAuthClientService;
     private @Nullable AWSClientI awsClient;
-    private @Nullable WorxLandroidWebApiImpl apiHandler;
+    private @Nullable WorxLandroidWebApi apiHandler;
 
     public WorxLandroidBridgeHandler(Bridge bridge, HttpClient httpClient, OAuthFactory oAuthFactory,
             WebApiDeserializer deserializer) {
@@ -110,7 +111,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
             AccessTokenResponse token = clientService.getAccessTokenByResourceOwnerPasswordCredentials(
                     configuration.webapiUsername, configuration.webapiPassword, "*");
 
-            WorxLandroidWebApiImpl api = new WorxLandroidWebApiImpl(httpClient, clientService, deserializer);
+            WorxLandroidWebApi api = new WorxLandroidWebApi(httpClient, clientService, deserializer);
             UsersMeResponse user = api.retrieveWebInfo();
 
             if (thing.getProperties().isEmpty()) {
@@ -118,16 +119,14 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
                 updateProperties(properties);
             }
 
-            ProductItemsStatusResponse productItemsStatusResponse = api.retrieveDeviceStatus(user.id);
-            Map<String, String> firstDeviceProps = productItemsStatusResponse.getArrayDataAsPropertyMap();
+            List<ProductItemStatus> productItemsStatusResponse = api.retrieveDeviceStatus(user.id);
+            ProductItemStatus productItemStatus = productItemsStatusResponse.get(0);
 
-            String awsMqttEndpoint = firstDeviceProps.get("mqtt_endpoint");
-            String deviceId = firstDeviceProps.get("uuid");
             String customAuthorizerName = "com-worxlandroid-customer";
             String usernameMqtt = "openhab";
-            String clientId = "WX/USER/%s/%s/%s".formatted(user.id, usernameMqtt, deviceId);
+            String clientId = "WX/USER/%s/%s/%s".formatted(user.id, usernameMqtt, productItemStatus.uuid);
 
-            AWSClient localAwsClient = new AWSClient(awsMqttEndpoint, clientId, this, usernameMqtt,
+            AWSClient localAwsClient = new AWSClient(productItemStatus.mqttEndpoint, clientId, this, usernameMqtt,
                     customAuthorizerName, token.getAccessToken());
 
             logger.debug("try to connect to AWS...");
@@ -167,7 +166,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         super.dispose();
     }
 
-    public @Nullable WorxLandroidWebApiImpl getWorxLandroidWebApiImpl() {
+    public @Nullable WorxLandroidWebApi getWorxLandroidWebApiImpl() {
         return apiHandler;
     }
 
@@ -178,7 +177,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
     public boolean reconnectToWorx() {
         AWSClientI localAwsClient = awsClient;
-        WorxLandroidWebApiImpl api = apiHandler;
+        WorxLandroidWebApi api = apiHandler;
         if (localAwsClient != null && api != null) {
             try {
                 String accessToken = api.getAccessToken();
