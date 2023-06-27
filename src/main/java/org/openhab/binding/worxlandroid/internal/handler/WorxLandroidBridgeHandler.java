@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
-import org.openhab.binding.worxlandroid.internal.config.BridgeConfiguration;
+import org.openhab.binding.worxlandroid.internal.config.WebApiConfiguration;
 import org.openhab.binding.worxlandroid.internal.deserializer.WebApiDeserializer;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
@@ -89,14 +89,14 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     public void initialize() {
         logger.debug("Initializing Landroid API bridge handler.");
 
-        BridgeConfiguration configuration = getConfigAs(BridgeConfiguration.class);
+        WebApiConfiguration configuration = getConfigAs(WebApiConfiguration.class);
 
-        if (configuration.webapiUsername.isBlank()) {
+        if (configuration.username.isBlank()) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/conf-error-no-username");
             return;
         }
 
-        if (configuration.webapiPassword.isBlank()) {
+        if (configuration.password.isBlank()) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/conf-error-no-password");
             return;
         }
@@ -109,7 +109,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
         try {
             AccessTokenResponse token = clientService.getAccessTokenByResourceOwnerPasswordCredentials(
-                    configuration.webapiUsername, configuration.webapiPassword, "*");
+                    configuration.username, configuration.password, "*");
 
             WorxLandroidWebApi api = new WorxLandroidWebApi(httpClient, clientService, deserializer);
             UsersMeResponse user = api.retrieveWebInfo();

@@ -114,11 +114,11 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | macAdress | `String` | datCommon#macAdress |
 | firmware | `Number` | datCommon#firmware |
 | wifiQuality | `Number` | datCommon#wifiQuality |
-| statusCode | `Number` | datCommon#statusCode |
-| statusDescription | `String` | datCommon#statusDescription |
-| errorCode | `Number` | datCommon#errorCode |
-| errorDescription | `String` | datCommon#errorDescription |
-| lastZone | `Number` | datCommon#lastZone |
+| status-code | `Number` | datCommon#status-code |
+| status-description | `String` | datCommon#status-description |
+| error-code | `Number` | datCommon#error-code |
+| error-description | `String` | datCommon#error-description |
+| last-zone | `Number` | datCommon#last-zone |
 
 ##### datBattery
 
@@ -167,140 +167,140 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScSunday#enable |
-| scheduleStartHour | `Number` | cfgScSunday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScSunday#scheduleStartMinutes |
-| scheduleDuration | `Number` | cfgScSunday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScSunday#scheduleEdgecut |
+| scheduleStartHour | `Number` | cfgScSunday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScSunday#schedule-start-minutes |
+| schedule-duration | `Number` | cfgScSunday#schedule-duration |
+| schedule-edgecut | `Number` | cfgScSunday#schedule-edgecut |
 
 ##### cfgScSunday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScSunday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScSunday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScSunday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScSunday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScSunday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScSunday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScSunday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleDuration | `Number` | cfgScSunday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScSunday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgScMonday
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScMonday#enable |
-| scheduleStartHour | `Number` | cfgScMonday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScMonday#scheduleStartMinutes |
-| scheduleDuration | `Number` | cfgScMonday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScMonday#scheduleEdgecut |
+| scheduleStartHour | `Number` | cfgScMonday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScMonday#schedule-start-minutes |
+| schedule-duration | `Number` | cfgScMonday#scheduleDuration |
+| schedule-edgecut | `Number` | cfgScMonday#schedule-edgecut |
 
 ##### cfgScMonday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScMonday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScMonday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScMonday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScMonday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScMonday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScMonday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScMonday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-duration | `Number` | cfgScMonday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScMonday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgScTuesday
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScTuesday#enable |
-| scheduleStartHour | `Number` | cfgScTuesday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScTuesday#scheduleStartMinutes |
-| scheduleDuration | `Number` | cfgScTuesday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScTuesday#scheduleEdgecut |
+| scheduleStartHour | `Number` | cfgScTuesday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScTuesday#schedule-start-minutes |
+| schedule-duration | `Number` | cfgScTuesday#schedule-duration |
+| schedule-edgecut | `Number` | cfgScTuesday#schedule-edgecut |
 
 ##### cfgScTuesday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScTuesday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScTuesday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScTuesday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScTuesday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScTuesday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScTuesday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScTuesday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-duration | `Number` | cfgScTuesday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScTuesday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgScWednesday
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScWednesday#enable |
-| scheduleStartHour | `Number` | cfgScWednesday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScWednesday#scheduleStartMinutes |
+| scheduleStartHour | `Number` | cfgScWednesday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScWednesday#schedule-start-minutes |
 | scheduleDuration | `Number` | cfgScWednesday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScWednesday#scheduleEdgecut |
+| schedule-edgecut | `Number` | cfgScWednesday#schedule-edgecut |
 
 ##### cfgScWednesday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScWednesday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScWednesday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScWednesday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScWednesday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScWednesday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScWednesday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScWednesday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-duration | `Number` | cfgScWednesday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScWednesday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgScThursday
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScThursday#enable |
-| scheduleStartHour | `Number` | cfgScThursday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScThursday#scheduleStartMinutes |
-| scheduleDuration | `Number` | cfgScThursday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScThursday#scheduleEdgecut |
+| scheduleStartHour | `Number` | cfgScThursday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScThursday#schedule-start-minutes |
+| schedule-duration | `Number` | cfgScThursday#schedule-duration |
+| schedule-edgecut | `Number` | cfgScThursday#schedule-edgecut |
 
 ##### cfgScThursday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScThursday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScThursday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScThursday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScThursday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScThursday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScThursday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScThursday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-duration | `Number` | cfgScThursday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScThursday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgScFriday
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScFriday#enable |
-| scheduleStartHour | `Number` | cfgScFriday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScFriday#scheduleStartMinutes |
-| scheduleDuration | `Number` | cfgScFriday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScFriday#scheduleEdgecut |
+| scheduleStartHour | `Number` | cfgScFriday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScFriday#schedule-start-minutes |
+| schedule-duration | `Number` | cfgScFriday#schedule-duration |
+| schedule-edgecut | `Number` | cfgScFriday#schedule-edgecut |
 
 ##### cfgScFriday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScFriday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScFriday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScFriday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScFriday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScFriday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScFriday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScFriday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-duration | `Number` | cfgScFriday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScFriday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgScSaturday
 
 | Channel   | Type | ChannelName |
 |------------|-----------|-----------|
 | enable | `Switch` | cfgScSaturday#enable |
-| scheduleStartHour | `Number` | cfgScSaturday#scheduleStartHour |
-| scheduleStartMinutes | `Number` | cfgScSaturday#scheduleStartMinutes |
-| scheduleDuration | `Number` | cfgScSaturday#scheduleDuration |
-| scheduleEdgecut | `Number` | cfgScSaturday#scheduleEdgecut |
+| scheduleStartHour | `Number` | cfgScSaturday#schedule-start-hour |
+| schedule-start-minutes | `Number` | cfgScSaturday#schedule-start-minutes |
+| schedule-duration | `Number` | cfgScSaturday#schedule-duration |
+| schedule-edgecut | `Number` | cfgScSaturday#schedule-edgecut |
 
 ##### cfgScSaturday Slot 2
 
 | Channel   | Type | ChannelName | |
 |------------|-----------|-----------|-----------|
 | enable | `Switch` | cfgScSaturday2#enable | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartHour | `Number` | cfgScSaturday2#scheduleStartHour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleStartMinutes | `Number` | cfgScSaturday2#scheduleStartMinutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleDuration | `Number` | cfgScSaturday2#scheduleDuration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
-| scheduleEdgecut | `Number` | cfgScSaturday2#scheduleEdgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| scheduleStartHour | `Number` | cfgScSaturday2#schedule-start-hour | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-start-minutes | `Number` | cfgScSaturday2#schedule-start-minutes | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-duration | `Number` | cfgScSaturday2#schedule-duration | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
+| schedule-edgecut | `Number` | cfgScSaturday2#schedule-edgecut | ONLY IF SUPPORTED - property 'scheduler_two_slots'|
 
 ##### cfgMultiZones
 
@@ -414,9 +414,9 @@ Number LandroidAllocation9        "Allocation 9 []"        <oh:worxlandroid:zone
 // Status
 Number LandroidWifiQuality        "Wifi Quality [%d]"     <network>          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#wifiQuality"}
 Switch LandroidBatteryCharging    "Battery charging [%s]" <lowbattery>       {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datBattery#batteryCharging"}
-Number LandroidStatusCode         "Status Code [%d]"      <oh:worxlandroid:lawnmower>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusCode"}
+Number LandroidStatusCode         "Status Code [%d]"      <oh:worxlandroid:lawnmower>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#status-code"}
 String LandroidStatusDescription  "[%s]"                  <oh:worxlandroid:lawnmower>        {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#statusDescription"}
-Number LandroidErrorCode          "Error Code [%d]"       <error>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorCode"}
+Number LandroidErrorCode          "Error Code [%d]"       <error>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#error-code"}
 String LandroidErrorDescription   "Error: [%s]"           <error>            {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:datCommon#errorDescription"}
 
 // Rain
@@ -447,99 +447,99 @@ Number LandroidCurrentBladeTime   "Current Bladetime [JS(minstohours.js):%s]"   
 
 //Schedule
 // OneTime Schedule
-Switch          LandroidOneTimeScheduleEdgecut          "OneTime Edgecut"           <flow>                          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgOneTimeSc#scheduleEdgecut"}
-Number          LandroidOneTimeScheduleDuration         "OneTime Duration"          <time>                          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgOneTimeSc#scheduleDuration"}
+Switch          LandroidOneTimeScheduleEdgecut          "OneTime Edgecut"           <flow>                          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgOneTimeSc#schedule-edgecut"}
+Number          LandroidOneTimeScheduleDuration         "OneTime Duration"          <time>                          {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgOneTimeSc#schedule-duration"}
 
 // Monday
 Switch          LandroidScheduleMondayEnable            "Monday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#enable"}
-Number          LandroidScheduleMondayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartHour"}
-Number          LandroidScheduleMondayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleStartMinutes"}
-Number          LandroidScheduleMondayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleDuration"}
-Switch          LandroidScheduleMondayEdgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#scheduleEdgecut"}
+Number          LandroidScheduleMondayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#schedule-start-hour"}
+Number          LandroidScheduleMondayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#schedule-start-minutes"}
+Number          LandroidScheduleMondayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#schedule-duration"}
+Switch          LandroidScheduleMondayEdgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday#schedule-edgecut"}
 // Monday 2
 Switch          LandroidScheduleMonday2Enable            "Monday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#enable"}
-Number          LandroidScheduleMonday2StartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#scheduleStartHour"}
-Number          LandroidScheduleMonday2StartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#scheduleStartMinutes"}
-Number          LandroidScheduleMonday2Duration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#scheduleDuration"}
-Switch          LandroidScheduleMonday2Edgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#scheduleEdgecut"}
+Number          LandroidScheduleMonday2StartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#schedule-start-hour"}
+Number          LandroidScheduleMonday2StartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#schedule-start-minutes"}
+Number          LandroidScheduleMonday2Duration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#schedule-duration"}
+Switch          LandroidScheduleMonday2Edgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScMonday2#schedule-edgecut"}
 
 // Tuesday
 Switch          LandroidScheduleTuesdayEnable           "Tuesday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#enable"}
-Number          LandroidScheduleTuesdayStartHour        "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartHour"}
-Number          LandroidScheduleTuesdayStartMinutes     "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleStartMinutes"}
-Number          LandroidScheduleTuesdayDuration         "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleDuration"}
-Switch          LandroidScheduleTuesdayEdgecut          "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#scheduleEdgecut"}
+Number          LandroidScheduleTuesdayStartHour        "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#schedule-start-hour"}
+Number          LandroidScheduleTuesdayStartMinutes     "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#schedule-start-minutes"}
+Number          LandroidScheduleTuesdayDuration         "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#schedule-duration"}
+Switch          LandroidScheduleTuesdayEdgecut          "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday#schedule-edgecut"}
 // Tuesday 2
 Switch          LandroidScheduleTuesday2Enable           "Tuesday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#enable"}
-Number          LandroidScheduleTuesday2StartHour        "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#scheduleStartHour"}
-Number          LandroidScheduleTuesday2StartMinutes     "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#scheduleStartMinutes"}
-Number          LandroidScheduleTuesday2Duration         "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#scheduleDuration"}
-Switch          LandroidScheduleTuesday2Edgecut          "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#scheduleEdgecut"}
+Number          LandroidScheduleTuesday2StartHour        "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#schedule-start-hour"}
+Number          LandroidScheduleTuesday2StartMinutes     "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#schedule-start-minutes"}
+Number          LandroidScheduleTuesday2Duration         "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#schedule-duration"}
+Switch          LandroidScheduleTuesday2Edgecut          "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScTuesday2#schedule-edgecut"}
 
 // Wednesday
 Switch          LandroidScheduleWednesdayEnable         "Wednesday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#enable"}
-Number          LandroidScheduleWednesdayStartHour      "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartHour"}
-Number          LandroidScheduleWednesdayStartMinutes   "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleStartMinutes"}
-Number          LandroidScheduleWednesdayDuration       "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleDuration"}
-Switch          LandroidScheduleWednesdayEdgecut        "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#scheduleEdgecut"}
+Number          LandroidScheduleWednesdayStartHour      "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#schedule-start-hour"}
+Number          LandroidScheduleWednesdayStartMinutes   "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#schedule-start-minutes"}
+Number          LandroidScheduleWednesdayDuration       "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#schedule-duration"}
+Switch          LandroidScheduleWednesdayEdgecut        "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday#schedule-edgecut"}
 // Wednesday 2
 Switch          LandroidScheduleWednesday2Enable         "Wednesday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#enable"}
-Number          LandroidScheduleWednesday2StartHour      "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#scheduleStartHour"}
-Number          LandroidScheduleWednesday2StartMinutes   "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#scheduleStartMinutes"}
-Number          LandroidScheduleWednesday2Duration       "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#scheduleDuration"}
-Switch          LandroidScheduleWednesday2Edgecut        "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#scheduleEdgecut"}
+Number          LandroidScheduleWednesday2StartHour      "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#schedule-start-hour"}
+Number          LandroidScheduleWednesday2StartMinutes   "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#schedule-start-minutes"}
+Number          LandroidScheduleWednesday2Duration       "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#schedule-duration"}
+Switch          LandroidScheduleWednesday2Edgecut        "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScWednesday2#schedule-edgecut"}
 
 // Thursday
 Switch          LandroidScheduleThursdayEnable          "Thursday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#enable"}
-Number          LandroidScheduleThursdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartHour"}
-Number          LandroidScheduleThursdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleStartMinutes"}
-Number          LandroidScheduleThursdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleDuration"}
-Switch          LandroidScheduleThursdayEdgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#scheduleEdgecut"}
+Number          LandroidScheduleThursdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#schedule-start-hour"}
+Number          LandroidScheduleThursdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#schedule-start-minutes"}
+Number          LandroidScheduleThursdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#schedule-duration"}
+Switch          LandroidScheduleThursdayEdgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday#schedule-edgecut"}
 // Thursday 2
 Switch          LandroidScheduleThursday2Enable          "Thursday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#enable"}
-Number          LandroidScheduleThursday2StartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#scheduleStartHour"}
-Number          LandroidScheduleThursday2StartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#scheduleStartMinutes"}
-Number          LandroidScheduleThursday2Duration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#scheduleDuration"}
-Switch          LandroidScheduleThursday2Edgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#scheduleEdgecut"}
+Number          LandroidScheduleThursday2StartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#schedule-start-hour"}
+Number          LandroidScheduleThursday2StartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#schedule-start-minutes"}
+Number          LandroidScheduleThursday2Duration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#schedule-duration"}
+Switch          LandroidScheduleThursday2Edgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScThursday2#schedule-edgecut"}
 
 // Friday
 Switch          LandroidScheduleFridayEnable            "Friday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#enable"}
-Number          LandroidScheduleFridayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartHour"}
-Number          LandroidScheduleFridayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleStartMinutes"}
-Number          LandroidScheduleFridayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleDuration"}
-Switch          LandroidScheduleFridayEdgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#scheduleEdgecut"}
+Number          LandroidScheduleFridayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#schedule-start-hour"}
+Number          LandroidScheduleFridayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#schedule-start-minutes"}
+Number          LandroidScheduleFridayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#schedule-duration"}
+Switch          LandroidScheduleFridayEdgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday#schedule-edgecut"}
 // Friday 2
 Switch          LandroidScheduleFriday2Enable            "Friday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#enable"}
-Number          LandroidScheduleFriday2StartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#scheduleStartHour"}
-Number          LandroidScheduleFriday2StartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#scheduleStartMinutes"}
-Number          LandroidScheduleFriday2Duration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#scheduleDuration"}
-Switch          LandroidScheduleFriday2Edgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#scheduleEdgecut"}
+Number          LandroidScheduleFriday2StartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#schedule-start-hour"}
+Number          LandroidScheduleFriday2StartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#schedule-start-minutes"}
+Number          LandroidScheduleFriday2Duration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#schedule-duration"}
+Switch          LandroidScheduleFriday2Edgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScFriday2#schedule-edgecut"}
 
 // Saturday
 Switch          LandroidScheduleSaturdayEnable          "Saturday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#enable"}
-Number          LandroidScheduleSaturdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartHour"}
-Number          LandroidScheduleSaturdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleStartMinutes"}
-Number          LandroidScheduleSaturdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleDuration"}
-Switch          LandroidScheduleSaturdayEdgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#scheduleEdgecut"}
+Number          LandroidScheduleSaturdayStartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#schedule-start-hour"}
+Number          LandroidScheduleSaturdayStartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#schedule-start-minutes"}
+Number          LandroidScheduleSaturdayDuration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#schedule-duration"}
+Switch          LandroidScheduleSaturdayEdgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday#schedule-edgecut"}
 // Saturday 2
 Switch          LandroidScheduleSaturday2Enable          "Saturday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#enable"}
-Number          LandroidScheduleSaturday2StartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#scheduleStartHour"}
-Number          LandroidScheduleSaturday2StartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#scheduleStartMinutes"}
-Number          LandroidScheduleSaturday2Duration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#scheduleDuration"}
-Switch          LandroidScheduleSaturday2Edgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#scheduleEdgecut"}
+Number          LandroidScheduleSaturday2StartHour       "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#schedule-start-hour"}
+Number          LandroidScheduleSaturday2StartMinutes    "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#schedule-start-minutes"}
+Number          LandroidScheduleSaturday2Duration        "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#schedule-duration"}
+Switch          LandroidScheduleSaturday2Edgecut         "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSaturday2#schedule-edgecut"}
 
 // Sunday
 Switch          LandroidScheduleSundayEnable            "Sunday: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#enable"}
-Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartHour"}
-Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleStartMinutes"}
-Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleDuration"}
-Switch          LandroidScheduleSundayEdgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#scheduleEdgecut"}
+Number          LandroidScheduleSundayStartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#schedule-start-hour"}
+Number          LandroidScheduleSundayStartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#schedule-start-minutes"}
+Number          LandroidScheduleSundayDuration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#schedule-duration"}
+Switch          LandroidScheduleSundayEdgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday#schedule-edgecut"}
 // Sunday 2
 Switch          LandroidScheduleSunday2Enable            "Sunday Slot2: [MAP(landroid_schedule_enable.map):%s]" <time>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#enable"}
-Number          LandroidScheduleSunday2StartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#scheduleStartHour"}
-Number          LandroidScheduleSunday2StartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#scheduleStartMinutes"}
-Number          LandroidScheduleSunday2Duration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#scheduleDuration"}
-Switch          LandroidScheduleSunday2Edgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#scheduleEdgecut"}
+Number          LandroidScheduleSunday2StartHour         "Start Hour [%d]"                   <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#schedule-start-hour"}
+Number          LandroidScheduleSunday2StartMinutes      "Start Minutes [%d]"                <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#schedule-start-minutes"}
+Number          LandroidScheduleSunday2Duration          "Duration [%d]"                     <time>                  {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#schedule-duration"}
+Switch          LandroidScheduleSunday2Edgecut           "Edgecut"                           <oh:worxlandroid:lawnmower>             {channel="worxlandroid:mower:MyWorxBridge:MySerialNumber:cfgScSunday2#schedule-edgecut"}
 ```
 
 ### .sitemap

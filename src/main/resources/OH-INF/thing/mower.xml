@@ -4,80 +4,69 @@
 	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
-	<!-- Sample Thing Type -->
 	<thing-type id="mower">
 		<supported-bridge-type-refs>
 			<bridge-type-ref id="bridge"/>
 		</supported-bridge-type-refs>
-		<label>Worx Landroid Mower</label>
-		<description>Worx Landroid Mower</description>
+
+		<label>Landroid Mower</label>
+		<description>Represents a Landroid Worx Mower</description>
 
 		<channel-groups>
-			<channel-group id="common" typeId="common-type"/>
-
-			<channel-group id="cfgCommon" typeId="cfgCommon-type"/>
-			<channel-group id="cfgMultiZones" typeId="cfgMultiZones-type"/>
-
-			<channel-group id="cfgSc" typeId="cfgSc-type"/>
-
-			<channel-group id="cfgScSunday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Sunday</label>
+			<channel-group id="common" typeId="common-group-type"/>
+			<channel-group id="config" typeId="config-group-type"/>
+			<channel-group id="multi-zones" typeId="multi-zones-group-type"/>
+			<channel-group id="schedule" typeId="sched-group-type"/>
+			<channel-group id="sunday" typeId="day-sched-group-type">
+				<label>Sunday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScSunday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Sunday Slot 2</label>
+			<channel-group id="sunday2" typeId="day-sched-group-type">
+				<label>Sunday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgScMonday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Monday</label>
+			<channel-group id="monday" typeId="day-sched-group-type">
+				<label>Monday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScMonday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Monday Slot 2</label>
+			<channel-group id="monday2" typeId="day-sched-group-type">
+				<label>Monday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgScTuesday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Tuesday</label>
+			<channel-group id="tuesday" typeId="day-sched-group-type">
+				<label>Tuesday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScTuesday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Tuesday Slot 2</label>
+			<channel-group id="tuesday2" typeId="day-sched-group-type">
+				<label>Tuesday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgScWednesday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Wednesday</label>
+			<channel-group id="wednesday" typeId="day-sched-group-type">
+				<label>Wednesday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScWednesday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Wednesday Slot 2</label>
+			<channel-group id="wednesday2" typeId="day-sched-group-type">
+				<label>Wednesday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgScThursday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Thursday</label>
+			<channel-group id="thursday" typeId="day-sched-group-type">
+				<label>Thursday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScThursday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Thursday Slot 2</label>
+			<channel-group id="thursday2" typeId="day-sched-group-type">
+				<label>Thursday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgScFriday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Friday</label>
+			<channel-group id="friday" typeId="day-sched-group-type">
+				<label>Friday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScFriday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Friday Slot 2</label>
+			<channel-group id="friday2" typeId="day-sched-group-type">
+				<label>Friday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgScSaturday" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Saturday</label>
+			<channel-group id="saturday" typeId="day-sched-group-type">
+				<label>Saturday Schedule</label>
 			</channel-group>
-			<channel-group id="cfgScSaturday2" typeId="cfgScDay-type">
-				<label>Configuration schedule channels Saturday Slot 2</label>
+			<channel-group id="saturday2" typeId="day-sched-group-type">
+				<label>Saturday Slot 2 Schedule</label>
 			</channel-group>
-
-			<channel-group id="cfgOneTimeSc" typeId="cfgOneTimeSc-type"/>
-
-			<channel-group id="datCommon" typeId="datCommon-type"/>
-			<channel-group id="datBattery" typeId="datBattery-type"/>
-			<channel-group id="datDmp" typeId="datDmp-type"/>
-			<channel-group id="datSt" typeId="datSt-type"/>
-			<channel-group id="datRain" typeId="datRain-type"/>
-
+			<channel-group id="one-time" typeId="ot-sched-group-type"/>
+			<channel-group id="general" typeId="general-group-type"/>
+			<channel-group id="battery" typeId="battery-group-type"/>
+			<channel-group id="orientation" typeId="orientation-group-type"/>
+			<channel-group id="metrics" typeId="metrics-group-type"/>
+			<channel-group id="rain" typeId="rain-group-type"/>
 		</channel-groups>
+
 		<representation-property>serialNumber</representation-property>
 
 		<config-description>
@@ -111,486 +100,4 @@
 
 	</thing-type>
 
-	<channel-group-type id="common-type">
-		<label>Common channels</label>
-		<description>Common channels of your mower</description>
-		<channels>
-			<channel id="online" typeId="chOnline"/>
-			<channel id="lastUpdateOnlineStatus" typeId="chLastUpdateOnlineStatus"/>
-			<channel id="poll" typeId="chPoll"/>
-			<channel id="action" typeId="chAction"/>
-			<channel id="enable" typeId="chEnable">
-				<label>Mowing enabled</label>
-			</channel>
-			<channel id="lock" typeId="chLock"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgCommon-type">
-		<label>Configuration common channels</label>
-		<description>Configuration common channels of your mower</description>
-		<channels>
-			<channel id="id" typeId="chId"/>
-			<channel id="serialNumber" typeId="chSerialNumber"/>
-			<channel id="language" typeId="chLanguage"/>
-			<channel id="lastUpdate" typeId="chLastUpdate"/>
-			<channel id="command" typeId="chCommand"/>
-			<channel id="rainDelay" typeId="chRainDelay"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgMultiZones-type">
-		<label>Configuration multi zone channels</label>
-		<description>Configuration multi zones of your mower</description>
-		<channels>
-			<channel id="enable" typeId="chEnable">
-				<label>Multizone enabled</label>
-			</channel>
-			<channel id="zone1Meter" typeId="chZoneMeter">
-				<label>Meters Zone 1</label>
-			</channel>
-			<channel id="zone2Meter" typeId="chZoneMeter">
-				<label>Meters Zone 2</label>
-			</channel>
-			<channel id="zone3Meter" typeId="chZoneMeter">
-				<label>Meters Zone 3</label>
-			</channel>
-			<channel id="zone4Meter" typeId="chZoneMeter">
-				<label>Meters Zone 4</label>
-			</channel>
-
-			<channel id="allocation0" typeId="chAllocation">
-				<label>Zone Allocation 1</label>
-			</channel>
-			<channel id="allocation1" typeId="chAllocation">
-				<label>Zone Allocation 2</label>
-			</channel>
-			<channel id="allocation2" typeId="chAllocation">
-				<label>Zone Allocation 3</label>
-			</channel>
-			<channel id="allocation3" typeId="chAllocation">
-				<label>Zone Allocation 4</label>
-			</channel>
-			<channel id="allocation4" typeId="chAllocation">
-				<label>Zone Allocation 5</label>
-			</channel>
-			<channel id="allocation5" typeId="chAllocation">
-				<label>Zone Allocation 6</label>
-			</channel>
-			<channel id="allocation6" typeId="chAllocation">
-				<label>Zone Allocation 7</label>
-			</channel>
-			<channel id="allocation7" typeId="chAllocation">
-				<label>Zone Allocation 8</label>
-			</channel>
-			<channel id="allocation8" typeId="chAllocation">
-				<label>Zone Allocation 9</label>
-			</channel>
-			<channel id="allocation9" typeId="chAllocation">
-				<label>Zone Allocation 10</label>
-			</channel>
-
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="datCommon-type">
-		<label>Data common channels</label>
-		<description>Data common channels of your mower</description>
-		<channels>
-			<channel id="macAdress" typeId="chMacAdress"/>
-			<channel id="firmware" typeId="chFirmware"/>
-			<channel id="wifiQuality" typeId="chWifiQuality"/>
-			<channel id="statusCode" typeId="chStatusCode"/>
-			<channel id="statusDescription" typeId="chStatusDescription"/>
-			<channel id="errorCode" typeId="chErrorCode"/>
-			<channel id="errorDescription" typeId="chErrorDescription"/>
-			<channel id="lastZone" typeId="chLastZone"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="datBattery-type">
-		<label>Data battery channels</label>
-		<description>Data battery channels of your mower</description>
-		<channels>
-			<channel id="batteryTemperature" typeId="chBatteryTemperature"/>
-			<channel id="batteryVoltage" typeId="chBatteryVoltage"/>
-			<channel id="batteryLevel" typeId="chBatteryLevel"/>
-			<channel id="batteryChargeCycle" typeId="chBatteryChargeCycle">
-				<label>Battery Charge Cycle Total</label>
-			</channel>
-			<channel id="batteryChargeCycleCurrent" typeId="chBatteryChargeCycle">
-				<label>Battery Charge Cycle Current</label>
-			</channel>
-			<channel id="batteryCharging" typeId="chBatteryCharging"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="datDmp-type">
-		<label>Data dmp channels</label>
-		<description>Data dmp channels of your mower</description>
-		<channels>
-			<channel id="pitch" typeId="chPitch"/>
-			<channel id="roll" typeId="chRoll"/>
-			<channel id="yaw" typeId="chYaw"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="datSt-type">
-		<label>Data st channels</label>
-		<description>Data st channels of your mower</description>
-		<channels>
-			<channel id="totalBladeTime" typeId="chTimeMinutes">
-				<label>Total Blade Time</label>
-			</channel>
-			<channel id="currentBladeTime" typeId="chTimeMinutes">
-				<label>Current Blade Time</label>
-			</channel>
-			<channel id="totalDistance" typeId="chTotalDistance"/>
-			<channel id="totalTime" typeId="chTimeMinutes">
-				<label>Total Time</label>
-			</channel>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="datRain-type">
-		<label>Data rain channels</label>
-		<description>Data rain channels of your mower</description>
-		<channels>
-			<channel id="state" typeId="chRainState"/>
-			<channel id="counter" typeId="chRainCounter"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgSc-type">
-		<label>Configuration schedule channels</label>
-		<description>Configuration schedule channels of your mower</description>
-		<channels>
-			<channel id="scheduleMode" typeId="chScheduleMode"/>
-			<channel id="scheduleTimeExtension" typeId="chScheduleTimeExtension"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="cfgOneTimeSc-type">
-		<label>Configuration one time schedule channels</label>
-		<description>Configuration one time schedule channels of your mower</description>
-		<channels>
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut"/>
-			<channel id="scheduleDuration" typeId="chScheduleDuration"/>
-		</channels>
-	</channel-group-type>
-
-
-	<channel-group-type id="cfgScDay-type">
-		<label>Configuration schedule channels for each day</label>
-		<description>Configuration schedule channels for each day</description>
-		<channels>
-			<channel id="enable" typeId="chEnable"/>
-			<channel id="scheduleStartHour" typeId="chScheduleStartHour"/>
-			<channel id="scheduleStartMinutes" typeId="chScheduleStartMinutes"/>
-			<channel id="scheduleDuration" typeId="chScheduleDuration"/>
-			<channel id="scheduleEdgecut" typeId="chScheduleEdgecut"/>
-		</channels>
-	</channel-group-type>
-
-	<channel-type id="chOnline">
-		<item-type>Switch</item-type>
-		<label>Online</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chLastUpdateOnlineStatus">
-		<item-type>DateTime</item-type>
-		<label>Last Update Online Status</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chId">
-		<item-type>Number</item-type>
-		<label>Id</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chLanguage">
-		<item-type>String</item-type>
-		<label>Language</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chLastUpdate">
-		<item-type>DateTime</item-type>
-		<label>Last Update</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chCommand">
-		<item-type>Number</item-type>
-		<label>Command</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chRainDelay">
-		<item-type>Number</item-type>
-		<label>Rain Delay</label>
-		<category>Info</category>
-		<state min="0" max="750" step="30" pattern="%d min"/>
-	</channel-type>
-
-	<channel-type id="chSerialNumber">
-		<item-type>String</item-type>
-		<label>Serial Number</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chMacAdress">
-		<item-type>String</item-type>
-		<label>MacAdress</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chFirmware">
-		<item-type>String</item-type>
-		<label>Firmware</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chBatteryTemperature">
-		<item-type>Number</item-type>
-		<label>Battery Temperature</label>
-		<category>Temperature</category>
-		<state readOnly="true" pattern="%.1f°C"/>
-	</channel-type>
-
-	<channel-type id="chBatteryVoltage">
-		<item-type>Number</item-type>
-		<label>Battery Voltage</label>
-		<category>Voltage</category>
-		<state readOnly="true" pattern="%.2fV"/>
-	</channel-type>
-
-	<channel-type id="chBatteryLevel">
-		<item-type>Number</item-type>
-		<label>Battery Level</label>
-		<category>Battery</category>
-		<state readOnly="true" pattern="%d%%"/>
-	</channel-type>
-
-	<channel-type id="chBatteryChargeCycle">
-		<item-type>Number</item-type>
-		<label>Battery Charge Cycle</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chBatteryCharging">
-		<item-type>Switch</item-type>
-		<label>Battery Charging</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chPitch">
-		<item-type>Number</item-type>
-		<label>Pitch</label>
-		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
-	</channel-type>
-
-	<channel-type id="chRoll">
-		<item-type>Number</item-type>
-		<label>Roll</label>
-		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
-	</channel-type>
-
-	<channel-type id="chYaw">
-		<item-type>Number</item-type>
-		<label>Yaw</label>
-		<category>Info</category>
-		<state readOnly="true" pattern="%.2f"/>
-	</channel-type>
-
-	<channel-type id="chTotalDistance">
-		<item-type>Number</item-type>
-		<label>Total Distance</label>
-		<category>Info</category>
-		<state readOnly="true" pattern="%d m"/>
-	</channel-type>
-
-	<channel-type id="chTimeMinutes">
-		<item-type>Number</item-type>
-		<label>Time</label>
-		<category>Info</category>
-		<state readOnly="true" pattern="%d min"/>
-	</channel-type>
-
-	<channel-type id="chStatusCode">
-		<item-type>Number</item-type>
-		<label>Status Code</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chStatusDescription">
-		<item-type>String</item-type>
-		<label>Status Description</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chErrorCode">
-		<item-type>Number</item-type>
-		<label>Error Code</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chErrorDescription">
-		<item-type>String</item-type>
-		<label>Error Description</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chLastZone">
-		<item-type>Number</item-type>
-		<label>Last Zone</label>
-		<category>Info</category>
-		<state readOnly="false">
-			<options>
-				<option value="0">Zone 1</option>
-				<option value="1">Zone 2</option>
-				<option value="2">Zone 3</option>
-				<option value="3">Zone 4</option>
-			</options>
-		</state>
-	</channel-type>
-
-	<channel-type id="chWifiQuality">
-		<item-type>Number</item-type>
-		<label>Wifi Quality</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chScheduleTimeExtension">
-		<item-type>Number</item-type>
-		<label>Schedule Time Extension</label>
-		<category>Info</category>
-		<state readOnly="false" min="-100" max="100" step="10" pattern="%d%%"/>
-	</channel-type>
-
-	<channel-type id="chScheduleMode">
-		<item-type>Number</item-type>
-		<label>Schedule Mode (Party)</label>
-		<category>Info</category>
-		<state readOnly="false">
-			<options>
-				<option value="1">Normal</option>
-				<option value="2">Party</option>
-			</options>
-		</state>
-	</channel-type>
-
-	<channel-type id="chScheduleStartHour">
-		<item-type>Number</item-type>
-		<label>Schedule Start Hour</label>
-		<category>Info</category>
-		<state readOnly="false" min="0" max="23" step="1" pattern="%d h"/>
-	</channel-type>
-
-	<channel-type id="chScheduleStartMinutes">
-		<item-type>Number</item-type>
-		<label>Schedule Start Minutes</label>
-		<category>Info</category>
-		<state readOnly="false" min="0" max="45" step="15" pattern="%d min"/>
-	</channel-type>
-
-	<channel-type id="chScheduleDuration">
-		<item-type>Number</item-type>
-		<label>Schedule Duration</label>
-		<category>Info</category>
-		<state readOnly="false" min="0" max="1425" step="15" pattern="%d min"/>
-	</channel-type>
-
-	<channel-type id="chScheduleEdgecut">
-		<item-type>Switch</item-type>
-		<label>Schedule Edgecut</label>
-		<category>Info</category>
-		<state readOnly="false"/>
-	</channel-type>
-
-	<channel-type id="chZoneMeter">
-		<item-type>Number</item-type>
-		<label>Meters of zone</label>
-		<category>Info</category>
-		<state readOnly="false" min="0" step="1" pattern="%d m"/>
-	</channel-type>
-
-	<channel-type id="chAllocation">
-		<item-type>Number</item-type>
-		<label>Zone Allocation</label>
-		<category>Info</category>
-		<state>
-			<options>
-				<option value="0">Zone 1</option>
-				<option value="1">Zone 2</option>
-				<option value="2">Zone 3</option>
-				<option value="3">Zone 4</option>
-			</options>
-		</state>
-	</channel-type>
-
-	<channel-type id="chAction">
-		<item-type>String</item-type>
-		<label>Action</label>
-		<description>Action channel for your mower</description>
-		<state>
-			<options>
-				<option value="START">Start</option>
-				<option value="STOP">Stop</option>
-				<option value="HOME">Home</option>
-				<!-- option value="ZONETRAINING">Training</option -->
-			</options>
-		</state>
-	</channel-type>
-
-	<channel-type id="chLock">
-		<item-type>Switch</item-type>
-		<label>Lock mower</label>
-		<description>Lock or unlock your mower.</description>
-	</channel-type>
-
-	<channel-type id="chPoll">
-		<item-type>Switch</item-type>
-		<label>Poll Worx AWS</label>
-		<description>Poll Worx AWS</description>
-	</channel-type>
-
-	<channel-type id="chEnable">
-		<item-type>Switch</item-type>
-		<label>Activation / Deactivation</label>
-	</channel-type>
-
-	<channel-type id="chRainState">
-		<item-type>Switch</item-type>
-		<label>Rain state</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="chRainCounter">
-		<item-type>Number</item-type>
-		<label>Rain counter</label>
-		<category>Info</category>
-		<state readOnly="true"/>
-	</channel-type>
 </thing:thing-descriptions>

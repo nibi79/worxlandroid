@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.handler;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.*;
+import static org.openhab.binding.worxlandroid.internal.utils.ChannelTypeUtils.toQuantityType;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -54,12 +55,15 @@ import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.unit.SIUnits;
+import org.openhab.core.library.unit.Units;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingStatusInfo;
+import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
@@ -126,9 +130,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     boolean online = mowerDataJson != null && mowerDataJson.get("online").getAsBoolean();
                     mower.setOnline(online);
-                    updateState(CHANNELNAME_ONLINE, OnOffType.from(online));
+                    updateState(new ChannelUID(thing.getUID(), GROUP_COMMON, CHANNEL_ONLINE), OnOffType.from(online));
 
-                    updateState(CHANNELNAME_LAST_UPDATE_ONLINE_STATUS, new DateTimeType());
+                    updateState(new ChannelUID(thing.getUID(), GROUP_COMMON, CHANNEL_ONLINE_TIMESTAMP),
+                            new DateTimeType());
                     updateStatus(online ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
                 }
             } catch (IllegalStateException e) {
@@ -213,14 +218,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         boolean lockSupported = Boolean.parseBoolean(props.get("lock"));
                         mower.setLockSupported(lockSupported);
                         if (!lockSupported) {
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_LOCK));
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_LOCK));
                         }
 
                         // rainDelay channel only when supported
                         boolean rainDelaySupported = Boolean.parseBoolean(props.get("rain_delay"));
                         mower.setRainDelaySupported(rainDelaySupported);
                         if (!rainDelaySupported) {
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_RAIN_DELAY));
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_RAIN_DELAY));
                         }
 
                         // rainDelayStart channel only when supported
@@ -237,8 +242,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         }
                         mower.setRainDelayStartSupported(rainDelayStart);
                         if (!rainDelayStart) {
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_RAIN_STATE));
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_RAIN_COUNTER));
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_RAIN_STATE));
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_RAIN_COUNTER));
                         }
 
                         // multizone channels only when supported
@@ -246,15 +251,17 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         mower.setMultiZoneSupported(multiZoneSupported);
                         if (!multiZoneSupported) {
                             // remove lastZome channel
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_LAST_ZONE));
+                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_LAST_ZONE));
                             // remove zone meter channels
                             for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
-                                String channelNameZoneMeter = String.format("cfgMultiZones#zone%dMeter", zoneIndex + 1);
+                                String channelNameZoneMeter = String.format("%s#zone-%d", GROUP_MULTI_ZONES,
+                                        zoneIndex + 1);
                                 thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameZoneMeter));
                             }
                             // remove allocation channels
                             for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
-                                String channelNameAllocation = CHANNELNAME_PREFIX_ALLOCATION + allocationIndex;
+                                String channelNameAllocation = "%s-%d".formatted(CHANNEL_PREFIX_ALLOCATION,
+                                        allocationIndex);
                                 thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameAllocation));
                             }
                         }
@@ -273,11 +280,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         }
                         mower.setOneTimeSchedulerSupported(oneTimeScheduler);
                         if (!oneTimeScheduler) {
-                            thingBuilder
-                                    .withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_ONE_TIME_SC_DURATION));
-                            thingBuilder
-                                    .withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_ONE_TIME_SC_EDGECUT));
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNELNAME_SC_MODE));
+                            ThingUID uid = thing.getUID();
+                            thingBuilder.withoutChannel(new ChannelUID(uid, GROUP_ONE_TIME, CHANNEL_DURATION));
+                            thingBuilder.withoutChannel(new ChannelUID(uid, GROUP_ONE_TIME, CHANNEL_EDGECUT));
+                            thingBuilder.withoutChannel(new ChannelUID(uid, GROUP_ONE_TIME, CHANNEL_MODE));
                         }
 
                         // Scheduler 2 channels only when supported version
@@ -295,30 +301,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         mower.setScheduler2Supported(scheduler2Supported);
                         if (!scheduler2Supported) {
                             // remove schedule2 channels
+                            ThingUID uid = thing.getUID();
                             for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-
-                                String channelNameSc2 = String.format("%s%s2", CHANNELNAME_SC_PREFIX,
-                                        dayCode.getDescription());
-
-                                String channelNameEnable = String.format("%s#%s", channelNameSc2,
-                                        CHANNELNAME_SC_ENABLE_SUFFIX);
-                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameEnable));
-
-                                String channelNameStartHour = String.format("%s#%s", channelNameSc2,
-                                        CHANNELNAME_SC_START_HOUR_SUFFIX);
-                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameStartHour));
-
-                                String channelNameStartMinutes = String.format("%s#%s", channelNameSc2,
-                                        CHANNELNAME_SC_START_MINUTES_SUFFIX);
-                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameStartMinutes));
-
-                                String channelNameDuration = String.format("%s#%s", channelNameSc2,
-                                        CHANNELNAME_SC_DURATION_SUFFIX);
-                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameDuration));
-
-                                String channelNameEdgString = String.format("%s#%s", channelNameSc2,
-                                        CHANNELNAME_SC_EDGECUT_SUFFIX);
-                                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channelNameEdgString));
+                                String groupName = "%s2".formatted(dayCode.getDescription());
+                                thingBuilder.withoutChannel(new ChannelUID(uid, groupName, CHANNEL_ENABLE));
+                                thingBuilder.withoutChannel(new ChannelUID(uid, groupName, CHANNEL_START_HOUR));
+                                thingBuilder.withoutChannel(new ChannelUID(uid, groupName, CHANNEL_START_MINUTES));
+                                thingBuilder.withoutChannel(new ChannelUID(uid, groupName, CHANNEL_DURATION));
+                                thingBuilder.withoutChannel(new ChannelUID(uid, groupName, CHANNEL_EDGECUT));
                             }
                         }
 
@@ -398,16 +388,13 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      */
     private synchronized @Nullable WorxLandroidBridgeHandler getWorxLandroidBridgeHandler() {
         Bridge bridge = getBridge();
-        if (bridge == null) {
-            return null;
+        if (bridge != null) {
+            ThingHandler handler = bridge.getHandler();
+            if (handler instanceof WorxLandroidBridgeHandler bridgeHandler) {
+                return bridgeHandler;
+            }
         }
-
-        ThingHandler handler = bridge.getHandler();
-        if (handler instanceof WorxLandroidBridgeHandler) {
-            return (WorxLandroidBridgeHandler) handler;
-        } else {
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -466,14 +453,15 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             // return;
             // channel: multizone enable or multizone meters (mz)
-            if (CHANNELNAME_MULTIZONE_ENABLE.equals(channelUID.getId())) {
+            if (CHANNEL_ENABLE.equals(channelUID.getIdWithoutGroup())
+                    && GROUP_MULTI_ZONES.equals(channelUID.getGroupId())) {
                 mower.setMultiZoneEnable(OnOffType.ON.equals(command));
                 sendZoneMeter();
                 return;
             }
 
-            if (CHANNELNAME_LAST_ZONE.equals(channelUID.getId())) {
-                if (mower.getStatus() != WorxLandroidStatusCodes.HOME.getCode()) {
+            if (CHANNEL_LAST_ZONE.equals(channelUID.getId())) {
+                if (mower.getStatus() != WorxLandroidStatusCodes.HOME.code) {
                     logger.warn("Cannot start zone because mower must be at HOME!");
                     return;
                 }
@@ -494,30 +482,28 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 sendCommand(AWSMessage.CMD_START);
                 return;
             }
-            if (channelUID.getId().startsWith("cfgMultiZones#zone")) {
-                // extract zone of from channel
-                Pattern pattern = Pattern.compile("cfgMultiZones#zone(\\d)Meter");
-                Matcher matcher = pattern.matcher(channelUID.getId());
-                int zone = 0;
-                if (matcher.find()) {
-                    zone = Integer.parseInt(matcher.group(1));
-                }
+            if (channelUID.getGroupId().equals(GROUP_MULTI_ZONES)) {
+                String names[] = channelUID.getIdWithoutGroup().split("-");
+                int zone = Integer.valueOf(names[1]);
                 mower.setZoneMeter(zone - 1, Integer.parseInt(command.toString()));
                 sendZoneMeter();
                 return;
             }
             // channel: multizone allocation (mzv)
-            if (channelUID.getId().startsWith(CHANNELNAME_PREFIX_ALLOCATION)) {
+            if (channelUID.getId().contains(CHANNEL_PREFIX_ALLOCATION)) {
+                String[] channelName = channelUID.getIdWithoutGroup().split("-");
+                int allocationIndex = Integer.valueOf(channelName[1]);
+
                 JsonObject jsonObject = new JsonObject();
                 JsonArray mzv = new JsonArray();
 
                 // extract allocation index of from channel
-                Pattern pattern = Pattern.compile(CHANNELNAME_PREFIX_ALLOCATION + "(\\d)");
-                Matcher matcher = pattern.matcher(channelUID.getId());
-                int allocationIndex = 0;
-                if (matcher.find()) {
-                    allocationIndex = Integer.parseInt(matcher.group(1));
-                }
+                // Pattern pattern = Pattern.compile(CHANNEL_PREFIX_ALLOCATION + "(\\d)");
+                // Matcher matcher = pattern.matcher(channelUID.getId());
+                // int allocationIndex = 0;
+                // if (matcher.find()) {
+                // allocationIndex = Integer.parseInt(matcher.group(1));
+                // }
 
                 mower.setAllocation(allocationIndex, Integer.parseInt(command.toString()));
 
@@ -530,7 +516,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 return;
             }
 
-            if (CHANNELNAME_SC_MODE.equals(channelUID.getId())) {
+            if (CHANNEL_MODE.equals(channelUID.getIdWithoutGroup())) {
                 // generate 'sc' message
                 JsonObject jsonObject = new JsonObject();
                 JsonObject sc = new JsonObject();
@@ -544,25 +530,26 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                 return;
             }
 
-            if (CHANNELNAME_ONE_TIME_SC_DURATION.equals(channelUID.getId())) {
+            if (CHANNEL_DURATION.equals(channelUID.getIdWithoutGroup())) {
                 sendOneTimeSchedule(0, Integer.parseInt(command.toString()));
                 return;
             }
 
-            if (CHANNELNAME_ONE_TIME_SC_EDGECUT.equals(channelUID.getId())) {
+            if (CHANNEL_EDGECUT.equals(channelUID.getIdWithoutGroup())) {
                 sendOneTimeSchedule(OnOffType.ON.equals(command) ? 1 : 0, 0);
                 return;
             }
 
             // update schedule
             // TODO ugly check
-            if (CHANNELNAME_ENABLE.equals(channelUID.getId()) || channelUID.getId().startsWith(CHANNELNAME_SC_PREFIX)) {
+            if (CHANNEL_ENABLE.equals(channelUID.getIdWithoutGroup())
+                    || channelUID.getGroupId().equals(GROUP_SCHEDULE)) {
                 // update mower data
 
                 // update enable mowing or schedule or timeExtension/enable?
-                if (CHANNELNAME_ENABLE.equals(channelUID.getId())) {
+                if (CHANNEL_ENABLE.equals(channelUID.getIdWithoutGroup())) {
                     mower.setEnable(OnOffType.ON.equals(command));
-                } else if (CHANNELNAME_SC_TIME_EXTENSION.equals(channelUID.getId())) {
+                } else if (CHANNEL_TIME_EXTENSION.equals(channelUID.getIdWithoutGroup())) {
                     mower.setTimeExtension(Integer.parseInt(command.toString()));
                 } else {
                     setScheduledDays(channelUID, command);
@@ -574,31 +561,31 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             String cmd = AWSMessage.EMPTY_PAYLOAD;
 
-            switch (channelUID.getId()) {
+            switch (channelUID.getIdWithoutGroup()) {
                 // start action
-                case CHANNELNAME_ACTION:
+                case CHANNEL_ACTION:
                     WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
                     logger.debug("{}", actionCode.toString());
-                    cmd = String.format("{\"cmd\":%s}", actionCode.getCode());
+                    cmd = "{\"cmd\":%s}".formatted(actionCode.code);
                     break;
 
                 // poll
-                case CHANNELNAME_POLL:
+                case CHANNEL_POLL:
                     cmd = AWSMessage.EMPTY_PAYLOAD;
-                    updateState(CHANNELNAME_POLL, OnOffType.OFF);
+                    updateState(CHANNEL_POLL, OnOffType.OFF);
                     break;
 
                 // update rainDelay
-                case CHANNELNAME_RAIN_DELAY:
-                    cmd = String.format("{\"rd\":%s}", command);
+                case CHANNEL_RAIN_DELAY:
+                    cmd = "{\"rd\":%s}".formatted(command);
                     break;
 
                 // lock/unlock
-                case CHANNELNAME_LOCK:
+                case CHANNEL_LOCK:
                     WorxLandroidActionCodes lockCode = OnOffType.ON.equals(command) ? WorxLandroidActionCodes.LOCK
                             : WorxLandroidActionCodes.UNLOCK;
                     logger.debug("{}", lockCode.toString());
-                    cmd = String.format("{\"cmd\":%s}", lockCode.getCode());
+                    cmd = "{\"cmd\":%s}".formatted(lockCode.code);
                     break;
 
                 default:
@@ -661,25 +648,25 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             return;
         }
 
-        String chName = channelUID.getId().split("#")[1];
+        String chName = channelUID.getIdWithoutGroup();
         switch (chName) {
-            case CHANNELNAME_SC_ENABLE_SUFFIX:
+            case CHANNEL_ENABLE:
                 scheduledDayUpdated.setEnable(OnOffType.ON.equals(command));
                 break;
 
-            case CHANNELNAME_SC_START_HOUR_SUFFIX:
+            case CHANNEL_START_HOUR:
                 scheduledDayUpdated.setHours(Integer.parseInt(command.toString()));
                 break;
 
-            case CHANNELNAME_SC_START_MINUTES_SUFFIX:
+            case CHANNEL_START_MINUTES:
                 scheduledDayUpdated.setMinutes(Integer.parseInt(command.toString()));
                 break;
 
-            case CHANNELNAME_SC_DURATION_SUFFIX:
+            case CHANNEL_DURATION:
                 scheduledDayUpdated.setDuration(Integer.parseInt(command.toString()));
                 break;
 
-            case CHANNELNAME_SC_EDGECUT_SUFFIX:
+            case CHANNEL_EDGECUT:
                 scheduledDayUpdated.setEdgecut(OnOffType.ON.equals(command));
                 break;
 
@@ -818,19 +805,19 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param dat
      */
     private void updateStateDat(Dat dat) {
-        updateState(CHANNELNAME_MAC_ADRESS, dat.mac.isEmpty() ? UnDefType.NULL : new StringType(dat.mac));
-        updateState(CHANNELNAME_FIRMWARE, dat.fw.isEmpty() ? UnDefType.UNDEF : new StringType(dat.fw));
+        // updateState(CHANNEL_MAC_ADRESS, dat.mac.isEmpty() ? UnDefType.NULL : new StringType(dat.mac));
+        updateState(CHANNEL_FIRMWARE, dat.fw.isEmpty() ? UnDefType.UNDEF : new StringType(dat.fw));
 
         if (dat.battery != null) {
             Battery battery = dat.battery;
-            updateState(CHANNELNAME_BATTERY_TEMPERATURE,
-                    battery.temperature != -1 ? new DecimalType(battery.temperature) : UnDefType.NULL);
-            updateState(CHANNELNAME_BATTERY_VOLTAGE,
-                    battery.voltage != -1 ? new DecimalType(battery.voltage) : UnDefType.NULL);
-            updateState(CHANNELNAME_BATTERY_LEVEL,
+            updateState(new ChannelUID(thing.getUID(), GROUP_BATTERY, CHANNEL_TEMPERATURE),
+                    battery.temperature != -1 ? toQuantityType(battery.temperature, SIUnits.CELSIUS) : UnDefType.NULL);
+            updateState(new ChannelUID(thing.getUID(), GROUP_BATTERY, CHANNEL_VOLTAGE),
+                    battery.voltage != -1 ? toQuantityType(battery.voltage, Units.VOLT) : UnDefType.NULL);
+            updateState(new ChannelUID(thing.getUID(), GROUP_BATTERY, CHANNEL_LEVEL),
                     battery.level != -1 ? new DecimalType(battery.level) : UnDefType.NULL);
 
-            updateState(CHANNELNAME_BATTERY_CHARGE_CYCLE,
+            updateState(new ChannelUID(thing.getUID(), GROUP_BATTERY, CHANNEL_CHARGE_CYCLE),
                     battery.chargeCycle != -1 ? new DecimalType(battery.chargeCycle) : UnDefType.NULL);
 
             long batteryChargeCyclesCurrent = battery.chargeCycle;
@@ -838,21 +825,26 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             if (batteryChargeCyclesReset != null && !batteryChargeCyclesReset.isEmpty()) {
                 batteryChargeCyclesCurrent = battery.chargeCycle - Long.valueOf(batteryChargeCyclesReset);
             }
-            updateState(CHANNELNAME_BATTERY_CHARGE_CYCLE_CURRENT, new DecimalType(batteryChargeCyclesCurrent));
-            updateState(CHANNELNAME_BATTERY_CHARGING, OnOffType.from(battery.isCharging()));
+            updateState(new ChannelUID(thing.getUID(), GROUP_BATTERY, CHANNEL_CHARGE_CYCLE_CURRENT),
+                    new DecimalType(batteryChargeCyclesCurrent));
+            updateState(new ChannelUID(thing.getUID(), GROUP_BATTERY, CHANNEL_CHARGING),
+                    OnOffType.from(battery.isCharging()));
         }
 
         // dat/dmp.[0] -> pitch
         if (dat.dmp.get(0) != null) {
-            updateState(CHANNELNAME_PITCH, new DecimalType(dat.dmp.get(0)));
+            updateState(new ChannelUID(thing.getUID(), GROUP_ORIENTATION, CHANNEL_PITCH),
+                    toQuantityType(dat.dmp.get(0), Units.DEGREE_ANGLE));
         }
         // dat/dmp.[1] -> roll
         if (dat.dmp.get(1) != null) {
-            updateState(CHANNELNAME_ROLL, new DecimalType(dat.dmp.get(1)));
+            updateState(new ChannelUID(thing.getUID(), GROUP_ORIENTATION, CHANNEL_ROLL),
+                    toQuantityType(dat.dmp.get(1), Units.DEGREE_ANGLE));
         }
         // dat/dmp.[2] -> yaw
         if (dat.dmp.get(2) != null) {
-            updateState(CHANNELNAME_YAW, new DecimalType(dat.dmp.get(2)));
+            updateState(new ChannelUID(thing.getUID(), GROUP_ORIENTATION, CHANNEL_YAW),
+                    toQuantityType(dat.dmp.get(2), Units.DEGREE_ANGLE));
         }
 
         // dat/st
@@ -860,33 +852,37 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             St st = dat.st;
             // dat/st/b -> totalBladeTime
             if (st.totalBladeTime != -1) {
-                updateState(CHANNELNAME_TOTAL_BLADE_TIME, new DecimalType(st.totalBladeTime));
+                updateState(new ChannelUID(thing.getUID(), GROUP_METRICS, CHANNEL_TOTAL_BLADE_TIME),
+                        toQuantityType(st.totalBladeTime, Units.MINUTE));
 
                 long bladeTimeCurrent = st.totalBladeTime;
                 String bladeWorkTimeReset = getThing().getProperties().get("blade_work_time_reset");
                 if (bladeWorkTimeReset != null && !bladeWorkTimeReset.isEmpty()) {
                     bladeTimeCurrent = st.totalBladeTime - Long.valueOf(bladeWorkTimeReset);
                 }
-                updateState(CHANNELNAME_CURRENT_BLADE_TIME, new DecimalType(bladeTimeCurrent));
+                updateState(new ChannelUID(thing.getUID(), GROUP_METRICS, CHANNEL_CURRENT_BLADE_TIME),
+                        toQuantityType(bladeTimeCurrent, Units.MINUTE));
             }
 
-            updateState(CHANNELNAME_TOTAL_DISTANCE,
-                    st.totalDistance != -1 ? new DecimalType(st.totalDistance) : UnDefType.NULL);
-            updateState(CHANNELNAME_TOTAL_TIME, st.totalTime != -1 ? new DecimalType(st.totalTime) : UnDefType.NULL);
+            updateState(new ChannelUID(thing.getUID(), GROUP_METRICS, CHANNEL_TOTAL_DISTANCE),
+                    st.totalDistance != -1 ? toQuantityType(st.totalDistance, SIUnits.METRE) : UnDefType.NULL);
+            updateState(new ChannelUID(thing.getUID(), GROUP_METRICS, CHANNEL_TOTAL_TIME),
+                    st.totalTime != -1 ? toQuantityType(st.totalTime, Units.MINUTE) : UnDefType.NULL);
             // TODO dat/st/bl -> ?
         }
 
         // dat/ls -> statusCode
         mower.setStatus(dat.statusCode);
-        updateState(CHANNELNAME_STATUS_CODE, new DecimalType(dat.statusCode));
+        updateState(new ChannelUID(thing.getUID(), GROUP_GENERAL, CHANNEL_STATUS_CODE),
+                new DecimalType(dat.statusCode));
 
         WorxLandroidStatusCodes code = WorxLandroidStatusCodes.getByCode(dat.statusCode);
-        updateState(CHANNELNAME_STATUS_DESCRIPTION, new StringType(code.getDescription()));
+        // updateState(CHANNEL_STATUS_DESCRIPTION, new StringType(code.getDescription()));
         logger.debug("{}", code.toString());
 
         // restore
         if (restoreZoneMeter) {
-            if (code != WorxLandroidStatusCodes.HOME && code != WorxLandroidStatusCodes.START_SEQUNCE
+            if (code != WorxLandroidStatusCodes.HOME && code != WorxLandroidStatusCodes.START_SEQUENCE
                     && code != WorxLandroidStatusCodes.LEAVING_HOME && code != WorxLandroidStatusCodes.SEARCHING_ZONE) {
                 restoreZoneMeter = false;
                 mower.setZoneMeters(zoneMeterRestoreValues);
@@ -899,30 +895,33 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
 
         // dat/le -> errorCode
-        updateState(CHANNELNAME_ERROR_CODE, new DecimalType(dat.errorCode));
+        updateState(new ChannelUID(thing.getUID(), GROUP_GENERAL, CHANNEL_ERROR_CODE), new DecimalType(dat.errorCode));
 
         WorxLandroidErrorCodes errorCode = WorxLandroidErrorCodes.getByCode(dat.errorCode);
-        updateState(CHANNELNAME_ERROR_DESCRIPTION, new StringType(errorCode.getDescription()));
+        // updateState(CHANNEL_ERROR_DESCRIPTION, new StringType(errorCode.getDescription()));
         logger.debug("{}", code.toString());
 
         // dat/lz -> lastZone
         int lastZone = mower.getAllocation(dat.lastZone);
-        updateState(CHANNELNAME_LAST_ZONE, new DecimalType(lastZone));
+        updateState(new ChannelUID(thing.getUID(), GROUP_GENERAL, CHANNEL_LAST_ZONE), new DecimalType(lastZone));
 
-        updateState(CHANNELNAME_WIFI_QUALITY, new DecimalType(dat.wifiQuality));
+        updateState(new ChannelUID(thing.getUID(), GROUP_GENERAL, CHANNEL_WIFI_QUALITY),
+                new DecimalType(dat.wifiQuality));
 
         // dat/lk -> lock
         if (mower.isLockSupported()) {
-            updateState(CHANNELNAME_LOCK, OnOffType.from(dat.isLocked()));
+            updateState(CHANNEL_LOCK, OnOffType.from(dat.isLocked()));
         }
 
         if (mower.isRainDelayStartSupported()) {
             // dat/rain
             if (dat.rain != null) {
                 Rain rain = dat.rain;
-                updateState(CHANNELNAME_RAIN_STATE, OnOffType.from(rain.isRaining()));
+                updateState(new ChannelUID(thing.getUID(), GROUP_RAIN, CHANNEL_RAIN_STATE),
+                        OnOffType.from(rain.isRaining()));
                 // dat/rain/cnt -> rainCounter
-                updateState(CHANNELNAME_RAIN_COUNTER, new DecimalType(rain.counter));
+                updateState(new ChannelUID(thing.getUID(), GROUP_RAIN, CHANNEL_RAIN_COUNTER),
+                        new DecimalType(rain.counter));
             }
         }
 
@@ -938,8 +937,10 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param zoneId
      */
     private void updateStateCfg(Cfg cfg, @Nullable ZoneId zoneId) {
-        updateState(CHANNELNAME_ID, cfg.id != -1 ? new DecimalType(cfg.id) : UnDefType.NULL);
-        updateState(CHANNELNAME_LANGUAGE, !cfg.lg.isEmpty() ? new StringType(cfg.lg) : UnDefType.NULL);
+        updateState(new ChannelUID(thing.getUID(), GROUP_CONFIG, CHANNEL_ID),
+                cfg.id != -1 ? new DecimalType(cfg.id) : UnDefType.NULL);
+        updateState(new ChannelUID(thing.getUID(), GROUP_CONFIG, CHANNEL_LANGUAGE),
+                !cfg.lg.isEmpty() ? new StringType(cfg.lg) : UnDefType.NULL);
 
         LocalDateTime dateTime = cfg.getDateTime();
         State resultDateTime = UnDefType.NULL;
@@ -947,7 +948,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             ZonedDateTime zonedDateTime = ZonedDateTime.of(dateTime, zoneId);
             resultDateTime = new DateTimeType(zonedDateTime);
         }
-        updateState(CHANNELNAME_DATETIME, resultDateTime);
+        updateState(new ChannelUID(thing.getUID(), GROUP_CONFIG, CHANNEL_TIMESTAMP), resultDateTime);
 
         // TODO cfg/sc
         if (cfg.sc != null) {
@@ -955,14 +956,15 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
             // cfg/sc/m -> scheduleMode
             if (mower.isOneTimeSchedulerSupported()) {
-                updateState(CHANNELNAME_SC_MODE,
+                updateState(new ChannelUID(thing.getUID(), GROUP_SCHEDULE, CHANNEL_MODE),
                         sc.scheduleMode != -1 ? new DecimalType(sc.scheduleMode) : UnDefType.NULL);
 
                 // cdg/sc/ots
                 if (sc.ots != null) {
                     Ots ots = sc.ots;
-                    updateState(CHANNELNAME_ONE_TIME_SC_EDGECUT, OnOffType.from(ots.getEdgeCut()));
-                    updateState(CHANNELNAME_ONE_TIME_SC_DURATION,
+                    updateState(new ChannelUID(thing.getUID(), GROUP_ONE_TIME, CHANNEL_EDGECUT),
+                            OnOffType.from(ots.getEdgeCut()));
+                    updateState(new ChannelUID(thing.getUID(), GROUP_ONE_TIME, CHANNEL_DURATION),
                             ots.duration != -1 ? new DecimalType(ots.duration) : UnDefType.NULL);
                 }
             }
@@ -970,9 +972,11 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             // cfg/sc/p
             if (sc.timeExtension != -1) {
                 mower.setTimeExtension(sc.timeExtension);
-                updateState(CHANNELNAME_SC_TIME_EXTENSION, new DecimalType(sc.timeExtension));
+                updateState(new ChannelUID(thing.getUID(), GROUP_SCHEDULE, CHANNEL_TIME_EXTENSION),
+                        toQuantityType(sc.timeExtension, Units.PERCENT));
                 // mower enable
-                updateState(CHANNELNAME_ENABLE, OnOffType.from(mower.isEnable()));
+                updateState(new ChannelUID(thing.getUID(), GROUP_COMMON, CHANNEL_ENABLE),
+                        OnOffType.from(mower.isEnable()));
             }
 
             if (sc.d != null) {
@@ -985,7 +989,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
 
         // cfg/cmd -> command
-        updateState(CHANNELNAME_COMMAND, cfg.cmd != -1 ? new DecimalType(cfg.cmd) : UnDefType.NULL);
+        updateState(new ChannelUID(thing.getUID(), GROUP_CONFIG, CHANNEL_COMMAND),
+                cfg.cmd != -1 ? new DecimalType(cfg.cmd) : UnDefType.NULL);
 
         if (mower.isMultiZoneSupported()) {
             // zone meters
@@ -998,22 +1003,23 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             }
 
             // multizone enable is initialized and set by zone meters
-            updateState(CHANNELNAME_MULTIZONE_ENABLE, OnOffType.from(mower.isMultiZoneEnable()));
+            updateState(new ChannelUID(thing.getUID(), GROUP_MULTI_ZONES, CHANNEL_ENABLE),
+                    OnOffType.from(mower.isMultiZoneEnable()));
 
             // allocation zones
             if (!cfg.multizoneAllocations.isEmpty()) {
                 for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
                     mower.setAllocation(allocationIndex, cfg.multizoneAllocations.get(allocationIndex));
-                    String channelNameAlloction = CHANNELNAME_PREFIX_ALLOCATION + allocationIndex;
-                    updateState(channelNameAlloction, new DecimalType(cfg.multizoneAllocations.get(allocationIndex)));
+                    String channelNameAllocation = "%s-%d".formatted(CHANNEL_PREFIX_ALLOCATION, allocationIndex);
+                    updateState(new ChannelUID(thing.getUID(), GROUP_MULTI_ZONES, channelNameAllocation),
+                            new DecimalType(cfg.multizoneAllocations.get(allocationIndex)));
                 }
             }
         }
 
-        updateState(CHANNELNAME_RAIN_DELAY,
-                mower.isRainDelaySupported() && cfg.rainDelay != -1 ? new DecimalType(cfg.rainDelay) : UnDefType.NULL);
-        updateState(CHANNELNAME_SERIAL_NUMBER,
-                cfg.serialNumber.isEmpty() ? UnDefType.UNDEF : new StringType(cfg.serialNumber));
+        updateState(new ChannelUID(thing.getUID(), GROUP_CONFIG, CHANNEL_RAIN_DELAY),
+                mower.isRainDelaySupported() && cfg.rainDelay != -1 ? toQuantityType(cfg.rainDelay, Units.MINUTE)
+                        : UnDefType.NULL);
 
         // TODO cfg/modules
     }
@@ -1024,43 +1030,38 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      */
     private void updateStateCfgScDays(int scDSlot, List<List<String>> d) {
         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-            List<String> shedule = d.get(dayCode.getCode());
+            List<String> shedule = d.get(dayCode.code);
 
             ScheduledDay scheduledDay = scDSlot == 1 ? mower.getScheduledDay(dayCode) : mower.getScheduledDay2(dayCode);
 
             if (scheduledDay == null) {
                 return;
             }
-
-            String channelNamePrefix = String.format("%s%s%s", CHANNELNAME_SC_PREFIX, dayCode.getDescription(),
+            ThingUID thingUid = thing.getUID();
+            String groupName = String.format("%s%s", dayCode.getDescription(),
                     scDSlot == 1 ? "" : String.valueOf(scDSlot));
 
             String time[] = shedule.get(0).split(":");
 
             // hour
-            String channelNameStartHour = String.format("%s#%s", channelNamePrefix, CHANNELNAME_SC_START_HOUR_SUFFIX);
             scheduledDay.setHours(Integer.parseInt(time[0]));
-            updateState(channelNameStartHour, new DecimalType(time[0]));
+            updateState(new ChannelUID(thingUid, groupName, CHANNEL_START_HOUR), new DecimalType(time[0]));
 
             // minutes
-            String channelNameStartMin = String.format("%s#%s", channelNamePrefix, CHANNELNAME_SC_START_MINUTES_SUFFIX);
             scheduledDay.setMinutes(Integer.parseInt(time[1]));
-            updateState(channelNameStartMin, new DecimalType(time[1]));
+            updateState(new ChannelUID(thingUid, groupName, CHANNEL_START_MINUTES), new DecimalType(time[1]));
 
             // duration (and implicit enable)
-            String channelNameDuration = String.format("%s#%s", channelNamePrefix, CHANNELNAME_SC_DURATION_SUFFIX);
             int duration = Integer.valueOf(shedule.get(1));
             scheduledDay.setDuration(duration);
-            updateState(channelNameDuration, new DecimalType(duration));
+            updateState(new ChannelUID(thingUid, groupName, CHANNEL_DURATION), toQuantityType(duration, Units.MINUTE));
             // enable
-            String channelNameEnable = String.format("%s#%s", channelNamePrefix, CHANNELNAME_SC_ENABLE_SUFFIX);
-            updateState(channelNameEnable, OnOffType.from(scheduledDay.isEnable()));
+            updateState(new ChannelUID(thingUid, groupName, CHANNEL_ENABLE), OnOffType.from(scheduledDay.isEnable()));
 
             // edgecut
-            String channelNameEdgecut = String.format("%s#%s", channelNamePrefix, CHANNELNAME_SC_EDGECUT_SUFFIX);
             boolean edgecut = Integer.valueOf(shedule.get(2)) == 1;
             scheduledDay.setEdgecut(edgecut);
-            updateState(channelNameEdgecut, OnOffType.from(edgecut));
+            updateState(new ChannelUID(thingUid, groupName, CHANNEL_EDGECUT), OnOffType.from(edgecut));
         }
     }
 }

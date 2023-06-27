@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="worxlandroid"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<channel-type id="language-type">
+		<item-type>String</item-type>
+		<label>Language</label>
+		<description>Language to be used by the Landroid Worx API.</description>
+		<state readOnly="true">
+			<options>
+				<option value="af">Afrikaans</option>
+				<option value="al">Albanian</option>
+				<option value="ar">Arabic</option>
+				<option value="az">Azerbaijani</option>
+				<option value="eu">Basque</option>
+				<option value="bg">Bulgarian</option>
+				<option value="ca">Catalan</option>
+				<option value="zh_cn">Chinese - Simplified</option>
+				<option value="zh_tw">Chinese - Traditional</option>
+				<option value="hr">Croatian</option>
+				<option value="cz">Czech</option>
+				<option value="da">Danish</option>
+				<option value="nl">Dutch</option>
+				<option value="en">English</option>
+				<option value="fi">Finnish</option>
+				<option value="fr">French</option>
+				<option value="gl">Galician</option>
+				<option value="de">German</option>
+				<option value="el">Greek</option>
+				<option value="he">Hebrew</option>
+				<option value="hi">Hindi</option>
+				<option value="hu">Hungarian</option>
+				<option value="id">Indonesian</option>
+				<option value="it">Italian</option>
+				<option value="ja">Japanese</option>
+				<option value="kr">Korean</option>
+				<option value="la">Latvian</option>
+				<option value="lt">Lithuanian</option>
+				<option value="mk">Macedonian</option>
+				<option value="no">Norwegian</option>
+				<option value="fa">Persian (Farsi)</option>
+				<option value="pl">Polish</option>
+				<option value="pt_br">Português Brasil</option>
+				<option value="pt">Portuguese</option>
+				<option value="ro">Romanian</option>
+				<option value="ru">Russian</option>
+				<option value="sr">Serbian</option>
+				<option value="sk">Slovak</option>
+				<option value="sl">Slovenian</option>
+				<option value="es">Spanish</option>
+				<option value="se">Swedish</option>
+				<option value="th">Thai</option>
+				<option value="tr">Turkish</option>
+				<option value="uk">Ukrainian</option>
+				<option value="vi">Vietnamese</option>
+				<option value="zu">Zulu</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="timestamp">
+		<item-type>DateTime</item-type>
+		<label>Last Update</label>
+		<description>Last device update</description>
+		<category>Time</category>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="rain-delay-type">
+		<item-type>Number:Time</item-type>
+		<label>Rain Delay</label>
+		<category>Time</category>
+		<state min="0" max="750" step="30" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="firmware-type">
+		<item-type>String</item-type>
+		<label>Firmware</label>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="battery-temp-type" advanced="true">
+		<item-type>Number:Temperature</item-type>
+		<label>Battery Temperature</label>
+		<description>Current temperature of the battery</description>
+		<category>Temperature</category>
+		<state readOnly="true" pattern="%.1f %unit%"/>
+	</channel-type>
+
+	<channel-type id="voltage-type">
+		<item-type>Number:ElectricPotential</item-type>
+		<label>Battery Voltage</label>
+		<description>Battery voltage reported by the mower</description>
+		<category>Energy</category>
+		<state readOnly="true" pattern="%.2f %unit%"/>
+	</channel-type>
+
+	<channel-type id="axis-type">
+		<item-type>Number:Angle</item-type>
+		<label>Axis</label>
+		<state pattern="%.2f %unit%" readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="distance-type">
+		<item-type>Number:Length</item-type>
+		<label>Total Distance</label>
+		<state readOnly="true" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="minute-duration">
+		<item-type>Number:Time</item-type>
+		<label>Time</label>
+		<state readOnly="true" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="status-type">
+		<item-type>Number</item-type>
+		<label>Status Code</label>
+
+		<state readOnly="true" pattern="%d">
+			<options>
+				<option value="-1">Unknown</option>
+				<option value="0">Idle</option>
+				<option value="1">Home</option>
+				<option value="2">Start sequence</option>
+				<option value="3">Leaving home</option>
+				<option value="4">Follow wire</option>
+				<option value="5">Searching home</option>
+				<option value="6">Searching wire</option>
+				<option value="7">Mowing</option>
+				<option value="8">Lifted</option>
+				<option value="9">Trapped</option>
+				<option value="10">Blade blocked</option>
+				<option value="11">Debug</option>
+				<option value="12">Remote control</option>
+				<option value="30">Going home</option>
+				<option value="31">Zone training</option>
+				<option value="32">Border cut</option>
+				<option value="33">Searching zone</option>
+				<option value="34">Pause</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="error-type">
+		<item-type>Number</item-type>
+		<label>Error Code</label>
+
+		<state readOnly="true" pattern="%d">
+			<options>
+				<option value="-1">Unknown</option>
+				<option value="0">No error</option>
+				<option value="1">Trapped</option>
+				<option value="2">Lifted</option>
+				<option value="3">Wire missing</option>
+				<option value="4">Outside wire</option>
+				<option value="5">Raining</option>
+				<option value="6">Close door to mow</option>
+				<option value="7">Close door to go home</option>
+				<option value="8">Blade motor blocked</option>
+				<option value="9">Wheel motor blocked</option>
+				<option value="10">Trapped timeout</option>
+				<option value="11">Upside down</option>
+				<option value="12">Battery low</option>
+				<option value="13">Reverse wire</option>
+				<option value="14">Charge error</option>
+				<option value="15">Timeout finding home</option>
+				<option value="16">Mower locked</option>
+				<option value="17">Battery over temperature</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="time-extension-type">
+		<item-type>Number:Dimensionless</item-type>
+		<label>Schedule Time Extension</label>
+
+		<state readOnly="false" min="-100" max="100" step="10" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="schedule-mode-type">
+		<item-type>Number</item-type>
+		<label>Schedule Mode</label>
+		<description>Sets Normal or Party mode</description>
+
+		<state readOnly="false">
+			<options>
+				<option value="1">Normal</option>
+				<option value="2">Party</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="start-hour-type">
+		<item-type>Number</item-type>
+		<label>Start Hour</label>
+
+		<state readOnly="false" min="0" max="23" step="1" pattern="%d h"/>
+	</channel-type>
+
+	<channel-type id="start-minute-type">
+		<item-type>Number</item-type>
+		<label>Schedule Start Minutes</label>
+
+		<state readOnly="false" min="0" max="45" step="15" pattern="%d min"/>
+	</channel-type>
+
+	<channel-type id="schedule-duration-type">
+		<item-type>Number:Time</item-type>
+		<label>Schedule Duration</label>
+		<state readOnly="false" min="0" max="1425" step="15" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="zone-meter-type">
+		<item-type>Number:Length</item-type>
+		<label>Length of the zone</label>
+		<state readOnly="false" min="0" step="1" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="zone-type">
+		<item-type>Number</item-type>
+		<label>Zone Number</label>
+		<category>oh:worxlandroid:zones</category>
+		<state readOnly="false">
+			<options>
+				<option value="0">Zone 1</option>
+				<option value="1">Zone 2</option>
+				<option value="2">Zone 3</option>
+				<option value="3">Zone 4</option>
+			</options>
+		</state>
+
+	</channel-type>
+
+	<channel-type id="action-type">
+		<item-type>String</item-type>
+		<label>Action</label>
+		<description>Action channel for your mower</description>
+		<state>
+			<options>
+				<option value="START">Start</option>
+				<option value="STOP">Stop</option>
+				<option value="HOME">Home</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="switch-rw">
+		<item-type>Switch</item-type>
+		<label>Read Write Switch</label>
+	</channel-type>
+
+	<channel-type id="switch-ro">
+		<item-type>Switch</item-type>
+		<label>Read Only Switch</label>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="number-ro">
+		<item-type>Number</item-type>
+		<label>A Number</label>
+		<category>oh:worxlandroid:counter</category>
+		<state readOnly="true"/>
+	</channel-type>
+
+</thing:thing-descriptions>

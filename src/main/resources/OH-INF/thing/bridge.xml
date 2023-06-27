@@ -6,12 +6,12 @@
 		<label>Bridge Worx Landroid API</label>
 		<description>Represents the API and handler for Worx Landroid.</description>
 		<config-description>
-			<parameter name="webapiUsername" type="text">
+			<parameter name="username" type="text">
 				<label>Username</label>
 				<description>Username to access the Landroid WebAPI.</description>
 				<required>true</required>
 			</parameter>
-			<parameter name="webapiPassword" type="text">
+			<parameter name="password" type="text">
 				<context>password</context>
 				<label>Password</label>
 				<description>Password to access the Landroid WebAPI.</description>

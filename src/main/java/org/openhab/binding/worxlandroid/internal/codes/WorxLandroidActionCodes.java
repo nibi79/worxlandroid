@@ -20,8 +20,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public enum WorxLandroidActionCodes implements Codes {
-
+public enum WorxLandroidActionCodes {
     START(1, "start"),
     STOP(2, "stop"),
     HOME(3, "home"),
@@ -29,26 +28,11 @@ public enum WorxLandroidActionCodes implements Codes {
     LOCK(5, "lock"),
     UNLOCK(6, "unlock");
 
-    private final int code;
-    private final String description;
+    public final int code;
+    public final String description;
 
     WorxLandroidActionCodes(int code, String description) {
         this.code = code;
         this.description = description;
-    }
-
-    @Override
-    public int getCode() {
-        return this.code;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s | ActionCode: %d - %s", this.name(), this.getCode(), this.getDescription());
     }
 }

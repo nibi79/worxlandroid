@@ -15,18 +15,18 @@ package org.openhab.binding.worxlandroid.internal.config;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link BridgeConfiguration} class contains fields mapping thing configuration parameters.
+ * The {@link WebApiConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
  * @author Gaël L'hopital - Added NonNullByDefault, removed setters
  */
 @NonNullByDefault
-public class BridgeConfiguration {
-    public String webapiUsername = "";
-    public String webapiPassword = "";
+public class WebApiConfiguration {
+    public String username = "";
+    public String password = "";
 
     @Override
     public String toString() {
-        return String.format("BridgeConfiguration [webapiPassword='%s', webapiPassword='*****']", webapiUsername);
+        return "WebApiConfiguration [username='%s', password='*****']".formatted(username);
     }
 }

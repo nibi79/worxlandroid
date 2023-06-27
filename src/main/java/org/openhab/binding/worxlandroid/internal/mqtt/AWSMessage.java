@@ -25,5 +25,5 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 @NonNullByDefault
 public record AWSMessage(@Nullable String topic, String payload) {
     public static final String EMPTY_PAYLOAD = "{}";
-    public static final String CMD_START = "{\"cmd\":%d}".formatted(WorxLandroidActionCodes.START.getCode());
+    public static final String CMD_START = "{\"cmd\":%d}".formatted(WorxLandroidActionCodes.START.code);
 }

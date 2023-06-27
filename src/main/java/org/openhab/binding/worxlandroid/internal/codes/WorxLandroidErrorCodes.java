@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
+import java.util.stream.Stream;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
@@ -20,52 +22,34 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public enum WorxLandroidErrorCodes implements Codes {
-    UNKNOWN(-1, "Unknown"),
-    NO_ERR(0, "No error!"),
-    TRAPPED(1, "Trapped"),
-    LIFTED(2, "Lifted"),
-    WIRE_MISSING(3, "Wire missing"),
-    OUTSIDE_WIRE(4, "Outside wire"),
-    RAINING(5, "Raining"),
-    CLOSE_DOOR_TO_MOW(6, "Close door to mow"),
-    CLOSE_DOOR_TO_GO_HOME(7, "Close door to go home"),
-    BLADE_MOTOR_BLOCKED(8, "Blade motor blocked"),
-    WHEEL_MOTOR_BLOKED(9, "Wheel motor blocked"),
-    TRAPPED_TIMEOUT(10, "Trapped timeout"),
-    UPSIDE_DOWN(11, "Upside down"),
-    BATTERY_LOW(12, "Battery low"),
-    REVERSE_WIRE(13, "Reverse wire"),
-    CHARGE_ERROR(14, "Charge error"),
-    TIMEOUT_FINDING_HOME(15, "Timeout finding home"),
-    MOWER_LOCKED(16, "Mower locked"),
-    BATTERY_OVER_TEMPERATURE(17, "Battery over temperature");
+public enum WorxLandroidErrorCodes {
+    UNKNOWN(-1),
+    NO_ERR(0),
+    TRAPPED(1),
+    LIFTED(2),
+    WIRE_MISSING(3),
+    OUTSIDE_WIRE(4),
+    RAINING(5),
+    CLOSE_DOOR_TO_MOW(6),
+    CLOSE_DOOR_TO_GO_HOME(7),
+    BLADE_MOTOR_BLOCKED(8),
+    WHEEL_MOTOR_BLOKED(9),
+    TRAPPED_TIMEOUT(10),
+    UPSIDE_DOWN(11),
+    BATTERY_LOW(12),
+    REVERSE_WIRE(13),
+    CHARGE_ERROR(14),
+    TIMEOUT_FINDING_HOME(15),
+    MOWER_LOCKED(16),
+    BATTERY_OVER_TEMPERATURE(17);
 
-    private final int code;
-    private final String description;
+    public final int code;
 
-    WorxLandroidErrorCodes(int code, String description) {
+    WorxLandroidErrorCodes(int code) {
         this.code = code;
-        this.description = description;
     }
 
-    @Override
-    public int getCode() {
-        return this.code;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    public static WorxLandroidErrorCodes getByCode(int code) {
-        WorxLandroidErrorCodes result = Codes.lookup(WorxLandroidErrorCodes.class, code);
-        return result != null ? result : WorxLandroidErrorCodes.UNKNOWN;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s | ErrorCode: %d - %s", name(), getCode(), getDescription());
+    public static WorxLandroidErrorCodes getByCode(int searched) {
+        return Stream.of(WorxLandroidErrorCodes.values()).filter(e -> e.code == searched).findAny().orElse(UNKNOWN);
     }
 }
