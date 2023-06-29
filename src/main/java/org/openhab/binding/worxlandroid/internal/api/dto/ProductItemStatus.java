@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.webapi.dto;
+package org.openhab.binding.worxlandroid.internal.api.dto;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -18,7 +18,8 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidErrorCodes;
+import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -53,12 +54,9 @@ public class ProductItemStatus {
         public int level = -1;
         @SerializedName("nr")
         public int chargeCycle = -1;
-        private int c = -1;
+        @SerializedName("c")
+        public Boolean charging;
         public int m;
-
-        public boolean isCharging() {
-            return c == 1;
-        }
     }
 
     public class St {
@@ -73,13 +71,9 @@ public class ProductItemStatus {
 
     public class Rain {
         @SerializedName("s")
-        private int state = -1;
+        public Boolean raining;
         @SerializedName("cnt")
         public int counter = -1;
-
-        public boolean isRaining() {
-            return state == 1;
-        }
     }
 
     public class Schedule {
@@ -155,12 +149,13 @@ public class ProductItemStatus {
         public String fw = "";
         @SerializedName("bt")
         public Battery battery;
-        public List<Double> dmp = List.of();
+        @SerializedName("dmp")
+        public double[] dataMotionProcessor = { -1, -1, -1 }; // pitch, roll, yaw
         public St st;
         @SerializedName("ls")
-        public int statusCode = -1;
+        public WorxLandroidStatusCodes statusCode = WorxLandroidStatusCodes.UNKNOWN;
         @SerializedName("le")
-        public int errorCode = -1;
+        public WorxLandroidErrorCodes errorCode = WorxLandroidErrorCodes.UNKNOWN;
         @SerializedName("lz")
         public int lastZone = -1;
         @SerializedName("rsi")
@@ -202,8 +197,9 @@ public class ProductItemStatus {
         public int tq;
         public Modules modules;
 
-        public @Nullable LocalDateTime getDateTime() {
-            return dt.isEmpty() || tm.isEmpty() ? null : LocalDateTime.parse("%s %s".formatted(dt, tm), formatter);
+        public ZonedDateTime getDateTime(ZoneId zoneId) {
+            return dt.isEmpty() || tm.isEmpty() ? null
+                    : ZonedDateTime.of(LocalDateTime.parse("%s %s".formatted(dt, tm), formatter), zoneId);
         }
     }
 
@@ -217,7 +213,15 @@ public class ProductItemStatus {
         public Payload payload;
     }
 
-    public int id;
+    public class AutoSchedule {
+        public int boost;
+        public String grassType;
+        public String irrigation;
+        public String nutrition;
+        public String soilType;
+    }
+
+    public String id;
     public String uuid;
     public int productId;
     public int userId;
@@ -253,7 +257,7 @@ public class ProductItemStatus {
     public ZoneId timeZone;
     public double lawnSize;
     public double lawnPerimeter;
-    public String autoScheduleSettings;
+    public AutoSchedule autoScheduleSettings;
     public boolean autoSchedule;
     public boolean improvement;
     public boolean diagnostic;

@@ -111,4 +111,8 @@ public class ScheduledDay {
     private void restoreDuration() {
         this.duration = this.durationRestore;
     }
+
+    public Object[] getArray() {
+        return new Object[] { "%d:%02d".formatted(hour, minutes), duration, edgecut ? 1 : 0 };
+    }
 }

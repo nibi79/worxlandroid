@@ -45,22 +45,22 @@ public class WorxLandroidBindingConstants {
     public static final String GROUP_ORIENTATION = "orientation";
     public static final String GROUP_METRICS = "metrics";
     public static final String GROUP_RAIN = "rain";
+    public static final String GROUP_WIFI = "wifi";
 
     // List channel ids
     // common
-    public static final String CHANNEL_ONLINE = "online";
     public static final String CHANNEL_ONLINE_TIMESTAMP = "online-timestamp";
     public static final String CHANNEL_POLL = "poll";
     public static final String CHANNEL_ACTION = "action";
     public static final String CHANNEL_ENABLE = "enable";
+    public static final String CHANNEL_ONLINE = "online";
     public static final String CHANNEL_LOCK = "lock";
+    public static final String CHANNEL_RSSI = "rssi";
 
     // cfgCommon
-    public static final String CHANNEL_ID = "id";
-    public static final String CHANNEL_LANGUAGE = "language";
     public static final String CHANNEL_TIMESTAMP = "timestamp";
     public static final String CHANNEL_COMMAND = "command";
-    public static final String CHANNEL_RAIN_DELAY = "rain-delay";
+    public static final String CHANNEL_DELAY = "delay";
 
     // cfgSc
     public static final String CHANNEL_TIME_EXTENSION = "time-extension";
@@ -104,4 +104,5 @@ public class WorxLandroidBindingConstants {
 
     //
     public static final String CHANNEL_PREFIX_ALLOCATION = "allocation";
+    public static final String CHANNEL_PREFIX_ZONE = "zone";
 }

@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
-import java.util.stream.Stream;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * The {@link WorxLandroidErrorCodes} hosts error codes
@@ -23,33 +23,42 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  */
 @NonNullByDefault
 public enum WorxLandroidErrorCodes {
-    UNKNOWN(-1),
-    NO_ERR(0),
-    TRAPPED(1),
-    LIFTED(2),
-    WIRE_MISSING(3),
-    OUTSIDE_WIRE(4),
-    RAINING(5),
-    CLOSE_DOOR_TO_MOW(6),
-    CLOSE_DOOR_TO_GO_HOME(7),
-    BLADE_MOTOR_BLOCKED(8),
-    WHEEL_MOTOR_BLOKED(9),
-    TRAPPED_TIMEOUT(10),
-    UPSIDE_DOWN(11),
-    BATTERY_LOW(12),
-    REVERSE_WIRE(13),
-    CHARGE_ERROR(14),
-    TIMEOUT_FINDING_HOME(15),
-    MOWER_LOCKED(16),
-    BATTERY_OVER_TEMPERATURE(17);
-
-    public final int code;
-
-    WorxLandroidErrorCodes(int code) {
-        this.code = code;
-    }
-
-    public static WorxLandroidErrorCodes getByCode(int searched) {
-        return Stream.of(WorxLandroidErrorCodes.values()).filter(e -> e.code == searched).findAny().orElse(UNKNOWN);
-    }
+    @SerializedName("-1")
+    UNKNOWN,
+    @SerializedName("0")
+    NO_ERR,
+    @SerializedName("1")
+    TRAPPED,
+    @SerializedName("2")
+    LIFTED,
+    @SerializedName("3")
+    WIRE_MISSING,
+    @SerializedName("4")
+    OUTSIDE_WIRE,
+    @SerializedName("5")
+    RAINING,
+    @SerializedName("6")
+    CLOSE_DOOR_TO_MOW,
+    @SerializedName("7")
+    CLOSE_DOOR_TO_GO_HOME,
+    @SerializedName("8")
+    BLADE_MOTOR_BLOCKED,
+    @SerializedName("9")
+    WHEEL_MOTOR_BLOKED,
+    @SerializedName("10")
+    TRAPPED_TIMEOUT,
+    @SerializedName("11")
+    UPSIDE_DOWN,
+    @SerializedName("12")
+    BATTERY_LOW,
+    @SerializedName("13")
+    REVERSE_WIRE,
+    @SerializedName("14")
+    CHARGE_ERROR,
+    @SerializedName("15")
+    TIMEOUT_FINDING_HOME,
+    @SerializedName("16")
+    MOWER_LOCKED,
+    @SerializedName("17")
+    BATTERY_OVER_TEMPERATURE;
 }

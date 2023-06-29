@@ -27,11 +27,10 @@ public class MowerConfiguration {
     public String serialNumber = "";
     public int refreshStatusInterval = 600;
     public int pollingInterval = 3600;
-    public int reconnectInterval = 0;
 
     @Override
     public String toString() {
-        return "MowerConfiguration [serialNumber='%s', pollingInterval='%d', refreshStatusInterval='%d', reconnectInterval='%d']"
-                .formatted(serialNumber, pollingInterval, refreshStatusInterval, reconnectInterval);
+        return "MowerConfiguration [serialNumber='%s', pollingInterval='%d', refreshStatusInterval='%d']"
+                .formatted(serialNumber, pollingInterval, refreshStatusInterval);
     }
 }

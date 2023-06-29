@@ -24,9 +24,11 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 public class WebApiConfiguration {
     public String username = "";
     public String password = "";
+    public int reconnectInterval = 0;
 
     @Override
     public String toString() {
-        return "WebApiConfiguration [username='%s', password='*****']".formatted(username);
+        return "WebApiConfiguration [username='%s', password='*****', reconnectInterval='%d']".formatted(username,
+                reconnectInterval);
     }
 }

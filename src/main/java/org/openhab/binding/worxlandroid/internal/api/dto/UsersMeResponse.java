@@ -10,10 +10,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.webapi.dto;
+package org.openhab.binding.worxlandroid.internal.api.dto;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
 
 /**
  * The {@link UsersMeResponse} class
@@ -22,7 +21,7 @@ import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
  *
  */
 @NonNullByDefault
-public class UsersMeResponse extends ApiResponse {
+public class UsersMeResponse {
     public String id = "";
     public String user_type = "";
     public boolean pushNotifications;
@@ -31,11 +30,4 @@ public class UsersMeResponse extends ApiResponse {
     public String actionsOnGooglePinCode = "";
     public String createdAt = "";
     public String updatedAt = "";
-
-    @Override
-    public void checkValid() throws WebApiException {
-        if (id.isEmpty()) {
-            throw new WebApiException("User ID is empty");
-        }
-    }
 }

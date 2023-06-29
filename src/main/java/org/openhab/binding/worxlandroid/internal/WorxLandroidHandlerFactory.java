@@ -21,14 +21,12 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.jetty.client.HttpClient;
-import org.openhab.binding.worxlandroid.internal.deserializer.WebApiDeserializer;
+import org.openhab.binding.worxlandroid.internal.api.WorxApiHandler;
 import org.openhab.binding.worxlandroid.internal.discovery.MowerDiscoveryService;
 import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
 import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidMowerHandler;
 import org.openhab.core.auth.client.oauth2.OAuthFactory;
 import org.openhab.core.config.discovery.DiscoveryService;
-import org.openhab.core.io.net.http.HttpClientFactory;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingTypeUID;
@@ -54,16 +52,14 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_MOWER, THING_TYPE_BRIDGE);
 
     private final Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
-    private final HttpClient httpClient;
     private final OAuthFactory oAuthFactory;
-    private final WebApiDeserializer deserializer;
+    private final WorxApiHandler worxApiHandler;
 
     @Activate
-    public WorxLandroidHandlerFactory(final @Reference HttpClientFactory httpClientFactory,
-            final @Reference OAuthFactory oAuthFactory, final @Reference WebApiDeserializer deserializer) {
-        this.httpClient = httpClientFactory.getCommonHttpClient();
+    public WorxLandroidHandlerFactory(final @Reference OAuthFactory oAuthFactory,
+            final @Reference WorxApiHandler worxApiHandler) {
         this.oAuthFactory = oAuthFactory;
-        this.deserializer = deserializer;
+        this.worxApiHandler = worxApiHandler;
     }
 
     @Override
@@ -76,16 +72,15 @@ public class WorxLandroidHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (THING_TYPE_BRIDGE.equals(thingTypeUID)) {
-            WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler((Bridge) thing, httpClient,
-                    oAuthFactory, deserializer);
+            WorxLandroidBridgeHandler bridgeHandler = new WorxLandroidBridgeHandler((Bridge) thing, worxApiHandler,
+                    oAuthFactory);
             MowerDiscoveryService discoveryService = new MowerDiscoveryService(bridgeHandler);
-            bridgeHandler.setDiscovery(discoveryService);
             discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(DiscoveryService.class.getName(),
                     discoveryService, new Hashtable<>()));
 
             return bridgeHandler;
         } else if (THING_TYPE_MOWER.equals(thingTypeUID)) {
-            return new WorxLandroidMowerHandler(thing, deserializer);
+            return new WorxLandroidMowerHandler(thing, worxApiHandler.getDeserializer());
         }
         return null;
     }

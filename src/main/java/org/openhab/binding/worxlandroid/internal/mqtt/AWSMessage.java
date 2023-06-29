@@ -13,7 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 
 /**
@@ -23,7 +22,8 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
  * @author Gaël L'hopital - Changed to record
  */
 @NonNullByDefault
-public record AWSMessage(@Nullable String topic, String payload) {
+public record AWSMessage(String topic, String payload) {
+
     public static final String EMPTY_PAYLOAD = "{}";
     public static final String CMD_START = "{\"cmd\":%d}".formatted(WorxLandroidActionCodes.START.code);
 }

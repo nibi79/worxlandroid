@@ -27,12 +27,6 @@ import software.amazon.awssdk.crt.mqtt.MqttClientConnectionEvents;
 @NonNullByDefault
 public interface AWSClientI extends MqttClientConnectionEvents {
 
-    public @Nullable String getEndpoint();
-
-    public String getClientId();
-
-    public String getUsernameMqtt();
-
     public boolean connect();
 
     public @Nullable CompletableFuture<Void> disconnect();

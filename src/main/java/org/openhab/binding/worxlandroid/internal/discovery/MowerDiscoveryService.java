@@ -14,26 +14,22 @@ package org.openhab.binding.worxlandroid.internal.discovery;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.THING_TYPE_MOWER;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants;
+import org.openhab.binding.worxlandroid.internal.api.WebApiException;
+import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus;
 import org.openhab.binding.worxlandroid.internal.config.MowerConfiguration;
 import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
-import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApi;
-import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
-import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.ThingUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 /**
  * The {@link MowerDiscoveryService} is a service for discovering your mowers through Worx Landroid API
@@ -67,41 +63,21 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
-        // Trigger no scan if offline
-        if (bridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
-            return;
-        }
-
-        WorxLandroidWebApi apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
         try {
-            ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
+            List<ProductItemStatus> productItemsStatusResponse = bridgeHandler.retrieveAllDevices();
+            productItemsStatusResponse.forEach(mower -> {
 
-            if (productItemsResponse.getJsonResponse().isJsonArray()) {
-                JsonArray mowers = productItemsResponse.getJsonResponse().getAsJsonArray();
-                ThingUID bridgeUID = bridgeHandler.getThing().getUID();
+                DiscoveryResult discoveryResult = DiscoveryResultBuilder
+                        .create(new ThingUID(THING_TYPE_MOWER, bridgeHandler.getThing().getUID(), mower.id))
+                        .withRepresentationProperty(MowerConfiguration.SERIAL_NUMBER).withLabel(mower.name)
+                        .withProperty(MowerConfiguration.SERIAL_NUMBER, mower.serialNumber)
+                        .withBridge(bridgeHandler.getThing().getUID()).build();
 
-                for (JsonElement mowerElement : mowers) {
-                    if (mowerElement.isJsonObject()) {
-                        JsonObject mower = mowerElement.getAsJsonObject();
-
-                        String serialNumber = mower.get("serial_number").getAsString();
-
-                        ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, serialNumber);
-
-                        DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                                .withBridge(bridgeHandler.getThing().getUID())
-                                .withProperty(MowerConfiguration.SERIAL_NUMBER, serialNumber)
-                                .withRepresentationProperty(MowerConfiguration.SERIAL_NUMBER)
-                                .withLabel(mower.get("name").getAsString()).build();
-
-                        thingDiscovered(discoveryResult);
-
-                        logger.debug("Discovered a mower thing with ID '{}'", serialNumber);
-                    }
-                }
-            }
-        } catch (Exception npe) {
-            logger.error("Error in WebApiException", npe);
+                thingDiscovered(discoveryResult);
+                logger.debug("Discovered a mower thing with ID '{}'", mower.serialNumber);
+            });
+        } catch (WebApiException npe) {
+            logger.error("Error in WebApiException : {}", npe.getMessage());
         }
     }
 

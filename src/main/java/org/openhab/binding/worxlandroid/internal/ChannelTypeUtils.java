@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.utils;
+package org.openhab.binding.worxlandroid.internal;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;

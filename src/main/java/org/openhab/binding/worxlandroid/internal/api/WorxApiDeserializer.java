@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.deserializer;
+package org.openhab.binding.worxlandroid.internal.api;
 
 import java.lang.reflect.Type;
 import java.time.ZoneId;
@@ -21,8 +21,6 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.worxlandroid.internal.webapi.WebApiException;
-import org.openhab.binding.worxlandroid.internal.webapi.dto.ApiResponse;
 import org.openhab.core.i18n.TimeZoneProvider;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,19 +34,19 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * The {@link WebApiDeserializer} is responsible to instantiate suitable Gson (de)serializer
+ * The {@link WorxApiDeserializer} is responsible to instantiate suitable Gson (de)serializer
  *
  * @author Gaël L'hopital - Initial contribution
  */
 @NonNullByDefault
-@Component(service = WebApiDeserializer.class)
-public class WebApiDeserializer {
+@Component(service = WorxApiDeserializer.class)
+public class WorxApiDeserializer {
     private static final DateTimeFormatter WORX_FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ssX");
 
     private final Gson gson;
 
     @Activate
-    public WebApiDeserializer(@Reference TimeZoneProvider timeZoneProvider) {
+    public WorxApiDeserializer(@Reference TimeZoneProvider timeZoneProvider) {
         gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(ZoneId.class,
                         (JsonDeserializer<ZoneId>) (json, type, context) -> ZoneId
@@ -57,7 +55,10 @@ public class WebApiDeserializer {
                         (JsonDeserializer<ZonedDateTime>) (json, type, context) -> ZonedDateTime
                                 .parse(json.getAsJsonPrimitive().getAsString() + "Z", WORX_FORMATTER)
                                 .withZoneSameInstant(timeZoneProvider.getTimeZone()))
-                .create();
+                .registerTypeAdapter(Boolean.class, (JsonDeserializer<Boolean>) (json, type, context) -> {
+                    String value = json.getAsJsonPrimitive().getAsString().toUpperCase();
+                    return "1".equals(value);
+                }).create();
     }
 
     public <T> T deserialize(Class<T> clazz, String json) throws WebApiException {
@@ -65,15 +66,16 @@ public class WebApiDeserializer {
             @Nullable
             T result = gson.fromJson(json, clazz);
             if (result != null) {
-                if (result instanceof ApiResponse apiResponse) {
-                    apiResponse.checkValid();
-                }
                 return result;
             }
             throw new WebApiException("Deserialization of '%s' resulted in null value".formatted(json));
         } catch (JsonSyntaxException e) {
             throw new WebApiException("Unexpected error deserializing '%s'".formatted(json), e);
         }
+    }
+
+    public String toJson(Object object) {
+        return gson.toJson(object);
     }
 
     public Map<String, String> toMap(Object object) {

@@ -95,15 +95,10 @@ public class WorxLandroidIconProvider implements IconProvider {
         }
 
         if (state != null) {
-            try {
-                Integer ordinal = Integer.valueOf(state);
-                /*
-                 * AlertLevel alertLevel = ordinal < AlertLevel.values().length ? AlertLevel.values()[ordinal]
-                 * : AlertLevel.UNKNOWN;
-                 * icon = icon.replaceAll(AlertLevel.UNKNOWN.color, alertLevel.color);
-                 */
-            } catch (NumberFormatException e) {
-                logger.debug("{} is not a valid DecimalType", state);
+            String withState = "%s-%s".formatted(category, state.toString().toLowerCase());
+            String iconWithState = getResource(withState);
+            if (!iconWithState.isEmpty()) {
+                icon = iconWithState;
             }
         }
 
@@ -114,10 +109,12 @@ public class WorxLandroidIconProvider implements IconProvider {
         String result = "";
 
         URL iconResource = context.getBundle().getEntry("icon/%s.svg".formatted(iconName));
-        try (InputStream stream = iconResource.openStream()) {
-            result = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            logger.warn("Unable to load ressource '{}' : {}", iconResource.getPath(), e.getMessage());
+        if (iconResource != null) {
+            try (InputStream stream = iconResource.openStream()) {
+                result = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                logger.warn("Unable to load ressource '{}' : {}", iconResource.getPath(), e.getMessage());
+            }
         }
         return result;
     }

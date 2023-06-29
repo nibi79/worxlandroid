@@ -10,23 +10,25 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.webapi.response;
+package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link ProductsResponse} class
+ * {@link AWSClientCallbackI} Callback for AWS connection events
  *
  * @author Nils - Initial contribution
- *
  */
 @NonNullByDefault
-public class ProductsResponse extends WebApiResponse {
+public interface AWSClientCallbackI {
 
     /**
-     * @param jsonResponse
+     * callback method on connection success
      */
-    public ProductsResponse(String jsonResponse) {
-        super(jsonResponse);
-    }
+    public void onAWSConnectionSuccess();
+
+    /**
+     * callback method on connection closed
+     */
+    public void onAWSConnectionClosed();
 }

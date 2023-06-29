@@ -65,6 +65,7 @@
 			<channel-group id="orientation" typeId="orientation-group-type"/>
 			<channel-group id="metrics" typeId="metrics-group-type"/>
 			<channel-group id="rain" typeId="rain-group-type"/>
+			<channel-group id="wifi" typeId="wifi-group-type"/>
 		</channel-groups>
 
 		<representation-property>serialNumber</representation-property>
@@ -87,15 +88,6 @@
 				<default>0</default>
 				<required>true</required>
 			</parameter>
-
-			<parameter name="reconnectInterval" unit="s" type="integer" min="0" max="3600">
-				<label>Reconnect interval</label>
-				<description>Interval for reconnecting in seconds (after 10 minutes / 600 seconds of inactivity, the connection is
-					closed)</description>
-				<default>0</default>
-				<required>true</required>
-			</parameter>
-
 		</config-description>
 
 	</thing-type>

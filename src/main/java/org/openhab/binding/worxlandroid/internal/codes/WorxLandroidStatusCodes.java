@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
-import java.util.stream.Stream;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * The {@link WorxLandroidStatusCodes} hosts status codes
@@ -23,33 +23,42 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  */
 @NonNullByDefault
 public enum WorxLandroidStatusCodes {
-    UNKNOWN(-1),
-    IDLE(0),
-    HOME(1),
-    START_SEQUENCE(2),
-    LEAVING_HOME(3),
-    FOLLOW_WIRE(4),
-    SEARCHING_HOME(5),
-    SEARCHING_WIRE(6),
-    MOWING(7),
-    LIFTED(8),
-    TRAPPED(9),
-    BLADE_BLOCKED(10),
-    DEBUG(11),
-    REMOTE_CONTROL(12),
-    GOING_HOME(30),
-    ZONE_TRAINING(31),
-    BORDER_CUT(32),
-    SEARCHING_ZONE(33),
-    PAUSE(34);
-
-    public final int code;
-
-    WorxLandroidStatusCodes(int code) {
-        this.code = code;
-    }
-
-    public static WorxLandroidStatusCodes getByCode(int searched) {
-        return Stream.of(WorxLandroidStatusCodes.values()).filter(e -> e.code == searched).findAny().orElse(UNKNOWN);
-    }
+    @SerializedName("-1")
+    UNKNOWN,
+    @SerializedName("0")
+    IDLE,
+    @SerializedName("1")
+    HOME,
+    @SerializedName("2")
+    START_SEQUENCE,
+    @SerializedName("3")
+    LEAVING_HOME,
+    @SerializedName("4")
+    FOLLOW_WIRE,
+    @SerializedName("5")
+    SEARCHING_HOME,
+    @SerializedName("6")
+    SEARCHING_WIRE,
+    @SerializedName("7")
+    MOWING,
+    @SerializedName("8")
+    LIFTED,
+    @SerializedName("9")
+    TRAPPED,
+    @SerializedName("10")
+    BLADE_BLOCKED,
+    @SerializedName("11")
+    DEBUG,
+    @SerializedName("12")
+    REMOTE_CONTROL,
+    @SerializedName("30")
+    GOING_HOME,
+    @SerializedName("31")
+    ZONE_TRAINING,
+    @SerializedName("32")
+    BORDER_CUT,
+    @SerializedName("33")
+    SEARCHING_ZONE,
+    @SerializedName("34")
+    PAUSE;
 }
