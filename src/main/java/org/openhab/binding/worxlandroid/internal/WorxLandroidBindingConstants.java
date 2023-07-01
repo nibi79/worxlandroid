@@ -40,7 +40,6 @@ public class WorxLandroidBindingConstants {
     public static final String GROUP_MULTI_ZONES = "multi-zones";
     public static final String GROUP_SCHEDULE = "schedule";
     public static final String GROUP_ONE_TIME = "one-time";
-    public static final String GROUP_GENERAL = "general";
     public static final String GROUP_BATTERY = "battery";
     public static final String GROUP_ORIENTATION = "orientation";
     public static final String GROUP_METRICS = "metrics";
@@ -65,12 +64,13 @@ public class WorxLandroidBindingConstants {
     // cfgSc
     public static final String CHANNEL_TIME_EXTENSION = "time-extension";
     public static final String CHANNEL_MODE = "mode";
+    public static final String CHANNEL_START = "next-start";
+    public static final String CHANNEL_STOP = "next-stop";
 
     // cfgScXXXday
-    public static final String CHANNEL_START_HOUR = "hour";
-    public static final String CHANNEL_START_MINUTES = "minutes";
     public static final String CHANNEL_DURATION = "duration";
     public static final String CHANNEL_EDGECUT = "edgecut";
+    public static final String CHANNEL_TIME = "time";
 
     // datCommon
     public static final String CHANNEL_FIRMWARE = "firmware";
@@ -103,6 +103,6 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNEL_RAIN_COUNTER = "counter";
 
     //
-    public static final String CHANNEL_PREFIX_ALLOCATION = "allocation";
-    public static final String CHANNEL_PREFIX_ZONE = "zone";
+    public static final String CHANNEL_PREFIX_ALLOCATION = "allocation-%d";
+    public static final String CHANNEL_PREFIX_ZONE = "zone-%d";
 }

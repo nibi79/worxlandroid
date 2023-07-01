@@ -47,7 +47,7 @@ public class ProductItemStatus {
 
     public class Battery {
         @SerializedName("t")
-        public double temperature = -1;
+        public double temp = -1;
         @SerializedName("v")
         public double voltage = -1;
         @SerializedName("p")

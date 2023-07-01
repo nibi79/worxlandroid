@@ -12,12 +12,6 @@
 		<state readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="firmware-type">
-		<item-type>String</item-type>
-		<label>Firmware</label>
-		<state readOnly="true"/>
-	</channel-type>
-
 	<channel-type id="battery-temp-type" advanced="true">
 		<item-type>Number:Temperature</item-type>
 		<label>Battery Temperature</label>
@@ -114,7 +108,7 @@
 		<item-type>Number:Dimensionless</item-type>
 		<label>Schedule Time Extension</label>
 
-		<state readOnly="false" min="-100" max="100" step="10" pattern="%d %unit%"/>
+		<state readOnly="false" min="-100" max="100" step="10" pattern="%d %%"/>
 	</channel-type>
 
 	<channel-type id="schedule-mode-type">
@@ -130,21 +124,7 @@
 		</state>
 	</channel-type>
 
-	<channel-type id="start-hour-type">
-		<item-type>Number</item-type>
-		<label>Start Hour</label>
-
-		<state readOnly="false" min="0" max="23" step="1" pattern="%d h"/>
-	</channel-type>
-
-	<channel-type id="start-minute-type">
-		<item-type>Number</item-type>
-		<label>Schedule Start Minutes</label>
-
-		<state readOnly="false" min="0" max="45" step="15" pattern="%d min"/>
-	</channel-type>
-
-	<channel-type id="schedule-duration-type">
+    <channel-type id="schedule-duration-type">
 		<item-type>Number:Time</item-type>
 		<label>Schedule Duration</label>
 		<state readOnly="false" min="0" max="1425" step="15" pattern="%d %unit%"/>
@@ -201,6 +181,14 @@
 		<category>oh:worxlandroid:counter</category>
 		<state readOnly="true"/>
 	</channel-type>
+	
+    <channel-type id="schedule-time">
+        <item-type>DateTime</item-type>
+        <label>Start Time</label>
+        <description>Start time of the mowing on this day</description>
+        <category>Time</category>
+        <state readOnly="false" pattern="%1$tH:%1$tM" />
+    </channel-type>
 	
     <channel-type id="rain-delay-type">
         <item-type>Number:Time</item-type>

@@ -8,6 +8,8 @@
 		<label>Common</label>
 		<description>Common channels of the mower</description>
 		<channels>
+            <channel id="status" typeId="status-type"/>
+            <channel id="error" typeId="error-type"/>
             <channel id="online" typeId="switch-ro">
                 <label>Online</label>
                 <description>Online status of the mower</description>
@@ -48,6 +50,9 @@
 			<channel id="enable" typeId="switch-rw">
 				<label>Multizone enabled</label>
 			</channel>
+			<channel id="last-zone" typeId="zone-type">
+                <label>Last Zone</label>
+            </channel>			
 			<channel id="zone-1" typeId="zone-meter-type">
 				<label>Meters Zone 1</label>
 			</channel>
@@ -91,19 +96,6 @@
 				<label>Zone Allocation 10</label>
 			</channel>
 
-		</channels>
-	</channel-group-type>
-
-	<channel-group-type id="general-group-type">
-		<label>Data common</label>
-		<description>Data common channels of your mower</description>
-		<channels>
-			<channel id="firmware" typeId="firmware-type"/>
-			<channel id="status" typeId="status-type"/>
-			<channel id="error" typeId="error-type"/>
-			<channel id="last-zone" typeId="zone-type">
-				<label>Last Zone</label>
-			</channel>
 		</channels>
 	</channel-group-type>
 
@@ -165,6 +157,14 @@
 		<channels>
 			<channel id="mode" typeId="schedule-mode-type"/>
 			<channel id="time-extension" typeId="time-extension-type"/>
+			<channel id="next-start" typeId="timestamp">
+			 <label>Next Start</label>
+			 <description>Next mowing start based on schedule</description>
+			</channel>
+			<channel id="next-stop" typeId="timestamp">
+			          <label>Next Stop</label>
+			          <description>Next mowing stop based on schedule</description>
+			</channel>
 		</channels>
 	</channel-group-type>
 
@@ -188,8 +188,7 @@
 				<label>Active</label>
 				<description>Defines if this day schedule is active or not</description>
 			</channel>
-			<channel id="hour" typeId="start-hour-type"/>
-			<channel id="minutes" typeId="start-minute-type"/>
+            <channel id="time" typeId="schedule-time"/>
 			<channel id="duration" typeId="schedule-duration-type"/>
 			<channel id="edgecut" typeId="switch-rw">
 				<label>Schedule Edgecut</label>
