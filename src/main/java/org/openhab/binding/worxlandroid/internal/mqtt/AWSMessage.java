@@ -13,7 +13,6 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
 
 /**
  * {@link AWSMessage} AWS message
@@ -23,7 +22,5 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidActionCodes;
  */
 @NonNullByDefault
 public record AWSMessage(String topic, String payload) {
-
     public static final String EMPTY_PAYLOAD = "{}";
-    public static final String CMD_START = "{\"cmd\":%d}".formatted(WorxLandroidActionCodes.START.code);
 }

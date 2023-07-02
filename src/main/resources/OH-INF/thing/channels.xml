@@ -38,12 +38,14 @@
 	<channel-type id="distance-type">
 		<item-type>Number:Length</item-type>
 		<label>Total Distance</label>
+		<category>oh:worxlandroid:distance</category>
 		<state readOnly="true" pattern="%d %unit%"/>
 	</channel-type>
 
-	<channel-type id="minute-duration">
+	<channel-type id="metrics-duration">
 		<item-type>Number:Time</item-type>
 		<label>Time</label>
+		<category>time</category>
 		<state readOnly="true" pattern="%d %unit%"/>
 	</channel-type>
 
@@ -133,6 +135,7 @@
 	<channel-type id="zone-meter-type">
 		<item-type>Number:Length</item-type>
 		<label>Length of the zone</label>
+		<category>oh:worxlandroid:distance</category>
 		<state readOnly="false" min="0" step="1" pattern="%d %unit%"/>
 	</channel-type>
 
@@ -174,6 +177,20 @@
 		<label>Read Only Switch</label>
 		<state readOnly="true"/>
 	</channel-type>
+	
+	<channel-type id="charging-type">
+        <item-type>Switch</item-type>
+        <label>Battery Charging</label>
+        <category>oh:worxlandroid:charging</category>
+        <state readOnly="true"/>
+    </channel-type>
+    
+    <channel-type id="lock-type">
+        <item-type>Switch</item-type>
+                <label>Lock mower</label>
+                <description>Lock or unlock your mower.</description>
+        <category>oh:worxlandroid:lock</category>
+    </channel-type>
 
 	<channel-type id="number-ro">
 		<item-type>Number</item-type>
@@ -209,7 +226,7 @@
 		<label>RSSI</label>
 		<description>Received signal strength indicator</description>
 		<category>QualityOfService</category>
-		<state readOnly="true" pattern="%d dBm" />
+		<state readOnly="true" pattern="%.0f dBm" />
 	</channel-type>
 
 </thing:thing-descriptions>

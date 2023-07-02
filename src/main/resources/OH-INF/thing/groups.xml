@@ -25,10 +25,7 @@
 			<channel id="enable" typeId="switch-rw">
 				<label>Mowing enabled</label>
 			</channel>
-			<channel id="lock" typeId="switch-rw">
-				<label>Lock mower</label>
-				<description>Lock or unlock your mower.</description>
-			</channel>
+			<channel id="lock" typeId="lock-type"/>
 		</channels>
 	</channel-group-type>
 
@@ -45,10 +42,10 @@
 
 	<channel-group-type id="multi-zones-group-type">
 		<label>Multi-Zone</label>
-		<description>Configuration multi zones of your mower</description>
+		<description>Multi-Zones configuration of your mower</description>
 		<channels>
 			<channel id="enable" typeId="switch-rw">
-				<label>Multizone enabled</label>
+				<label>Multizone Enabled</label>
 			</channel>
 			<channel id="last-zone" typeId="zone-type">
                 <label>Last Zone</label>
@@ -112,9 +109,7 @@
 			<channel id="charge-cycle-current" typeId="number-ro">
 				<label>Battery Charge Cycle Current</label>
 			</channel>
-			<channel id="charging" typeId="switch-ro">
-				<label>Battery Charging</label>
-			</channel>
+			<channel id="charging" typeId="charging-type"/>
 		</channels>
 	</channel-group-type>
 
@@ -138,14 +133,14 @@
 		<label>Metrics</label>
 		<description>Data st channels of your mower</description>
 		<channels>
-			<channel id="total-blade-time" typeId="minute-duration">
+			<channel id="total-blade-time" typeId="metrics-duration">
 				<label>Total Blade Time</label>
 			</channel>
-			<channel id="current-blade-time" typeId="minute-duration">
+			<channel id="current-blade-time" typeId="metrics-duration">
 				<label>Current Blade Time</label>
 			</channel>
 			<channel id="total-distance" typeId="distance-type"/>
-			<channel id="total-time" typeId="minute-duration">
+			<channel id="total-time" typeId="metrics-duration">
 				<label>Total Time</label>
 			</channel>
 		</channels>

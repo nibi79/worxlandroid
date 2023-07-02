@@ -60,7 +60,6 @@
 				<label>Saturday Slot 2 Schedule</label>
 			</channel-group>
 			<channel-group id="one-time" typeId="ot-sched-group-type"/>
-			<channel-group id="general" typeId="general-group-type"/>
 			<channel-group id="battery" typeId="battery-group-type"/>
 			<channel-group id="orientation" typeId="orientation-group-type"/>
 			<channel-group id="metrics" typeId="metrics-group-type"/>

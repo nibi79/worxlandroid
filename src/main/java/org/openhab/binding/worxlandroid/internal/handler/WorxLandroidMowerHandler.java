@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.measure.Unit;
 
@@ -89,7 +87,15 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     }
 
     record ScheduleCommandMode(int m) {
+    }
 
+    record MowerCommand(int cmd) {
+        public MowerCommand(WorxLandroidActionCodes actionCode) {
+            this(actionCode.code);
+        }
+    }
+
+    record SetRainDelay(int rd) {
     }
 
     record ScheduleCommand(ScheduleCommandMode sc) {
@@ -199,7 +205,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
                     if (!theMower.scheduler2Supported()) { // Scheduler 2 channels only when supported version
                         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-                            String groupName = "%s2".formatted(dayCode.getDescription());
+                            String groupName = "%s2".formatted(dayCode.getDescription().toLowerCase());
                             thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_ENABLE));
                             thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_DURATION));
                             thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_EDGECUT));
@@ -334,87 +340,54 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         }
 
         mower.ifPresent(theMower -> {
-            if (GROUP_MULTI_ZONES.equals(channelUID.getGroupId())) {
-                handleMultiZonesCommand(theMower, channelUID.getIdWithoutGroup(), command);
-            } else if (GROUP_SCHEDULE.equals(channelUID.getGroupId())) {
-                handleScheduleCommand(theMower, channelUID.getIdWithoutGroup(), Integer.parseInt(command.toString()));
-            } else if (GROUP_ONE_TIME.equals(channelUID.getGroupId())) {
-                handleOneTimeSchedule(theMower, channelUID.getIdWithoutGroup(), command);
-            }
-            if (CHANNEL_LAST_ZONE.equals(channelUID.getId())) {
-                if (!WorxLandroidStatusCodes.HOME.equals(theMower.getStatus())) {
-                    logger.warn("Cannot start zone because mower must be at HOME!");
-                    return;
-                }
-                zoneMeterRestoreValues = theMower.getZoneMeters();
-                restoreZoneMeter = true;
-
-                int meter = theMower.getZoneMeter(Integer.parseInt(command.toString()));
-                for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
-                    theMower.setZoneMeter(zoneIndex, meter);
-                }
-                sendCommand(theMower, new ZoneMeterCommand(theMower.getZoneMeters()));
-                scheduler.schedule(() -> sendCommand(theMower, AWSMessage.CMD_START), 2000, TimeUnit.MILLISECONDS);
-                return;
-            }
-            // channel: multizone allocation (mzv)
-            // update schedule
-            // TODO ugly check
-            if (CHANNEL_ENABLE.equals(channelUID.getIdWithoutGroup())
-                    || channelUID.getGroupId().equals(GROUP_SCHEDULE)) {
-                // update mower data
-
-                // update enable mowing or schedule or timeExtension/enable?
-                if (CHANNEL_ENABLE.equals(channelUID.getIdWithoutGroup())) {
-                    theMower.setEnable(OnOffType.ON.equals(command));
-                } else {
-                    setScheduledDays(theMower, channelUID, command);
-                }
-
+            String groupId = channelUID.getGroupId();
+            String channelId = channelUID.getIdWithoutGroup();
+            if (GROUP_MULTI_ZONES.equals(groupId)) {
+                handleMultiZonesCommand(theMower, channelId, command);
+            } else if (GROUP_SCHEDULE.equals(groupId)) {
+                handleScheduleCommand(theMower, channelId, Integer.parseInt(command.toString()));
+            } else if (GROUP_ONE_TIME.equals(groupId)) {
+                handleOneTimeSchedule(theMower, channelId, command);
+            } else if (GROUP_COMMON.equals(groupId)) {
+                handleCommonGroup(theMower, channelId, command);
+            } else if (groupId != null && groupId.contains("day")) {
+                setScheduledDays(theMower, groupId, channelId, command);
                 sendCommand(theMower,
                         theMower.scheduler2Supported()
                                 ? new ScheduleDaysCommand(theMower.getTimeExtension(), theMower.getSheduleArray1(),
                                         theMower.getSheduleArray2())
                                 : new ScheduleDaysCommand(theMower.getTimeExtension(), theMower.getSheduleArray1()));
 
-                return;
+            } else if (CHANNEL_DELAY.equals(channelId)) {
+                int delaySec = commandToInt(command, Units.SECOND);
+                sendCommand(theMower, new SetRainDelay(delaySec));
+            } else {
+                logger.debug("command for ChannelUID not supported: {}", channelUID.getAsString());
             }
-
-            String cmd = AWSMessage.EMPTY_PAYLOAD;
-
-            switch (channelUID.getIdWithoutGroup()) {
-                // start action
-                case CHANNEL_ACTION:
-                    WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
-                    logger.debug("{}", actionCode.toString());
-                    cmd = "{\"cmd\":%s}".formatted(actionCode.code);
-                    break;
-
-                // poll
-                case CHANNEL_POLL:
-                    cmd = AWSMessage.EMPTY_PAYLOAD;
-                    updateState(CHANNEL_POLL, OnOffType.OFF);
-                    break;
-
-                // update rainDelay
-                case CHANNEL_DELAY:
-                    cmd = "{\"rd\":%s}".formatted(command);
-                    break;
-
-                // lock/unlock
-                case CHANNEL_LOCK:
-                    WorxLandroidActionCodes lockCode = OnOffType.ON.equals(command) ? WorxLandroidActionCodes.LOCK
-                            : WorxLandroidActionCodes.UNLOCK;
-                    logger.debug("{}", lockCode.toString());
-                    cmd = "{\"cmd\":%s}".formatted(lockCode.code);
-                    break;
-
-                default:
-                    logger.debug("command for ChannelUID not supported: {}", channelUID.getAsString());
-                    break;
-            }
-            sendCommand(theMower, cmd);
         });
+    }
+
+    private void handleCommonGroup(Mower theMower, String channel, Command command) {
+        if (CHANNEL_ACTION.equals(channel)) {
+            WorxLandroidActionCodes actionCode = WorxLandroidActionCodes.valueOf(command.toString());
+            sendCommand(theMower, new MowerCommand(actionCode));
+        } else if (CHANNEL_POLL.equals(channel)) {
+            sendCommand(theMower, AWSMessage.EMPTY_PAYLOAD);
+            updateState(CHANNEL_POLL, OnOffType.OFF);
+        } else if (CHANNEL_LOCK.equals(channel)) {
+            WorxLandroidActionCodes lockCode = OnOffType.ON.equals(command) ? WorxLandroidActionCodes.LOCK
+                    : WorxLandroidActionCodes.UNLOCK;
+            sendCommand(theMower, new MowerCommand(lockCode));
+        } else if (CHANNEL_ENABLE.equals(channel)) {
+            theMower.setEnable(OnOffType.ON.equals(command));
+            sendCommand(theMower,
+                    theMower.scheduler2Supported()
+                            ? new ScheduleDaysCommand(theMower.getTimeExtension(), theMower.getSheduleArray1(),
+                                    theMower.getSheduleArray2())
+                            : new ScheduleDaysCommand(theMower.getTimeExtension(), theMower.getSheduleArray1()));
+        } else {
+            logger.warn("No action identified for command {} on channel {}", command, channel);
+        }
     }
 
     private void handleOneTimeSchedule(Mower theMower, String channel, Command command) {
@@ -424,7 +397,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             sendCommand(theMower, new OneTimeCommand(OnOffType.ON.equals(command) ? 1 : 0, 0));
         } else {
             logger.warn("No action identified for command {} on channel {}", command, channel);
-            return;
         }
     }
 
@@ -438,34 +410,56 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                             ? new ScheduleDaysCommand(theMower.getTimeExtension(), theMower.getSheduleArray1(),
                                     theMower.getSheduleArray2())
                             : new ScheduleDaysCommand(theMower.getTimeExtension(), theMower.getSheduleArray1()));
+        } else {
+            logger.warn("No action identified for command {} on channel {}", command, channel);
         }
     }
 
     private void handleMultiZonesCommand(Mower theMower, String channel, Command command) {
-        Object mqttCommand;
         if (CHANNEL_ENABLE.equals(channel)) {
             theMower.setMultiZoneEnable(OnOffType.ON.equals(command));
-            mqttCommand = new ZoneMeterCommand(theMower.getZoneMeters());
+            sendCommand(theMower, new ZoneMeterCommand(theMower.getZoneMeters()));
+        } else if (CHANNEL_LAST_ZONE.equals(channel)) {
+            if (!WorxLandroidStatusCodes.HOME.equals(theMower.getStatus())) {
+                logger.warn("Cannot start zone because mower must be at HOME!");
+                return;
+            }
+            zoneMeterRestoreValues = theMower.getZoneMeters();
+            restoreZoneMeter = true;
+
+            int meter = theMower.getZoneMeter(Integer.parseInt(command.toString()));
+            for (int zoneIndex = 0; zoneIndex < 4; zoneIndex++) {
+                theMower.setZoneMeter(zoneIndex, meter);
+            }
+            sendCommand(theMower, new ZoneMeterCommand(theMower.getZoneMeters()));
+            scheduler.schedule(() -> sendCommand(theMower, new MowerCommand(WorxLandroidActionCodes.START)), 2000,
+                    TimeUnit.MILLISECONDS);
         } else {
             String[] names = channel.split("-");
             int index = Integer.valueOf(names[1]);
 
             if (CHANNEL_PREFIX_ZONE.equals(names[0])) {
-                int meterValue = command instanceof QuantityType qtty ? qtty.toUnit(SIUnits.METRE).intValue()
-                        : Integer.parseInt(command.toString());
-
+                int meterValue = commandToInt(command, SIUnits.METRE);
                 theMower.setZoneMeter(index - 1, meterValue);
-                mqttCommand = new ZoneMeterCommand(theMower.getZoneMeters());
+                sendCommand(theMower, new ZoneMeterCommand(theMower.getZoneMeters()));
 
             } else if (CHANNEL_PREFIX_ALLOCATION.equals(names[0])) {
                 theMower.setAllocation(index, Integer.parseInt(command.toString()));
-                mqttCommand = new ZoneMeterAlloc(theMower.getAllocations());
+                sendCommand(theMower, new ZoneMeterAlloc(theMower.getAllocations()));
             } else {
                 logger.warn("No action identified for command {} on channel {}", command, channel);
-                return;
             }
         }
-        sendCommand(theMower, mqttCommand);
+    }
+
+    private int commandToInt(Command command, Unit<?> targetUnit) {
+        if (command instanceof QuantityType<?> qtty) {
+            QuantityType<?> inTarget = qtty.toUnit(targetUnit);
+            if (inTarget != null) {
+                return inTarget.intValue();
+            }
+        }
+        return Integer.parseInt(command.toString());
     }
 
     /**
@@ -477,67 +471,44 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      * @param channelUID
      * @param command
      */
-    private void setScheduledDays(Mower theMower, ChannelUID channelUID, Command command) {
-        // extract name of from channel
-        Pattern pattern = Pattern.compile("cfgSc(.*?)#");
-        Matcher matcher = pattern.matcher(channelUID.getId());
-
-        int scDaysSlot = 1;
-        String day = "";
-        if (matcher.find()) {
-            day = (matcher.group(1));
-            scDaysSlot = day.endsWith("day") ? 1 : 2;
-            day = scDaysSlot == 1 ? day : day.substring(0, day.length() - 1);
-        }
-
-        WorxLandroidDayCodes dayCodeUpdated = WorxLandroidDayCodes.valueOf(day.toUpperCase());
+    private void setScheduledDays(Mower theMower, String groupId, String channelId, Command command) {
+        int scDaysSlot = groupId.endsWith("2") ? 2 : 1;
+        WorxLandroidDayCodes dayCodeUpdated = WorxLandroidDayCodes.valueOf(groupId.replace("2", ""));
 
         ScheduledDay scheduledDayUpdated = theMower.getScheduledDay(scDaysSlot, dayCodeUpdated);
         if (scheduledDayUpdated == null) {
             return;
         }
 
-        String chName = channelUID.getIdWithoutGroup();
-        switch (chName) {
-            case CHANNEL_ENABLE:
-                scheduledDayUpdated.setEnable(OnOffType.ON.equals(command));
-                break;
+        if (CHANNEL_ENABLE.equals(channelId)) {
+            scheduledDayUpdated.setEnable(OnOffType.ON.equals(command));
+        } else if (CHANNEL_TIME.equals(channelId)) {
+            int hour = -1;
+            int minute = -1;
 
-            case CHANNEL_TIME:
-                int hour = -1;
-                int minute = -1;
-
-                if (command instanceof DateTimeType dateTime) {
-                    ZonedDateTime zdt = dateTime.getZonedDateTime();
-                    hour = zdt.getHour();
-                    minute = zdt.getMinute();
-                } else if (command instanceof StringType stringType) {
-                    String[] elements = stringType.toString().split(":");
-                    try {
-                        hour = Integer.valueOf(elements[0]);
-                        minute = Integer.valueOf(elements[1]);
-                    } catch (NumberFormatException ignore) {
-                    }
+            if (command instanceof DateTimeType dateTime) {
+                ZonedDateTime zdt = dateTime.getZonedDateTime();
+                hour = zdt.getHour();
+                minute = zdt.getMinute();
+            } else if (command instanceof StringType stringType) {
+                String[] elements = stringType.toString().split(":");
+                try {
+                    hour = Integer.valueOf(elements[0]);
+                    minute = Integer.valueOf(elements[1]);
+                } catch (NumberFormatException ignore) {
                 }
+            }
 
-                if (minute >= 0 && hour >= 0) {
-                    scheduledDayUpdated.setHours(hour);
-                    scheduledDayUpdated.setMinutes(minute);
-                } else {
-                    logger.warn("Incorrect command {} on channel {} ", command, chName);
-                }
-                break;
-
-            case CHANNEL_DURATION:
-                scheduledDayUpdated.setDuration(Integer.parseInt(command.toString()));
-                break;
-
-            case CHANNEL_EDGECUT:
-                scheduledDayUpdated.setEdgecut(OnOffType.ON.equals(command));
-                break;
-
-            default:
-                break;
+            if (minute >= 0 && hour >= 0) {
+                scheduledDayUpdated.setHours(hour);
+                scheduledDayUpdated.setMinutes(minute);
+            } else {
+                logger.warn("Incorrect command {} on channel {}:{} ", command, groupId, channelId);
+            }
+        } else if (CHANNEL_DURATION.equals(channelId)) {
+            scheduledDayUpdated.setDuration(Integer.parseInt(command.toString()));
+        } else if (CHANNEL_EDGECUT.equals(channelId)) {
+            scheduledDayUpdated.setEdgecut(OnOffType.ON.equals(command));
         }
 
     }
@@ -559,8 +530,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             Payload payload = deserializer.deserialize(Payload.class, message.payload());
             mower.ifPresent(theMower -> processStatusMessage(theMower, payload));
         } catch (WebApiException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warn("Error processing incoming AWS message : {}", e.getMessage());
         }
     }
 
