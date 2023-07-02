@@ -8,12 +8,12 @@
 		<label>Common</label>
 		<description>Common channels of the mower</description>
 		<channels>
-            <channel id="status" typeId="status-type"/>
-            <channel id="error" typeId="error-type"/>
-            <channel id="online" typeId="switch-ro">
-                <label>Online</label>
-                <description>Online status of the mower</description>
-            </channel>
+			<channel id="status" typeId="status-type"/>
+			<channel id="error" typeId="error-type"/>
+			<channel id="online" typeId="switch-ro">
+				<label>Online</label>
+				<description>Online status of the mower</description>
+			</channel>
 			<channel id="online-timestamp" typeId="timestamp">
 				<label>Online Status Timestamp</label>
 			</channel>
@@ -48,8 +48,8 @@
 				<label>Multizone Enabled</label>
 			</channel>
 			<channel id="last-zone" typeId="zone-type">
-                <label>Last Zone</label>
-            </channel>			
+				<label>Last Zone</label>
+			</channel>
 			<channel id="zone-1" typeId="zone-meter-type">
 				<label>Meters Zone 1</label>
 			</channel>
@@ -153,12 +153,12 @@
 			<channel id="mode" typeId="schedule-mode-type"/>
 			<channel id="time-extension" typeId="time-extension-type"/>
 			<channel id="next-start" typeId="timestamp">
-			 <label>Next Start</label>
-			 <description>Next mowing start based on schedule</description>
+				<label>Next Start</label>
+				<description>Next mowing start based on schedule</description>
 			</channel>
 			<channel id="next-stop" typeId="timestamp">
-			          <label>Next Stop</label>
-			          <description>Next mowing stop based on schedule</description>
+				<label>Next Stop</label>
+				<description>Next mowing stop based on schedule</description>
 			</channel>
 		</channels>
 	</channel-group-type>
@@ -183,7 +183,7 @@
 				<label>Active</label>
 				<description>Defines if this day schedule is active or not</description>
 			</channel>
-            <channel id="time" typeId="schedule-time"/>
+			<channel id="time" typeId="schedule-time"/>
 			<channel id="duration" typeId="schedule-duration-type"/>
 			<channel id="edgecut" typeId="switch-rw">
 				<label>Schedule Edgecut</label>
@@ -191,24 +191,24 @@
 		</channels>
 	</channel-group-type>
 
-    <channel-group-type id="rain-group-type">
-        <label>Rain</label>
-        <description>Data rain channels of your mower</description>
-        <channels>
-            <channel id="state" typeId="rain-state-type"/>
-            <channel id="counter" typeId="number-ro">
-                <label>Counter</label>
-            </channel>
-            <channel id="delay" typeId="rain-delay-type"/>
-        </channels>
-    </channel-group-type>
-    	
-	   <channel-group-type id="wifi-group-type">
-        <label>Wifi Information</label>
-        <channels>
-            <channel id="rssi" typeId="rssi"/>
-            <channel id="wifi-quality" typeId="system.signal-strength"/>
-        </channels>
-    </channel-group-type>
+	<channel-group-type id="rain-group-type">
+		<label>Rain</label>
+		<description>Data rain channels of your mower</description>
+		<channels>
+			<channel id="state" typeId="rain-state-type"/>
+			<channel id="counter" typeId="number-ro">
+				<label>Counter</label>
+			</channel>
+			<channel id="delay" typeId="rain-delay-type"/>
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="wifi-group-type">
+		<label>Wifi Information</label>
+		<channels>
+			<channel id="rssi" typeId="rssi"/>
+			<channel id="wifi-quality" typeId="system.signal-strength"/>
+		</channels>
+	</channel-group-type>
 
 </thing:thing-descriptions>

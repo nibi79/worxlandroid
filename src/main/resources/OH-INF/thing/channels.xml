@@ -126,7 +126,7 @@
 		</state>
 	</channel-type>
 
-    <channel-type id="schedule-duration-type">
+	<channel-type id="schedule-duration-type">
 		<item-type>Number:Time</item-type>
 		<label>Schedule Duration</label>
 		<state readOnly="false" min="0" max="1425" step="15" pattern="%d %unit%"/>
@@ -177,20 +177,20 @@
 		<label>Read Only Switch</label>
 		<state readOnly="true"/>
 	</channel-type>
-	
+
 	<channel-type id="charging-type">
-        <item-type>Switch</item-type>
-        <label>Battery Charging</label>
-        <category>oh:worxlandroid:charging</category>
-        <state readOnly="true"/>
-    </channel-type>
-    
-    <channel-type id="lock-type">
-        <item-type>Switch</item-type>
-                <label>Lock mower</label>
-                <description>Lock or unlock your mower.</description>
-        <category>oh:worxlandroid:lock</category>
-    </channel-type>
+		<item-type>Switch</item-type>
+		<label>Battery Charging</label>
+		<category>oh:worxlandroid:charging</category>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="lock-type">
+		<item-type>Switch</item-type>
+		<label>Lock mower</label>
+		<description>Lock or unlock your mower.</description>
+		<category>oh:worxlandroid:lock</category>
+	</channel-type>
 
 	<channel-type id="number-ro">
 		<item-type>Number</item-type>
@@ -198,35 +198,35 @@
 		<category>oh:worxlandroid:counter</category>
 		<state readOnly="true"/>
 	</channel-type>
-	
-    <channel-type id="schedule-time">
-        <item-type>DateTime</item-type>
-        <label>Start Time</label>
-        <description>Start time of the mowing on this day</description>
-        <category>Time</category>
-        <state readOnly="false" pattern="%1$tH:%1$tM" />
-    </channel-type>
-	
-    <channel-type id="rain-delay-type">
-        <item-type>Number:Time</item-type>
-        <label>Delay</label>
-        <category>Time</category>
-        <state min="0" max="750" step="30" pattern="%d %unit%"/>
-    </channel-type>
 
-    <channel-type id="rain-state-type">
-        <item-type>Switch</item-type>
-        <label>State</label>
-        <category>oh:worxlandroid:rain</category>
-        <state readOnly="true"/>
-    </channel-type>
-	
+	<channel-type id="schedule-time">
+		<item-type>DateTime</item-type>
+		<label>Start Time</label>
+		<description>Start time of the mowing on this day</description>
+		<category>Time</category>
+		<state readOnly="false" pattern="%1$tH:%1$tM"/>
+	</channel-type>
+
+	<channel-type id="rain-delay-type">
+		<item-type>Number:Time</item-type>
+		<label>Delay</label>
+		<category>Time</category>
+		<state min="0" max="750" step="30" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="rain-state-type">
+		<item-type>Switch</item-type>
+		<label>State</label>
+		<category>oh:worxlandroid:rain</category>
+		<state readOnly="true"/>
+	</channel-type>
+
 	<channel-type id="rssi" advanced="true">
 		<item-type>Number:Power</item-type>
 		<label>RSSI</label>
 		<description>Received signal strength indicator</description>
 		<category>QualityOfService</category>
-		<state readOnly="true" pattern="%.0f dBm" />
+		<state readOnly="true" pattern="%.0f dBm"/>
 	</channel-type>
 
 </thing:thing-descriptions>

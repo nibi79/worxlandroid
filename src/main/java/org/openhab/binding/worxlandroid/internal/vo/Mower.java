@@ -302,5 +302,4 @@ public class Mower {
     public ZoneId getZoneId() {
         return zoneId;
     }
-
 }

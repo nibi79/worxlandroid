@@ -510,7 +510,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
         } else if (CHANNEL_EDGECUT.equals(channelId)) {
             scheduledDayUpdated.setEdgecut(OnOffType.ON.equals(command));
         }
-
     }
 
     private void sendCommand(Mower theMower, Object command) {
@@ -732,7 +731,6 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateChannelDateTime(GROUP_SCHEDULE, CHANNEL_START, nextStarts.get(0));
             updateChannelDateTime(GROUP_SCHEDULE, CHANNEL_STOP, nextEnds.get(0));
         }
-
     }
 
     private void updateIfActive(String group, String channelId, State state) {
