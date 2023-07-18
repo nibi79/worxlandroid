@@ -71,18 +71,20 @@
 
 		<config-description>
 			<parameter name="serialNumber" type="text">
+				<label>Serial Number</label>
+				<description>Serial number of the mower</description>
 				<required>true</required>
 			</parameter>
 
 			<parameter name="refreshStatusInterval" unit="s" type="integer" min="0">
-				<label>Refresh status interval</label>
+				<label>Refresh Status Interval</label>
 				<description>Interval for refreshing mower status in seconds</description>
 				<default>3600</default>
 				<required>true</required>
 			</parameter>
 
 			<parameter name="pollingInterval" unit="s" type="integer" min="0" max="7200">
-				<label>Polling interval</label>
+				<label>Polling Interval</label>
 				<description>Interval for polling in seconds</description>
 				<default>0</default>
 				<required>true</required>

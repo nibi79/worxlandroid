@@ -8,6 +8,6 @@
         <bundle>mvn:org.openhab.addons.bundles/org.openhab.binding.worxlandroid/4.0.0-SNAPSHOT</bundle>
         <bundle>wrap:mvn:org.lastnpe.eea/eea-all/2.2.1</bundle>
         <bundle>wrap:mvn:software.amazon.awssdk.crt/aws-crt/0.22.1</bundle>
-        <bundle>wrap:mvn:software.amazon.awssdk.iotdevicesdk/aws-iot-device-sdk/1.13.1</bundle>
+        <bundle>wrap:mvn:software.amazon.awssdk.iotdevicesdk/aws-iot-device-sdk/1.11.6</bundle>
     </feature>
 </features>

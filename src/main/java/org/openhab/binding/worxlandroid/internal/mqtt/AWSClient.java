@@ -124,12 +124,10 @@ public class AWSClient implements AWSClientI {
         LocalDateTime localInterrupted = interrupted;
         LocalDateTime localLastResumed = lastResumed;
         if (localInterrupted != null && localLastResumed != null) {
-            logger.debug("lastResumed: {}  interrupted {} im: {}", lastResumed, interrupted, lastResumed != null
-                    && lastResumed.isAfter(localInterrupted) && localLastResumed.isBefore(LocalDateTime.now()));
-            if (lastResumed != null && lastResumed.isAfter(localInterrupted)
-                    && localLastResumed.isBefore(LocalDateTime.now())) {
-                return true;
-            }
+            boolean isBetween = localLastResumed.isAfter(localInterrupted)
+                    && localLastResumed.isBefore(LocalDateTime.now());
+            logger.debug("lastResumed: {}  interrupted {} im: {}", localLastResumed, localInterrupted, isBetween);
+            return isBetween;
         }
         return false;
     }

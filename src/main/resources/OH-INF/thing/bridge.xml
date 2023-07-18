@@ -18,7 +18,7 @@
 				<required>true</required>
 			</parameter>
 			<parameter name="reconnectInterval" unit="s" type="integer" min="0" max="3600">
-				<label>Reconnect interval</label>
+				<label>Reconnect Interval</label>
 				<description>Interval for reconnecting in seconds (after 600 seconds of inactivity, the connection is closed)</description>
 				<default>0</default>
 				<required>true</required>

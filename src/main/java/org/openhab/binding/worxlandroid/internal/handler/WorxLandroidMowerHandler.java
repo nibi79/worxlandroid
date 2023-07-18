@@ -542,7 +542,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      */
     private void updateStateDat(Mower theMower, Dat dat) {
 
-        if (dat.battery instanceof Battery battery) {
+        if (dat.battery != null) {
+            Battery battery = dat.battery;
             updateChannelQuantity(GROUP_BATTERY, CHANNEL_TEMPERATURE, battery.temp != -1 ? battery.temp : null,
                     SIUnits.CELSIUS);
             updateChannelQuantity(GROUP_BATTERY, CHANNEL_VOLTAGE, battery.voltage != -1 ? battery.voltage : null,
@@ -612,7 +613,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             updateChannelOnOff(GROUP_COMMON, CHANNEL_LOCK, dat.isLocked());
         }
 
-        if (theMower.rainDelayStartSupported() && dat.rain instanceof Rain rain) {
+        if (theMower.rainDelayStartSupported() && dat.rain != null) {
+            Rain rain = dat.rain;
             updateChannelOnOff(GROUP_RAIN, CHANNEL_RAIN_STATE, rain.raining);
             updateChannelDecimal(GROUP_RAIN, CHANNEL_RAIN_COUNTER, rain.counter);
         }
@@ -629,11 +631,13 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
     private void updateStateCfg(Mower theMower, Cfg cfg) {
         updateChannelDateTime(GROUP_CONFIG, CHANNEL_TIMESTAMP, cfg.getDateTime(theMower.getZoneId()));
 
-        if (cfg.sc instanceof Schedule sc) {
+        if (cfg.sc != null) {
+            Schedule sc = cfg.sc;
             if (theMower.oneTimeSchedulerSupported()) {
                 updateChannelDecimal(GROUP_SCHEDULE, CHANNEL_MODE, sc.scheduleMode != -1 ? sc.scheduleMode : null);
 
-                if (sc.ots instanceof Ots ots) {
+                if (sc.ots != null) {
+                    Ots ots = sc.ots;
                     updateChannelOnOff(GROUP_ONE_TIME, CHANNEL_EDGECUT, ots.getEdgeCut());
                     updateChannelDecimal(GROUP_ONE_TIME, CHANNEL_DURATION, ots.duration != -1 ? ots.duration : null);
                 }
