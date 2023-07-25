@@ -93,7 +93,7 @@ public class WorxApiDeserializer {
             }
             throw new WebApiException("Deserialization of '%s' resulted in null value".formatted(json));
         } catch (JsonSyntaxException e) {
-            throw new WebApiException("Unexpected error deserializing '%s'".formatted(json), e);
+            throw new WebApiException("Unexpected error deserializing '%s' : %s".formatted(json, e.getMessage()));
         }
     }
 }

@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidErrorCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
@@ -216,8 +217,8 @@ public class ProductItemStatus {
     public class AutoSchedule {
         public int boost;
         public String grassType;
-        public String irrigation;
-        public String nutrition;
+        public boolean irrigation;
+        public Map<String, String> nutrition;
         public String soilType;
     }
 
@@ -245,7 +246,7 @@ public class ProductItemStatus {
     public int protocol;
     public String pendingRadioLinkValidation;
     public List<String> capabilities;
-    public List<Object> capabilitiesAvailable;
+    public List<String> capabilitiesAvailable;
     public Features features;
     public Accessories accessories;
     public MqttTopics mqttTopics;
