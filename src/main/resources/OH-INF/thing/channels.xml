@@ -68,11 +68,13 @@
 				<option value="BLADE_BLOCKED">Blade blocked</option>
 				<option value="DEBUG">Debug</option>
 				<option value="REMOTE_CONTROL">Remote control</option>
+				<option value="ESCAPE_FROM_OLM">Escape from OLM</option>
 				<option value="GOING_HOME">Going home</option>
 				<option value="ZONE_TRAINING">Zone training</option>
 				<option value="BORDER_CUT">Border cut</option>
 				<option value="SEARCHING_ZONE">Searching zone</option>
 				<option value="PAUSE">Pause</option>
+				<option value="MANUAL_STOP">Manual stop</option>
 			</options>
 		</state>
 	</channel-type>
@@ -102,6 +104,7 @@
 				<option value="TIMEOUT_FINDING_HOME">Timeout finding home</option>
 				<option value="MOWER_LOCKED">Mower locked</option>
 				<option value="BATTERY_OVER_TEMPERATURE">Battery over temperature</option>
+				<option value="MOWER_OUTSIDE_WIRE">Mower outside wire</option>
 			</options>
 		</state>
 	</channel-type>

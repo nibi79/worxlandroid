@@ -60,5 +60,7 @@ public enum WorxLandroidErrorCodes {
     @SerializedName("16")
     MOWER_LOCKED,
     @SerializedName("17")
-    BATTERY_OVER_TEMPERATURE;
+    BATTERY_OVER_TEMPERATURE,
+    @SerializedName("20")
+    MOWER_OUTSIDE_WIRE;
 }

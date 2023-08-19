@@ -51,6 +51,8 @@ public enum WorxLandroidStatusCodes {
     DEBUG,
     @SerializedName("12")
     REMOTE_CONTROL,
+    @SerializedName("13")
+    ESCAPE_FROM_OLM,
     @SerializedName("30")
     GOING_HOME,
     @SerializedName("31")
@@ -60,5 +62,10 @@ public enum WorxLandroidStatusCodes {
     @SerializedName("33")
     SEARCHING_ZONE,
     @SerializedName("34")
-    PAUSE;
+    PAUSE,
+    // Issue #91
+    // @SerializedName("97")
+    // ZONE_TRAINING,
+    @SerializedName("99")
+    MANUEL_STOP;
 }
