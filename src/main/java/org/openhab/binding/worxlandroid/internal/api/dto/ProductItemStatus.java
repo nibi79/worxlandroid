@@ -209,6 +209,17 @@ public class ProductItemStatus {
         public Dat dat;
     }
 
+    public class Sim {
+        public int id;
+        public String iccid;
+        public String simStatus;
+        public boolean pendingActivation;
+        public ZonedDateTime contractStartsAt;
+        public ZonedDateTime contractEndsAt;
+        public ZonedDateTime createdAt;
+        public ZonedDateTime updatedAt;
+    }
+
     public class LastStatus {
         public ZonedDateTime timestamp;
         public Payload payload;
@@ -233,7 +244,7 @@ public class ProductItemStatus {
     public double firmwareVersion;
     public boolean firmwareAutoUpgrade;
     public boolean pushNotifications;
-    public String sim;
+    public Sim sim;
     public String pushNotificationsLevel;
     public boolean test;
     public boolean iotRegistered;
