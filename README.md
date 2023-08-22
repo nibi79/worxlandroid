@@ -44,27 +44,27 @@ For textual configuration go to [File based configuration](https://github.com/ni
 
 Following options can be set for the **Bridge Worx Landroid API**:
 
-| Property  | Description |
-|-----------|-----------|
-| webapiUsername | Username to access the WorxLandroid API. |
-| webapiPassword | Password to access the WorxLandroid API. |
-
+| Property          | Description                                                                                                                               |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| username          | Username to access the WorxLandroid API.                                                                                                  |
+| password          | Password to access the WorxLandroid API.                                                                                                  |
+| reconnectInterval | Interval for reconnecting to AWS in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
 
 Following options can be set for the **WorxLandroid Mower**:
 
-| Property  | Description |
-|-----------|-----------|
-| serialNumber | Serial Number of the mower |
+| Property              | Description                                                                                            |
+|-----------------------|--------------------------------------------------------------------------------------------------------|
+| serialNumber          | Serial Number of the mower                                                                             |
 | refreshStatusInterval | Interval for refreshing mower status (ONLINE/OFFLINE) and channel 'common#online' in seconds (min="30")|
-| pollingInterval | Interval for polling in seconds (min="30" max="7200"). |
-| reconnectInterval | Interval for reconnecting to AWS in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
+| pollingInterval       | Interval for polling in seconds (min="30" max="7200").                                                 |
+
 
 In order to prevent a 24h ban from worx, the following recommended settings seem to work:
-| Property  | Value |
-|-----------|-----------|
-| refreshStatusInterval | 1200 |
-| pollingInterval | 3600 |
-| reconnectInterval | 0 |
+| Property              | Value |
+|-----------------------|-------|
+| refreshStatusInterval |  1200 |
+| pollingInterval       |  3600 |
+| reconnectInterval     |     0 |
 
 Lower polling and refresh values will likely result in a 24h ban for your account.
 
@@ -75,11 +75,11 @@ The binding retrieves properties from the API. To view the properties open the t
 
 Bridge:
 <br>
-<img src="images/SC_PaperUI_Bridge.png" width="40%">
+<img src="images/SC_Bridge.png" width="40%">
 
 Mower:
 <br>
-<img src="images/SC_PaperUI_Mower.png" width="40%">
+<img src="images/SC_Mower.png" width="40%">
 
 ## Channels
 
@@ -348,12 +348,12 @@ MowerBat_Chart*, MowerBatTemp_Chart*, MowerBatStatus_Chart* : strategy = everyMi
 ### .things
 
 ```
-Bridge worxlandroid:bridge:MyWorxBridge "MyWorx Bridge" @ "internet" [
-   username = "my username",
-   password = "my password",
+Bridge worxlandroid:bridge:1 "_ Worx API" @ "node0" [
+   username = "myEmailAddress",
+   password = "myPassword",
    reconnectInterval = 550
 ] {
-   mower mymower "MyLandroid Shaun" @ "outside"    [pollingInterval= 300, refreshStatusInterval=60, serialNumber= "mymowerserial"]
+   mower 1 "Worx Robot tondeuse" @ "outside"    [pollingInterval= 3600, refreshStatusInterval=1200, serialNumber= "20223xxxxxB0"]
 }
 ```
 

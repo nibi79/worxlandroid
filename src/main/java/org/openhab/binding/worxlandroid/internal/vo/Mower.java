@@ -16,7 +16,6 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -35,66 +34,45 @@ public class Mower {
     private static final int[] MULTI_ZONE_METER_DISABLE = { 0, 0, 0, 0 };
     private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 0, 0, 0 };
 
-    private final String serialNumber;
-    private final String mqttCommandIn;
-    private final String mqttCommandOut;
-    private final boolean lockSupported;
-    private final boolean rainDelaySupported;
-    private final double firmwareVersion;
-    private final boolean rainDelayStartSupported;
-    private final boolean multiZoneSupported;
-    private final boolean oneTimeSchedulerSupported;
-    private final int multiZoneCount;
-    private final ZoneId zoneId;
+    private final ProductItemStatus product;
 
     private final int[] zoneMeter;
     private final int[] zoneMeterRestore;
-
     private final int[] allocations = new int[10];
     private final Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays = new HashMap<>(7);
-    private final Optional<Map<WorxLandroidDayCodes, ScheduledDay>> scheduledDays2;
+    private final Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays2 = new HashMap<>(7);
 
     private boolean enable;
-    private WorxLandroidStatusCodes status = WorxLandroidStatusCodes.UNKNOWN;
+    private boolean multiZoneEnable;
     private int timeExtension;
     private int timeExtensionRestore = 0;
-
-    private boolean multiZoneEnable;
-
-    // multizone meter
-
-    // multizone allocations
+    private WorxLandroidStatusCodes status = WorxLandroidStatusCodes.UNKNOWN;
 
     public Mower(ProductItemStatus product) {
-        this.serialNumber = product.serialNumber;
-        this.mqttCommandIn = product.mqttTopics.commandIn;
-        this.mqttCommandOut = product.mqttTopics.commandOut;
-        this.lockSupported = product.features.lock;
-        this.firmwareVersion = product.firmwareVersion;
-        this.rainDelaySupported = product.features.rainDelay;
-        this.rainDelayStartSupported = product.features.rainDelayStart < firmwareVersion;
-        this.oneTimeSchedulerSupported = product.features.oneTimeScheduler < firmwareVersion;
-        this.multiZoneSupported = product.features.multiZone;
-        this.multiZoneCount = multiZoneSupported ? product.features.multiZoneZones : 0;
-        this.zoneMeter = new int[multiZoneCount];
-        this.zoneMeterRestore = new int[multiZoneCount];
-        this.zoneId = product.timeZone;
+        this.product = product;
+        this.zoneMeter = new int[getMultiZoneCount()];
+        this.zoneMeterRestore = new int[getMultiZoneCount()];
 
-        this.scheduledDays2 = Optional
-                .ofNullable(product.features.schedulerTwoSlots < firmwareVersion ? new HashMap<>(7) : null);
         // initialize scheduledDay map for each day
         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
             scheduledDays.put(dayCode, new ScheduledDay());
-            scheduledDays2.ifPresent(sched -> sched.put(dayCode, new ScheduledDay()));
+            scheduledDays2.put(dayCode, new ScheduledDay());
+        }
+        if (product.features.schedulerTwoSlots < getFirmwareVersion()) {
+            scheduledDays2.clear();
         }
     }
 
     public String getSerialNumber() {
-        return serialNumber;
+        return product.serialNumber;
     }
 
     public int getTimeExtension() {
         return timeExtension;
+    }
+
+    public double getFirmwareVersion() {
+        return product.firmwareVersion;
     }
 
     /**
@@ -115,31 +93,31 @@ public class Mower {
     }
 
     public boolean lockSupported() {
-        return lockSupported;
+        return product.features.lock;
     }
 
     public boolean rainDelaySupported() {
-        return rainDelaySupported;
+        return product.features.rainDelay;
     }
 
     public boolean rainDelayStartSupported() {
-        return rainDelayStartSupported;
+        return product.features.rainDelayStart < getFirmwareVersion();
     }
 
     public boolean multiZoneSupported() {
-        return multiZoneSupported;
+        return product.features.multiZone;
     }
 
     public boolean scheduler2Supported() {
-        return scheduledDays2.isPresent();
+        return !scheduledDays2.isEmpty();
     }
 
     public boolean oneTimeSchedulerSupported() {
-        return oneTimeSchedulerSupported;
+        return product.features.oneTimeScheduler < getFirmwareVersion();
     }
 
     public @Nullable ScheduledDay getScheduledDay(int scDSlot, WorxLandroidDayCodes dayCode) {
-        return scDSlot == 1 ? scheduledDays.get(dayCode) : scheduledDays2.map(sched -> sched.get(dayCode)).orElse(null);
+        return scDSlot == 1 ? scheduledDays.get(dayCode) : scheduler2Supported() ? scheduledDays2.get(dayCode) : null;
     }
 
     @SuppressWarnings("null")
@@ -156,7 +134,7 @@ public class Mower {
     }
 
     public Object[] getSheduleArray2() {
-        return scheduledDays2.map(schedule -> getScheduleArray(schedule)).orElse(new Object[] {});
+        return scheduler2Supported() ? getScheduleArray(scheduledDays2) : new Object[] {};
     }
 
     public void put(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
@@ -164,7 +142,9 @@ public class Mower {
     }
 
     public void putScheduledDay2(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
-        scheduledDays2.ifPresent(sched -> sched.put(dayCode, scheduledDay));
+        if (scheduler2Supported()) {
+            scheduledDays2.put(dayCode, scheduledDay);
+        }
     }
 
     public boolean isMultiZoneEnable() {
@@ -288,18 +268,30 @@ public class Mower {
     }
 
     public int getMultiZoneCount() {
-        return multiZoneCount;
+        return multiZoneSupported() ? product.features.multiZoneZones : 0;
     }
 
     public String getMqttCommandIn() {
-        return mqttCommandIn;
+        return product.mqttTopics.commandIn;
     }
 
     public String getMqttCommandOut() {
-        return mqttCommandOut;
+        return product.mqttTopics.commandOut;
     }
 
     public ZoneId getZoneId() {
-        return zoneId;
+        return product.timeZone;
+    }
+
+    public String getMacAddress() {
+        return product.macAddress;
+    }
+
+    public String getId() {
+        return product.id;
+    }
+
+    public String getLanguage() {
+        return product.lastStatus.payload.cfg.lg;
     }
 }

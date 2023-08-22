@@ -14,6 +14,7 @@ package org.openhab.binding.worxlandroid.internal.handler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -102,14 +103,13 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
                     config.password, "*");
 
             UsersMeResponse user = apiHandler.retrieveUsersMe(token);
+            ProductItemStatus productItemStatus = apiHandler.retrieveDeviceStatus(token).get(0);
 
             if (thing.getProperties().isEmpty()) {
-                Map<String, String> properties = apiHandler.getDeserializer().toMap(user);
+                Map<String, String> properties = new HashMap<>(apiHandler.getDeserializer().toMap(user));
+                properties.put("mqtt_endpoint", productItemStatus.mqttEndpoint);
                 updateProperties(properties);
             }
-
-            List<ProductItemStatus> productItemsStatusResponse = apiHandler.retrieveDeviceStatus(token);
-            ProductItemStatus productItemStatus = productItemsStatusResponse.get(0);
 
             AWSClient localAwsClient = new AWSClient(productItemStatus.mqttEndpoint, this, token.getAccessToken(),
                     user.id, productItemStatus.uuid);

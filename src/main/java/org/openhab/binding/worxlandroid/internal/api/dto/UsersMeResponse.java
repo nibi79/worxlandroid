@@ -26,7 +26,6 @@ public class UsersMeResponse {
     public String user_type = "";
     public boolean pushNotifications;
     public String location = "";
-    public String mqqtEndpoint = "";
     public String actionsOnGooglePinCode = "";
     public String createdAt = "";
     public String updatedAt = "";

@@ -113,8 +113,10 @@ public class WorxLandroidIconProvider implements IconProvider {
             try (InputStream stream = iconResource.openStream()) {
                 result = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
             } catch (IOException e) {
-                logger.warn("Unable to load ressource '{}' : {}", iconResource.getPath(), e.getMessage());
+                logger.warn("Unable to load resource '{}': {}", iconResource.getPath(), e.getMessage());
             }
+        } else {
+            logger.warn("Unable to find icon '{}'", iconName);
         }
         return result;
     }

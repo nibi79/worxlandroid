@@ -30,6 +30,13 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.worxlandroid.internal.api.WebApiException;
 import org.openhab.binding.worxlandroid.internal.api.WorxApiDeserializer;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.MowerCommand;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.OneTimeCommand;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.ScheduleCommand;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.ScheduleDaysCommand;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.SetRainDelay;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.ZoneMeterAlloc;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.ZoneMeterCommand;
 import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus;
 import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus.Battery;
 import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus.Cfg;
@@ -80,60 +87,6 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMessageCallback {
-    record ZoneMeterCommand(int[] mz) {
-    }
-
-    record ZoneMeterAlloc(int[] mzv) {
-    }
-
-    record ScheduleCommandMode(int m) {
-    }
-
-    record MowerCommand(int cmd) {
-        public MowerCommand(WorxLandroidActionCodes actionCode) {
-            this(actionCode.code);
-        }
-    }
-
-    record SetRainDelay(int rd) {
-    }
-
-    record ScheduleCommand(ScheduleCommandMode sc) {
-
-        public ScheduleCommand(int m) {
-            this(new ScheduleCommandMode(m));
-        }
-    }
-
-    record ScheduleDaysP(int p, Object d, @Nullable Object dd) {
-    }
-
-    record ScheduleDaysCommand(ScheduleDaysP sc) {
-
-        public ScheduleDaysCommand(int p, Object[] d, Object[] dd) {
-            this(new ScheduleDaysP(p, d, dd));
-        }
-
-        public ScheduleDaysCommand(int p, Object[] d) {
-            this(new ScheduleDaysP(p, d, null));
-        }
-    }
-
-    record OTS(OTSCommand ots) {
-
-    }
-
-    record OTSCommand(int bc, int wtm) {
-        // bc = bordercut
-        // wtm = work time minutes
-    }
-
-    record OneTimeCommand(OTS sc) {
-        public OneTimeCommand(int bc, int wtm) {
-            this(new OTS(new OTSCommand(bc, wtm)));
-        }
-    }
-
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidMowerHandler.class);
     private final WorxApiDeserializer deserializer;
 
@@ -159,96 +112,102 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
             return;
         }
 
-        WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
-        if (bridgeHandler != null) {
-            logger.debug("Initializing WorxLandroidMowerHandler for serial number '{}'", config.serialNumber);
-            try {
-                ProductItemStatus product = bridgeHandler.retrieveDeviceStatus(config.serialNumber);
-                if (product != null) {
-                    Mower theMower = new Mower(product);
-                    ThingUID thingUid = thing.getUID();
-                    ThingBuilder thingBuilder = editThing();
+        updateStatus(ThingStatus.UNKNOWN);
+    }
 
-                    if (!theMower.lockSupported()) { // lock channel only when supported
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_COMMON, CHANNEL_LOCK));
-                    }
-
-                    if (!theMower.rainDelaySupported()) { // rainDelay channel only when supported
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_DELAY));
-                    }
-
-                    if (!theMower.rainDelayStartSupported()) { // // rainDelayStart channel only when supported
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_RAIN_STATE));
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_RAIN_COUNTER));
-                    }
-
-                    if (!theMower.multiZoneSupported()) { // multizone channels only when supported
-                        // remove lastZome channel
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_LAST_ZONE));
-                        // remove zone meter channels
-                        for (int zoneIndex = 0; zoneIndex < theMower.getMultiZoneCount(); zoneIndex++) {
-                            thingBuilder.withoutChannel(
-                                    new ChannelUID(thingUid, GROUP_MULTI_ZONES, "zone-%d".formatted(zoneIndex + 1)));
-                        }
-                        // remove allocation channels
-                        for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
-                            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_MULTI_ZONES,
-                                    "%s-%d".formatted(CHANNEL_PREFIX_ALLOCATION, allocationIndex)));
-                        }
-                    }
-
-                    if (!theMower.oneTimeSchedulerSupported()) { // oneTimeScheduler channel only when supported
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_ONE_TIME, CHANNEL_DURATION));
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_ONE_TIME, CHANNEL_EDGECUT));
-                        thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_ONE_TIME, CHANNEL_MODE));
-                    }
-
-                    if (!theMower.scheduler2Supported()) { // Scheduler 2 channels only when supported version
-                        for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-                            String groupName = "%s2".formatted(dayCode.getDescription().toLowerCase());
-                            thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_ENABLE));
-                            thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_DURATION));
-                            thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_EDGECUT));
-                            thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_TIME));
-                        }
-                    }
-
-                    updateThing(thingBuilder.build());
-
-                    processStatusMessage(theMower, product);
-
-                    AWSTopic commandOutTopic = new AWSTopic(theMower.getMqttCommandOut(), this);
-                    bridgeHandler.subcribeTopic(commandOutTopic);
-                    bridgeHandler.publishMessage(theMower.getMqttCommandIn(), AWSMessage.EMPTY_PAYLOAD);
-
-                    mower = Optional.of(theMower);
-                    awsTopic = Optional.of(commandOutTopic);
-                    updateStatus(product.online ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
-                    startScheduledJobs(bridgeHandler, theMower);
+    private void initializeData(WorxLandroidBridgeHandler bridgeHandler) {
+        MowerConfiguration config = getConfigAs(MowerConfiguration.class);
+        logger.debug("Initializing WorxLandroidMowerHandler for serial number '{}'", config.serialNumber);
+        try {
+            ProductItemStatus product = bridgeHandler.retrieveDeviceStatus(config.serialNumber);
+            if (product != null) {
+                Mower theMower = new Mower(product);
+                if (firstLaunch()) {
+                    setChannelsAndProperties(theMower);
                 }
-            } catch (WebApiException e) {
-                logger.error("initialize mower: id {} - {}::{}", config.serialNumber, getThing().getLabel(),
-                        getThing().getUID());
+
+                processStatusMessage(theMower, product);
+
+                AWSTopic commandOutTopic = new AWSTopic(theMower.getMqttCommandOut(), this);
+                bridgeHandler.subcribeTopic(commandOutTopic);
+                bridgeHandler.publishMessage(theMower.getMqttCommandIn(), AWSMessage.EMPTY_PAYLOAD);
+
+                mower = Optional.of(theMower);
+                awsTopic = Optional.of(commandOutTopic);
+                updateStatus(product.online ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
+                startScheduledJobs(bridgeHandler, theMower);
             }
-            updateStatus(ThingStatus.ONLINE);
-        } else {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
+        } catch (WebApiException e) {
+            logger.error("initialize mower: id {} - {}::{}", config.serialNumber, getThing().getLabel(),
+                    getThing().getUID());
         }
     }
 
-    private void processStatusMessage(Mower theMower, ProductItemStatus product) {
-        processStatusMessage(theMower, product.lastStatus.payload);
-        initializeProperties(product);
+    private void setChannelsAndProperties(Mower mower) {
+        ThingBuilder thingBuilder = editThing();
+        ThingUID thingUid = thing.getUID();
+
+        if (!mower.lockSupported()) { // lock channel only when supported
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_COMMON, CHANNEL_LOCK));
+        }
+
+        if (!mower.rainDelaySupported()) { // rainDelay channel only when supported
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_DELAY));
+        }
+
+        if (!mower.rainDelayStartSupported()) { // // rainDelayStart channel only when supported
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_RAIN_STATE));
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_RAIN_COUNTER));
+        }
+
+        if (!mower.multiZoneSupported()) { // multizone channels only when supported
+            // remove lastZome channel
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_RAIN, CHANNEL_LAST_ZONE));
+            // remove zone meter channels
+            for (int zoneIndex = 0; zoneIndex < mower.getMultiZoneCount(); zoneIndex++) {
+                thingBuilder.withoutChannel(
+                        new ChannelUID(thingUid, GROUP_MULTI_ZONES, "zone-%d".formatted(zoneIndex + 1)));
+            }
+            // remove allocation channels
+            for (int allocationIndex = 0; allocationIndex < 10; allocationIndex++) {
+                thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_MULTI_ZONES,
+                        "%s-%d".formatted(CHANNEL_PREFIX_ALLOCATION, allocationIndex)));
+            }
+        }
+
+        if (!mower.oneTimeSchedulerSupported()) { // oneTimeScheduler channel only when supported
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_ONE_TIME, CHANNEL_DURATION));
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_ONE_TIME, CHANNEL_EDGECUT));
+            thingBuilder.withoutChannel(new ChannelUID(thingUid, GROUP_ONE_TIME, CHANNEL_MODE));
+        }
+
+        if (!mower.scheduler2Supported()) { // Scheduler 2 channels only when supported version
+            for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
+                String groupName = "%s2".formatted(dayCode.getDescription().toLowerCase());
+                thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_ENABLE));
+                thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_DURATION));
+                thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_EDGECUT));
+                thingBuilder.withoutChannel(new ChannelUID(thingUid, groupName, CHANNEL_TIME));
+            }
+        }
+        updateThing(thingBuilder.build());
+
+        updateProperties(Map.of(Thing.PROPERTY_MAC_ADDRESS, mower.getMacAddress(), Thing.PROPERTY_VENDOR, "Worx",
+                "productId", mower.getId(), "language", mower.getLanguage()));
     }
 
-    private void processStatusMessage(Mower theMower, Payload payload) {
-        updateStateCfg(theMower, payload.cfg);
-        updateStateDat(theMower, payload.dat);
+    private void processStatusMessage(Mower mower, ProductItemStatus product) {
+        processStatusMessage(mower, product.lastStatus.payload);
+        thing.setProperty(Thing.PROPERTY_FIRMWARE_VERSION, Double.toString(mower.getFirmwareVersion()));
+    }
+
+    private void processStatusMessage(Mower mower, Payload payload) {
+        updateStateCfg(mower, payload.cfg);
+        updateStateDat(mower, payload.dat);
     }
 
     void initializeProperties(ProductItemStatus product) {
         Map<String, String> properties = editProperties();
-        properties.put(Thing.PROPERTY_SERIAL_NUMBER, product.serialNumber);
         properties.put(Thing.PROPERTY_FIRMWARE_VERSION, Double.toString(product.firmwareVersion));
         properties.put(Thing.PROPERTY_MAC_ADDRESS, product.macAddress);
         properties.put(Thing.PROPERTY_VENDOR, "Worx");
@@ -312,14 +271,14 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     @Override
     public void bridgeStatusChanged(ThingStatusInfo bridgeStatusInfo) {
+        super.bridgeStatusChanged(bridgeStatusInfo);
         // TODO NB workaround reconnect nötig???
         WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
         if (ThingStatus.ONLINE.equals(bridgeStatusInfo.getStatus()) && bridgeHandler != null) {
-            initialize();
+            initializeData(bridgeHandler);
             // awsTopic = new AWSTopic(awsTopic.getTopic(), this);
-            awsTopic.ifPresent(topic -> bridgeHandler.subcribeTopic(topic));
+            awsTopic.ifPresent(bridgeHandler::subcribeTopic);
         }
-        super.bridgeStatusChanged(bridgeStatusInfo);
     }
 
     @Override
@@ -473,7 +432,7 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
      */
     private void setScheduledDays(Mower theMower, String groupId, String channelId, Command command) {
         int scDaysSlot = groupId.endsWith("2") ? 2 : 1;
-        WorxLandroidDayCodes dayCodeUpdated = WorxLandroidDayCodes.valueOf(groupId.replace("2", ""));
+        WorxLandroidDayCodes dayCodeUpdated = WorxLandroidDayCodes.valueOf(groupId.replace("2", "").toUpperCase());
 
         ScheduledDay scheduledDayUpdated = theMower.getScheduledDay(scDaysSlot, dayCodeUpdated);
         if (scheduledDayUpdated == null) {
@@ -778,5 +737,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
 
     private int toQoS(int rssi) {
         return rssi > -50 ? 4 : rssi > -60 ? 3 : rssi > -70 ? 2 : rssi > -85 ? 1 : 0;
+    }
+
+    private boolean firstLaunch() {
+        return getThing().getProperties().isEmpty();
     }
 }
