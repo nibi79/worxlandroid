@@ -15,7 +15,6 @@ package org.openhab.binding.worxlandroid.internal.mqtt;
 import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,37 +26,22 @@ import software.amazon.awssdk.crt.mqtt.MqttMessage;
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
-public class AWSTopic implements AWSTopicI {
-
+public class AWSTopic {
     private final Logger logger = LoggerFactory.getLogger(AWSTopic.class);
-    private AWSMessageCallback callback;
+    private final AWSMessageCallback callback;
+    private final String topic;
 
-    private String topic;
-
-    /**
-     * @param topic
-     * @param qos
-     * @param awsMessageCallback
-     */
     public AWSTopic(String topic, AWSMessageCallback awsMessageCallback) {
         this.topic = topic;
-        callback = awsMessageCallback;
+        this.callback = awsMessageCallback;
     }
 
-    @Override
-    public void onMessage(@Nullable MqttMessage mqttMessage) {
-        if (mqttMessage == null) {
-            logger.warn("onMessage: message == null");
-            return;
-        }
-
+    public void onMessage(MqttMessage mqttMessage) {
         String payload = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
         logger.debug("onMessage: {}", payload);
-        AWSMessage awsMessage = new AWSMessage(mqttMessage.getTopic(), payload);
-        callback.processMessage(awsMessage);
+        callback.processMessage(payload);
     }
 
-    @Override
     public String getTopic() {
         return topic;
     }

@@ -13,10 +13,10 @@
 package org.openhab.binding.worxlandroid.internal.handler;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -30,9 +30,7 @@ import org.openhab.binding.worxlandroid.internal.api.dto.UsersMeResponse;
 import org.openhab.binding.worxlandroid.internal.config.WebApiConfiguration;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientCallbackI;
-import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientI;
-import org.openhab.binding.worxlandroid.internal.mqtt.AWSMessage;
-import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopicI;
+import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.core.auth.client.oauth2.AccessTokenRefreshListener;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.openhab.core.auth.client.oauth2.OAuthClientService;
@@ -62,24 +60,27 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     private static final String CLIENT_ID = "013132A8-DB34-4101-B993-3C8348EA0EBC";
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidBridgeHandler.class);
-
-    private final OAuthFactory oAuthFactory;
+    private final OAuthClientService oAuthClientService;
     private final WorxApiHandler apiHandler;
+    private final AWSClient awsClient;
+    private final OAuthFactory oAuthFactory;
 
-    private Optional<OAuthClientService> oAuthClientService = Optional.empty();
-    private Optional<AWSClientI> awsClient = Optional.empty();
     private Optional<ScheduledFuture<?>> reconnectJob = Optional.empty();
+    private String accessToken = "";
 
     public WorxLandroidBridgeHandler(Bridge bridge, WorxApiHandler apiHandler, OAuthFactory oAuthFactory) {
         super(bridge);
-        this.oAuthFactory = oAuthFactory;
         this.apiHandler = apiHandler;
+        this.awsClient = new AWSClient(this);
+        this.oAuthFactory = oAuthFactory;
+        this.oAuthClientService = oAuthFactory.createOAuthClientService(getThing().getUID().getAsString(),
+                APIURL_OAUTH_TOKEN, null, CLIENT_ID, null, "*", true);
+        oAuthClientService.addAccessTokenRefreshListener(this);
     }
 
     @Override
     public void initialize() {
         logger.debug("Initializing Landroid API bridge handler.");
-
         WebApiConfiguration config = getConfigAs(WebApiConfiguration.class);
 
         if (config.username.isBlank()) {
@@ -93,37 +94,26 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         }
 
         updateStatus(ThingStatus.UNKNOWN);
-
-        OAuthClientService clientService = oAuthFactory.createOAuthClientService(getThing().getUID().getAsString(),
-                APIURL_OAUTH_TOKEN, null, CLIENT_ID, null, "*", true);
-        clientService.addAccessTokenRefreshListener(this);
-
         try {
-            AccessTokenResponse token = clientService.getAccessTokenByResourceOwnerPasswordCredentials(config.username,
-                    config.password, "*");
-
-            UsersMeResponse user = apiHandler.retrieveUsersMe(token);
-            ProductItemStatus productItemStatus = apiHandler.retrieveDeviceStatus(token).get(0);
+            this.accessToken = oAuthClientService
+                    .getAccessTokenByResourceOwnerPasswordCredentials(config.username, config.password, "*")
+                    .getAccessToken();
+            ProductItemStatus productItemStatus = Objects
+                    .requireNonNull(apiHandler.retrieveDeviceStatus(accessToken).get(0));
 
             if (thing.getProperties().isEmpty()) {
+                UsersMeResponse user = apiHandler.retrieveUsersMe(accessToken);
                 Map<String, String> properties = new HashMap<>(apiHandler.getDeserializer().toMap(user));
                 properties.put("mqtt_endpoint", productItemStatus.mqttEndpoint);
                 updateProperties(properties);
             }
 
-            AWSClient localAwsClient = new AWSClient(productItemStatus.mqttEndpoint, this, token.getAccessToken(),
-                    user.id, productItemStatus.uuid);
-
-            logger.debug("try to connect to AWS...");
-            boolean awsConnected = localAwsClient.connect();
-
-            logger.debug("AWS connected: {}", awsConnected);
-
-            awsClient = Optional.of(localAwsClient);
-            oAuthClientService = Optional.of(clientService);
-        } catch (OAuthException | IOException | WebApiException e) {
+            awsClient.initialize(productItemStatus.mqttEndpoint, productItemStatus.userId, productItemStatus.uuid,
+                    accessToken);
+            scheduler.submit(() -> awsClient.connect());
+        } catch (IOException | WebApiException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
-        } catch (OAuthResponseException e) {
+        } catch (OAuthException | OAuthResponseException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/oauth-connection-error");
         }
     }
@@ -133,81 +123,43 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         logger.debug("Landroid Bridge is read-only and does not handle commands");
     }
 
-    private @Nullable AccessTokenResponse getAccessTokenResponse() {
-        return oAuthClientService.map(service -> {
-            try {
-                return service.getAccessTokenResponse();
-            } catch (OAuthException | IOException | OAuthResponseException e) {
-                logger.warn("Error getting access token : {}", e.getMessage());
-            }
-            return null;
-        }).orElse(null);
-    }
-
-    private void disposeReconnect() {
+    private void disposeReconnectJob() {
         reconnectJob.ifPresent(job -> job.cancel(true));
         reconnectJob = Optional.empty();
     }
 
     @Override
     public void dispose() {
-        awsClient.ifPresent(client -> client.disconnect());
-        awsClient = Optional.empty();
-
-        oAuthClientService.ifPresent(oAuth -> oAuth.removeAccessTokenRefreshListener(this));
-        oAuthClientService = Optional.empty();
-
-        disposeReconnect();
+        oAuthClientService.removeAccessTokenRefreshListener(this);
+        oAuthFactory.ungetOAuthService(getThing().getUID().getAsString());
+        awsClient.disconnect();
+        disposeReconnectJob();
 
         super.dispose();
     }
 
-    public boolean isBridgeOnline() {
+    public boolean isOnline() {
         return getThing().getStatus() == ThingStatus.ONLINE;
     }
 
     private boolean reconnectToWorx() {
-        AccessTokenResponse tokenResponse = getAccessTokenResponse();
-        if (tokenResponse != null) {
-            return awsClient.map(client -> {
-                try {
-                    logger.debug("try to reconnect to AWS...");
-                    boolean connected = client.refreshConnection(tokenResponse.getAccessToken());
-                    logger.debug("AWS reconnected: {}", connected);
-                    return connected;
-                } catch (UnsupportedEncodingException e) {
-                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                            "Error: " + e.getMessage());
-                }
-                return false;
-            }).orElse(false);
-        }
-        return false;
+        logger.debug("try to reconnect to AWS...");
+        return awsClient.refreshConnection(accessToken);
     }
 
-    /**
-     * @param awsTopic
-     * @throws AWSIotException
-     */
-    public void subcribeTopic(AWSTopicI awsTopic) {
-        awsClient.ifPresent(client -> {
-            client.subscribe(awsTopic);
-            logger.debug("subsribed to topic -> {}", awsTopic.getTopic());
-        });
+    public void subcribeTopic(AWSTopic awsTopic) {
+        awsClient.subscribe(awsTopic);
+        logger.debug("subscribed to topic: {}", awsTopic.getTopic());
     }
 
-    /**
-     * @param awsMessage
-     * @throws AWSIotException
-     */
-    public boolean publishMessage(String topic, String cmd) {
-        AWSMessage message = new AWSMessage(topic, cmd);
-        return awsClient.map(client -> {
-            logger.debug("publish topic -> {}", message.topic());
-            logger.debug("publish message -> {}", message.payload());
-            client.publish(message);
-            return true;
-        }).orElse(false);
+    public void unsubcribeTopic(AWSTopic awsTopic) {
+        awsClient.unsubscribe(awsTopic);
+        logger.debug("unsubscribed from topic: {}", awsTopic.getTopic());
+    }
+
+    public void publishMessage(String topic, String cmd) {
+        logger.debug("publish on topic: '{}' - message: '{}'", topic, cmd);
+        awsClient.publish(topic, cmd);
     }
 
     public void publishMessage(String topic, Object command) {
@@ -217,9 +169,9 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     @Override
     public void onAWSConnectionSuccess() {
         logger.debug("AWS connection is available");
-        if (!isBridgeOnline()) {
+        if (!isOnline()) {
             updateStatus(ThingStatus.ONLINE);
-            disposeReconnect();
+            disposeReconnectJob();
             WebApiConfiguration config = getConfigAs(WebApiConfiguration.class);
             if (config.reconnectInterval > 0) {
                 reconnectJob = Optional.of(scheduler.scheduleWithFixedDelay(() -> reconnectToWorx(), 60,
@@ -241,25 +193,18 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
     @Override
     public void onAccessTokenResponse(AccessTokenResponse tokenResponse) {
-        if (isBridgeOnline()) {
+        if (isOnline()) {
             logger.debug("refreshConnectionToken -> reconnectToWorx");
+            this.accessToken = tokenResponse.getAccessToken();
             reconnectToWorx();
         }
     }
 
     public @Nullable ProductItemStatus retrieveDeviceStatus(String serialNumber) throws WebApiException {
-        AccessTokenResponse tokenResponse = getAccessTokenResponse();
-        if (tokenResponse != null) {
-            return apiHandler.retrieveDeviceStatus(tokenResponse, serialNumber);
-        }
-        return null;
+        return apiHandler.retrieveDeviceStatus(accessToken, serialNumber);
     }
 
     public List<ProductItemStatus> retrieveAllDevices() throws WebApiException {
-        AccessTokenResponse tokenResponse = getAccessTokenResponse();
-        if (tokenResponse != null) {
-            return apiHandler.retrieveDeviceStatus(tokenResponse);
-        }
-        return List.of();
+        return apiHandler.retrieveDeviceStatus(accessToken);
     }
 }

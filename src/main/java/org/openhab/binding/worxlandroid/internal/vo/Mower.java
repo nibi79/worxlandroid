@@ -12,16 +12,33 @@
  */
 package org.openhab.binding.worxlandroid.internal.vo;
 
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.worxlandroid.internal.api.dto.Commands.ZoneMeterCommand;
+import org.openhab.binding.worxlandroid.internal.api.dto.LastStatus;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Battery;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Cfg;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Dat;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Dat.Axis;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Ots;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Rain;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Schedule;
+import org.openhab.binding.worxlandroid.internal.api.dto.Payload.Stat;
 import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidDayCodes;
 import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
+import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link Mower}
@@ -30,37 +47,46 @@ import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
  */
 @NonNullByDefault
 public class Mower {
-    private static final int TIME_EXTENSION_DISABLE = -100;
     private static final int[] MULTI_ZONE_METER_DISABLE = { 0, 0, 0, 0 };
     private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 0, 0, 0 };
+    private static final int TIME_EXTENSION_DISABLE = -100;
 
+    private final Logger logger = LoggerFactory.getLogger(Mower.class);
+    private final WorxLandroidBridgeHandler bridgeHandler;
     private final ProductItemStatus product;
 
     private final int[] zoneMeter;
     private final int[] zoneMeterRestore;
     private final int[] allocations = new int[10];
-    private final Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays = new HashMap<>(7);
-    private final Map<WorxLandroidDayCodes, ScheduledDay> scheduledDays2 = new HashMap<>(7);
+    private final List<Map<WorxLandroidDayCodes, @Nullable ScheduledDay>> schedules = new ArrayList<Map<WorxLandroidDayCodes, @Nullable ScheduledDay>>();
+    // private final Map<WorxLandroidDayCodes, @Nullable ScheduledDay> scheduledDays2 = new HashMap<>(7);
 
-    private boolean enable;
     private boolean multiZoneEnable;
     private int timeExtension;
     private int timeExtensionRestore = 0;
-    private WorxLandroidStatusCodes status = WorxLandroidStatusCodes.UNKNOWN;
+    private LastStatus lastStatus;
 
-    public Mower(ProductItemStatus product) {
+    private boolean restoreZoneMeter = false;
+    private int[] zoneMeterRestoreValues = {};
+
+    public Mower(WorxLandroidBridgeHandler bridgeHandler, ProductItemStatus product) {
+        this.bridgeHandler = bridgeHandler;
         this.product = product;
         this.zoneMeter = new int[getMultiZoneCount()];
         this.zoneMeterRestore = new int[getMultiZoneCount()];
 
+        schedules.add(new HashMap<WorxLandroidDayCodes, @Nullable ScheduledDay>(7));
+        if (product.features.schedulerTwoSlots < getFirmwareVersionAsDouble()) {
+            schedules.add(new HashMap<WorxLandroidDayCodes, @Nullable ScheduledDay>(7));
+        }
         // initialize scheduledDay map for each day
-        for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-            scheduledDays.put(dayCode, new ScheduledDay());
-            scheduledDays2.put(dayCode, new ScheduledDay());
-        }
-        if (product.features.schedulerTwoSlots < getFirmwareVersion()) {
-            scheduledDays2.clear();
-        }
+        // for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
+        // scheduledDays.put(dayCode, new ScheduledDay());
+        // if (product.features.schedulerTwoSlots < getFirmwareVersion()) {
+        // scheduledDays2.put(dayCode, new ScheduledDay());
+        // }
+        // }
+        this.lastStatus = product.lastStatus;
     }
 
     public String getSerialNumber() {
@@ -71,7 +97,13 @@ public class Mower {
         return timeExtension;
     }
 
-    public double getFirmwareVersion() {
+    public Double getFirmwareVersionAsDouble() {
+        // Most of the time it is xx.y but also seen xx.y.z+1 we'll keep only the beginning
+        String[] versionParts = getFirmwareVersion().split("\\.");
+        return Double.valueOf("%s.%s".formatted(versionParts[0], versionParts[1]));
+    }
+
+    public String getFirmwareVersion() {
         return product.firmwareVersion;
     }
 
@@ -84,11 +116,7 @@ public class Mower {
     public void setTimeExtension(int timeExtension) {
         if (timeExtension == TIME_EXTENSION_DISABLE) {
             storeTimeExtension();
-            this.enable = false;
-        } else {
-            this.enable = true;
         }
-
         this.timeExtension = timeExtension;
     }
 
@@ -101,7 +129,7 @@ public class Mower {
     }
 
     public boolean rainDelayStartSupported() {
-        return product.features.rainDelayStart < getFirmwareVersion();
+        return product.features.rainDelayStart < getFirmwareVersionAsDouble();
     }
 
     public boolean multiZoneSupported() {
@@ -109,43 +137,46 @@ public class Mower {
     }
 
     public boolean scheduler2Supported() {
-        return !scheduledDays2.isEmpty();
+        return schedules.size() > 1;
     }
 
     public boolean oneTimeSchedulerSupported() {
-        return product.features.oneTimeScheduler < getFirmwareVersion();
+        return product.features.oneTimeScheduler < getFirmwareVersionAsDouble();
     }
 
     public @Nullable ScheduledDay getScheduledDay(int scDSlot, WorxLandroidDayCodes dayCode) {
-        return scDSlot == 1 ? scheduledDays.get(dayCode) : scheduler2Supported() ? scheduledDays2.get(dayCode) : null;
+        return scDSlot == 1 ? schedules.get(0).get(dayCode)
+                : scheduler2Supported() ? schedules.get(1).get(dayCode) : null;
     }
 
-    @SuppressWarnings("null")
-    private Object[] getScheduleArray(Map<WorxLandroidDayCodes, ScheduledDay> schedule) {
+    private Object[] getScheduleArray(Map<WorxLandroidDayCodes, @Nullable ScheduledDay> schedules) {
         Object[] result = new Object[7];
         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-            result[dayCode.code] = schedule.get(dayCode).getArray();
+            ScheduledDay schedule = schedules.get(dayCode);
+            result[dayCode.code] = schedule != null ? schedule.getArray() : ScheduledDay.BLANK.getArray();
         }
         return result;
     }
 
     public Object[] getSheduleArray1() {
-        return getScheduleArray(scheduledDays);
+        return getScheduleArray(schedules.get(0));
     }
 
     public Object[] getSheduleArray2() {
-        return scheduler2Supported() ? getScheduleArray(scheduledDays2) : new Object[] {};
+        return scheduler2Supported() ? getScheduleArray(schedules.get(1)) : new Object[] {};
     }
 
-    public void put(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
-        scheduledDays.put(dayCode, scheduledDay);
-    }
+    // TODO Remove unused code found by UCDetector
+    // public void put(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
+    // scheduledDays.put(dayCode, scheduledDay);
+    // }
 
-    public void putScheduledDay2(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
-        if (scheduler2Supported()) {
-            scheduledDays2.put(dayCode, scheduledDay);
-        }
-    }
+    // TODO Remove unused code found by UCDetector
+    // public void putScheduledDay2(WorxLandroidDayCodes dayCode, ScheduledDay scheduledDay) {
+    // if (scheduler2Supported()) {
+    // scheduledDays2.put(dayCode, scheduledDay);
+    // }
+    // }
 
     public boolean isMultiZoneEnable() {
         return multiZoneEnable;
@@ -173,6 +204,10 @@ public class Mower {
         return Arrays.copyOf(zoneMeter, zoneMeter.length);
     }
 
+    public int getZonesSize() {
+        return getZoneMeters().length;
+    }
+
     public void setZoneMeters(int[] zoneMeterInput) {
         System.arraycopy(zoneMeterInput, 0, zoneMeter, 0, zoneMeter.length);
     }
@@ -190,12 +225,16 @@ public class Mower {
         return Arrays.copyOf(allocations, allocations.length);
     }
 
+    public int getAllocationsSize() {
+        return getZoneMeters().length;
+    }
+
     public void setAllocation(int allocationIndex, int zoneIndex) {
         allocations[allocationIndex] = zoneIndex;
     }
 
     public boolean isEnable() {
-        return enable;
+        return timeExtension != TIME_EXTENSION_DISABLE;
     }
 
     /**
@@ -205,13 +244,11 @@ public class Mower {
      *
      */
     public void setEnable(boolean enable) {
-        this.enable = enable;
-
         if (enable && timeExtension == TIME_EXTENSION_DISABLE) {
             restoreTimeExtension();
         } else {
             storeTimeExtension();
-            this.timeExtension = TIME_EXTENSION_DISABLE;
+            timeExtension = TIME_EXTENSION_DISABLE;
         }
     }
 
@@ -251,20 +288,7 @@ public class Mower {
      * @return false if less than 2 meters are 0
      */
     private boolean isZoneMeterDisabled() {
-        for (int i = 0; i < zoneMeter.length; i++) {
-            if (zoneMeter[i] != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public WorxLandroidStatusCodes getStatus() {
-        return status;
-    }
-
-    public void setStatus(WorxLandroidStatusCodes status) {
-        this.status = status;
+        return Arrays.stream(zoneMeter).sum() == 0;
     }
 
     public int getMultiZoneCount() {
@@ -279,10 +303,6 @@ public class Mower {
         return product.mqttTopics.commandOut;
     }
 
-    public ZoneId getZoneId() {
-        return product.timeZone;
-    }
-
     public String getMacAddress() {
         return product.macAddress;
     }
@@ -292,6 +312,119 @@ public class Mower {
     }
 
     public String getLanguage() {
-        return product.lastStatus.payload.cfg.lg;
+        return getPayload().cfg.lg;
+    }
+
+    public Payload getPayload() {
+        return lastStatus.payload;
+    }
+
+    public Dat getPayloadDat() {
+        return getPayload().dat;
+    }
+
+    public Cfg getPayloadCfg() {
+        return getPayload().cfg;
+    }
+
+    public void setStatus(Payload payload) {
+        this.lastStatus = new LastStatus(payload);
+        if (restoreZoneMeter && getStatusCode() != WorxLandroidStatusCodes.HOME
+                && getStatusCode() != WorxLandroidStatusCodes.START_SEQUENCE
+                && getStatusCode() != WorxLandroidStatusCodes.LEAVING_HOME
+                && getStatusCode() != WorxLandroidStatusCodes.SEARCHING_ZONE) {
+            restoreZoneMeter = false;
+            setZoneMeters(zoneMeterRestoreValues);
+            sendCommand(new ZoneMeterCommand(getZoneMeters()));
+        }
+
+        getSchedule().ifPresent(schedule -> {
+            setTimeExtension(schedule.timeExtension);
+            if (schedule.d != null) {
+                updateSchedules(0, schedule.d);
+                if (schedule.dd != null) {
+                    updateSchedules(1, schedule.dd);
+                }
+            }
+        });
+
+        Cfg cfg = getPayloadCfg();
+        if (multiZoneSupported()) {
+            for (int zoneIndex = 0; zoneIndex < cfg.multiZones.size(); zoneIndex++) {
+                setZoneMeter(zoneIndex, cfg.multiZones.get(zoneIndex));
+            }
+
+            for (int allocationIndex = 0; allocationIndex < cfg.multizoneAllocations.size(); allocationIndex++) {
+                setAllocation(allocationIndex, cfg.multizoneAllocations.get(allocationIndex));
+            }
+        }
+    }
+
+    private void updateSchedules(int scDSlot, List<List<String>> d) {
+        Map<WorxLandroidDayCodes, @Nullable ScheduledDay> planning = schedules.get(scDSlot);
+        for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
+            List<String> schedule = d.get(dayCode.code);
+
+            planning.put(dayCode,
+                    new ScheduledDay(schedule.get(0), Integer.valueOf(schedule.get(1)), "1".equals(schedule.get(2))));
+
+            // ScheduledDay scheduledDay = getScheduledDay(scDSlot, dayCode);
+            // if (scheduledDay != null) {
+            // scheduledDay.setStartTime(schedule.get(0));
+            // scheduledDay.setDuration(Integer.valueOf(schedule.get(1)));
+            // scheduledDay.setEdgecut(Integer.valueOf(schedule.get(2)) == 1);
+            // }
+        }
+    }
+
+    public Optional<Battery> getBattery() {
+        return Optional.ofNullable(getPayloadDat().battery);
+    }
+
+    public Optional<Rain> getRain() {
+        return Optional.ofNullable(getPayloadDat().rain);
+    }
+
+    public double getAngle(Axis axis) {
+        return getPayloadDat().getAngle(axis);
+    }
+
+    public Optional<Stat> getStats() {
+        return Optional.ofNullable(getPayloadDat().st);
+    }
+
+    public int getLastZone() {
+        return getAllocation(getPayloadDat().lastZone);
+    }
+
+    public WorxLandroidStatusCodes getStatusCode() {
+        return getPayloadDat().statusCode;
+    }
+
+    public void setZoneTo(int zoneIndex) {
+        zoneMeterRestoreValues = getZoneMeters();
+        restoreZoneMeter = true;
+
+        int meter = getZoneMeter(zoneIndex);
+        for (int index = 0; zoneIndex < 4; index++) {
+            setZoneMeter(index, meter);
+        }
+    }
+
+    private void sendCommand(Object command) {
+        logger.debug("send command: {}", command);
+        bridgeHandler.publishMessage(getMqttCommandIn(), command);
+    }
+
+    public ZonedDateTime getLastUpdate() {
+        return getPayloadCfg().getDateTime(product.timeZone);
+    }
+
+    public Optional<Schedule> getSchedule() {
+        return Optional.ofNullable(getPayloadCfg().sc);
+    }
+
+    public Optional<Ots> getOneTimeSchedule() {
+        return getSchedule().map(sc -> Optional.ofNullable(sc.ots)).orElse(Optional.empty());
     }
 }

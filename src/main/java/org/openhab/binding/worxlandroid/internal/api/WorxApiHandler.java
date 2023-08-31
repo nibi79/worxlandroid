@@ -23,7 +23,6 @@ import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus;
 import org.openhab.binding.worxlandroid.internal.api.dto.UsersMeResponse;
-import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.openhab.core.io.net.http.HttpClientFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -56,9 +55,9 @@ public class WorxApiHandler {
         this.deserializer = deserializer;
     }
 
-    protected <T> T callWebApiGet(String url, AccessTokenResponse token, Type type) throws WebApiException {
+    private <T> T callWebApiGet(String url, String accessToken, Type type) throws WebApiException {
         Request request = httpClient.newRequest(url).method("GET");
-        request.header("Authorization", "%s %s".formatted(token.getTokenType(), token.getAccessToken()));
+        request.header("Authorization", "Bearer %s".formatted(accessToken));
         request.header("Content-Type", "application/json; utf-8");
 
         logger.debug("URI: {}", request.getURI().toString());
@@ -85,22 +84,21 @@ public class WorxApiHandler {
         return deserializer;
     }
 
-    public List<ProductItemStatus> retrieveDeviceStatus(AccessTokenResponse token) throws WebApiException {
+    public List<ProductItemStatus> retrieveDeviceStatus(String accessToken) throws WebApiException {
         Type type = new TypeToken<List<ProductItemStatus>>() {
         }.getType();
-        return callWebApiGet("%s?status=1".formatted(APIURL_PRODUCTITEMS), token, type);
+        return callWebApiGet("%s?status=1".formatted(APIURL_PRODUCTITEMS), accessToken, type);
     }
 
-    public ProductItemStatus retrieveDeviceStatus(AccessTokenResponse token, String serialNumber)
-            throws WebApiException {
+    public ProductItemStatus retrieveDeviceStatus(String accessToken, String serialNumber) throws WebApiException {
         Type type = new TypeToken<ProductItemStatus>() {
         }.getType();
-        return callWebApiGet("%s/%s?status=1".formatted(APIURL_PRODUCTITEMS, serialNumber), token, type);
+        return callWebApiGet("%s/%s?status=1".formatted(APIURL_PRODUCTITEMS, serialNumber), accessToken, type);
     }
 
-    public UsersMeResponse retrieveUsersMe(AccessTokenResponse token) throws WebApiException {
+    public UsersMeResponse retrieveUsersMe(String accessToken) throws WebApiException {
         Type type = new TypeToken<UsersMeResponse>() {
         }.getType();
-        return callWebApiGet(APIURL_USER_ME, token, type);
+        return callWebApiGet(APIURL_USER_ME, accessToken, type);
     }
 }

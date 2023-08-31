@@ -117,21 +117,21 @@
 	</channel-type>
 
 	<channel-type id="schedule-mode-type">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>Schedule Mode</label>
 		<description>Sets Normal or Party mode</description>
 
 		<state readOnly="false">
 			<options>
-				<option value="1">Normal</option>
-				<option value="2">Party</option>
+				<option value="NORMAL">Normal</option>
+				<option value="PARTY">Party</option>
 			</options>
 		</state>
 	</channel-type>
 
 	<channel-type id="schedule-duration-type">
 		<item-type>Number:Time</item-type>
-		<label>Schedule Duration</label>
+		<label>Duration</label>
 		<state readOnly="false" min="0" max="1425" step="15" pattern="%d %unit%"/>
 	</channel-type>
 
@@ -215,6 +215,13 @@
 		<label>Delay</label>
 		<category>Time</category>
 		<state min="0" max="750" step="30" pattern="%d %unit%"/>
+	</channel-type>
+
+	<channel-type id="rain-counter">
+		<item-type>Number:Time</item-type>
+		<label>Rain Counter</label>
+		<category>Time</category>
+		<state min="0" pattern="%d %unit%"/>
 	</channel-type>
 
 	<channel-type id="rain-state-type">

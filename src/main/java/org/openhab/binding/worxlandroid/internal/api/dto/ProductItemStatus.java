@@ -12,17 +12,10 @@
  */
 package org.openhab.binding.worxlandroid.internal.api.dto;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
-import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidErrorCodes;
-import org.openhab.binding.worxlandroid.internal.codes.WorxLandroidStatusCodes;
-
-import com.google.gson.annotations.SerializedName;
 
 /**
  * The {@link ProductItemStatus} class
@@ -31,72 +24,6 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 public class ProductItemStatus {
-    public class US {
-        public int enabled;
-        public String stat;
-    }
-
-    public class Ots {
-        @SerializedName("wtm")
-        public int duration = -1;
-        private int bc = -1;
-
-        public boolean getEdgeCut() {
-            return bc == 1;
-        }
-    }
-
-    public class Battery {
-        @SerializedName("t")
-        public double temp = -1;
-        @SerializedName("v")
-        public double voltage = -1;
-        @SerializedName("p")
-        public int level = -1;
-        @SerializedName("nr")
-        public int chargeCycle = -1;
-        @SerializedName("c")
-        public Boolean charging;
-        public int m;
-    }
-
-    public class St {
-        @SerializedName("b")
-        public int totalBladeTime = -1;
-        @SerializedName("d")
-        public int totalDistance = -1;
-        @SerializedName("wt")
-        public int totalTime = -1;
-        public int bl;
-    }
-
-    public class Rain {
-        @SerializedName("s")
-        public Boolean raining;
-        @SerializedName("cnt")
-        public int counter = -1;
-    }
-
-    public class Schedule {
-        @SerializedName("m")
-        public int scheduleMode = -1;
-        @SerializedName("p")
-        public int timeExtension = -1;
-        public int distm;
-        public Ots ots;
-        public List<List<String>> d;
-        public List<List<String>> dd;
-    }
-
-    public class Al {
-        public int lvl;
-        public int t;
-    }
-
-    public class Modules {
-        @SerializedName("US")
-        public US uS;
-    }
 
     public class Features {
         public double autoLock;
@@ -145,70 +72,6 @@ public class ProductItemStatus {
         public String updatedAt;
     }
 
-    public class Dat {
-        public String mac = "";
-        public String fw = "";
-        @SerializedName("bt")
-        public Battery battery;
-        @SerializedName("dmp")
-        public double[] dataMotionProcessor = { -1, -1, -1 }; // pitch, roll, yaw
-        public St st;
-        @SerializedName("ls")
-        public WorxLandroidStatusCodes statusCode = WorxLandroidStatusCodes.UNKNOWN;
-        @SerializedName("le")
-        public WorxLandroidErrorCodes errorCode = WorxLandroidErrorCodes.UNKNOWN;
-        @SerializedName("lz")
-        public int lastZone = -1;
-        @SerializedName("rsi")
-        public int wifiQuality;
-        private int lk = -1;
-
-        public int fwb;
-        public String conn;
-        public int act;
-
-        public int tr;
-
-        public Rain rain;
-        public Modules modules;
-
-        public boolean isLocked() {
-            return lk == 1;
-        }
-    }
-
-    public class Cfg {
-        private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        public int id = -1;
-        public String lg = ""; // en, fr...
-        private String dt = ""; // "dt": "13/03/2020",
-        private String tm = ""; // "tm": "17:09:34"
-        public int cmd = -1;
-        public Schedule sc;
-        @SerializedName("mz")
-        public List<Integer> multiZones = List.of();
-        @SerializedName("mzv")
-        public List<Integer> multizoneAllocations = List.of();
-        @SerializedName("rd")
-        public int rainDelay = -1;
-        @SerializedName("sn")
-        public String serialNumber = "";
-        public int mzk;
-        public Al al;
-        public int tq;
-        public Modules modules;
-
-        public ZonedDateTime getDateTime(ZoneId zoneId) {
-            return dt.isEmpty() || tm.isEmpty() ? null
-                    : ZonedDateTime.of(LocalDateTime.parse("%s %s".formatted(dt, tm), formatter), zoneId);
-        }
-    }
-
-    public class Payload {
-        public Cfg cfg;
-        public Dat dat;
-    }
-
     public class Sim {
         public int id;
         public String iccid;
@@ -218,11 +81,6 @@ public class ProductItemStatus {
         public ZonedDateTime contractEndsAt;
         public ZonedDateTime createdAt;
         public ZonedDateTime updatedAt;
-    }
-
-    public class LastStatus {
-        public ZonedDateTime timestamp;
-        public Payload payload;
     }
 
     public class AutoSchedule {
@@ -236,12 +94,12 @@ public class ProductItemStatus {
     public String id;
     public String uuid;
     public int productId;
-    public int userId;
+    public String userId;
     public String serialNumber;
     public String macAddress;
     public String name;
     public boolean locked;
-    public double firmwareVersion;
+    public String firmwareVersion;
     public boolean firmwareAutoUpgrade;
     public boolean pushNotifications;
     public Sim sim;

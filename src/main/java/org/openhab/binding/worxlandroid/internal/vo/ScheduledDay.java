@@ -12,60 +12,57 @@
  */
 package org.openhab.binding.worxlandroid.internal.vo;
 
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * {@link ScheduledDay}
+ * {@link ScheduledDay} holds data of the schedule details for a given day
  *
  * @author Nils - Initial contribution
  */
 @NonNullByDefault
 public class ScheduledDay {
-    private static final int DURATION_0 = 0;
-    private static final int DURATION_DEFAULT = 15;
+    public static final ScheduledDay BLANK = new ScheduledDay("00:00", 0, false);
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+    private static final int DEFAULT_DURATION = 15;
 
-    private boolean enable;
-    private int hour;
-    private int minutes;
-    private int duration;
-    private int durationRestore = DURATION_DEFAULT;
+    private LocalTime startTime = LocalTime.MIN;
     private boolean edgecut;
+    private int durationRestore = DEFAULT_DURATION;
+    private int duration;
 
-    public int getHour() {
-        return hour;
+    public ScheduledDay(String hhMm, int newDuration, boolean edgecut) {
+        this.startTime = LocalTime.parse(hhMm);
+        this.duration = newDuration;
+        this.edgecut = edgecut;
     }
 
-    public void setHours(int hour) {
-        this.hour = hour;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public int getMinutes() {
-        return minutes;
+    public void setStartTime(String hhMm) throws DateTimeParseException {
+        startTime = LocalTime.parse(hhMm);
     }
 
-    public void setMinutes(int minutes) {
-        this.minutes = minutes;
+    public void setStartTime(ZonedDateTime zdt) {
+        startTime = zdt.toLocalTime();
     }
 
     public int getDuration() {
         return duration;
     }
 
-    /**
-     * duration = 0 disables this scheduled day (enable=false).
-     * duration > 0 enables this scheduled day (enable=true).
-     *
-     * @param duration
-     */
-    public void setDuration(int duration) {
-        if (duration == DURATION_0) {
-            storeDuration();
-            this.enable = false;
-        } else {
-            this.enable = true;
+    public void setDuration(int newDuration) {
+        if (newDuration == 0 && duration > 0) {
+            durationRestore = duration;
         }
 
-        this.duration = duration;
+        duration = newDuration;
     }
 
     public boolean isEdgecut() {
@@ -76,43 +73,15 @@ public class ScheduledDay {
         this.edgecut = edgecut;
     }
 
-    public boolean isEnable() {
-        return enable;
+    public boolean isEnabled() {
+        return duration != 0;
     }
 
-    /**
-     * Enable/Disables scheduling using duration.
-     *
-     * @param enable
-     */
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-
-        if (enable && duration == DURATION_0) {
-            restoreDuration();
-        } else {
-            storeDuration();
-            this.duration = DURATION_0;
-        }
-    }
-
-    /**
-     * Retores duration from durationRestore.
-     */
-    private void storeDuration() {
-        if (this.duration > DURATION_0) {
-            this.durationRestore = this.duration;
-        }
-    }
-
-    /**
-     * Stores duration to durationRestore for restore,
-     */
-    private void restoreDuration() {
-        this.duration = this.durationRestore;
+    public void setEnable(boolean newStatus) {
+        setDuration(newStatus && duration == 0 ? durationRestore : 0);
     }
 
     public Object[] getArray() {
-        return new Object[] { "%d:%02d".formatted(hour, minutes), duration, edgecut ? 1 : 0 };
+        return new Object[] { startTime.format(TIME_FORMAT), duration, edgecut ? 1 : 0 };
     }
 }

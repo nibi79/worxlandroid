@@ -73,7 +73,6 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNEL_TIME = "time";
 
     // datCommon
-    public static final String CHANNEL_FIRMWARE = "firmware";
     public static final String CHANNEL_WIFI_QUALITY = "wifi-quality";
     public static final String CHANNEL_LAST_ZONE = "last-zone";
     public static final String CHANNEL_STATUS_CODE = "status";

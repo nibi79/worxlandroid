@@ -52,10 +52,6 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
         this.bridgeHandler = bridgeHandler;
     }
 
-    public void discoverMowers() {
-        startScan();
-    }
-
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
         return WorxLandroidBindingConstants.SUPPORTED_THING_TYPES;

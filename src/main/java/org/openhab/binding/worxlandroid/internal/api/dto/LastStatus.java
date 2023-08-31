@@ -10,20 +10,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.mqtt;
+package org.openhab.binding.worxlandroid.internal.api.dto;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
-
-import software.amazon.awssdk.crt.mqtt.MqttMessage;
+import java.time.ZonedDateTime;
 
 /**
  *
- * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Initial contribution
  */
-@NonNullByDefault
-public interface AWSTopicI {
+public class LastStatus {
+    public ZonedDateTime timestamp;
+    public Payload payload;
 
-    public String getTopic();
-
-    public void onMessage(MqttMessage t);
+    public LastStatus(Payload payload) {
+        this.payload = payload;
+        this.timestamp = ZonedDateTime.now();
+    }
 }

@@ -381,7 +381,7 @@ String LandroidAction             "Action []"             <movecontrol>     {cha
 String LandroidLastUpdate         "Last Update [%1$td.%1$tm.%1$ty / %1$tH:%1$tM:%1$tS]"    <calendar>        {channel="worxlandroid:mower:MyWorxBridge:mymower:cfgCommon#lastUpdate"}
 Switch LandroidPoll               "Poll []"               <oh:worxlandroid:refresh>         {channel="worxlandroid:mower:MyWorxBridge:mymower:common#poll"}
 Switch LandroidLock               "Lock"                  <oh:worxlandroid:lock>           {channel="worxlandroid:mower:MyWorxBridge:mymower:common#lock"}
-Number LandroidScheduleMode       "Schedule Mode []"      <party>           {channel="worxlandroid:mower:MyWorxBridge:mymower:cfgSc#scheduleMode"}
+String LandroidScheduleMode       "Schedule Mode []"      <party>           {channel="worxlandroid:mower:MyWorxBridge:mymower:cfgSc#scheduleMode"}
 
 String LandroidMacAdress          "MAC [%s]"              <text>            {channel="worxlandroid:mower:MyWorxBridge:mymower:datCommon#macAdress"}
 String LandroidSerialNumber       "Serial Number [%s]"    <text>            {channel="worxlandroid:mower:MyWorxBridge:mymower:cfgCommon#serialNumber"}

@@ -186,7 +186,7 @@
 			<channel id="time" typeId="schedule-time"/>
 			<channel id="duration" typeId="schedule-duration-type"/>
 			<channel id="edgecut" typeId="switch-rw">
-				<label>Schedule Edgecut</label>
+				<label>Edgecut</label>
 			</channel>
 		</channels>
 	</channel-group-type>
@@ -196,9 +196,7 @@
 		<description>Data rain channels of your mower</description>
 		<channels>
 			<channel id="state" typeId="rain-state-type"/>
-			<channel id="counter" typeId="number-ro">
-				<label>Counter</label>
-			</channel>
+			<channel id="counter" typeId="rain-counter"/>
 			<channel id="delay" typeId="rain-delay-type"/>
 		</channels>
 	</channel-group-type>

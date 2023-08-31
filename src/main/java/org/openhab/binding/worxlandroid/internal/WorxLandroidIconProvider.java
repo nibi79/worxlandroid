@@ -89,14 +89,14 @@ public class WorxLandroidIconProvider implements IconProvider {
 
     @Override
     public @Nullable InputStream getIcon(String category, String iconSetId, @Nullable String state, Format format) {
-        String icon = getResource(category);
+        String icon = getResource(category, true);
         if (icon.isEmpty()) {
             return null;
         }
 
         if (state != null) {
             String withState = "%s-%s".formatted(category, state.toString().toLowerCase());
-            String iconWithState = getResource(withState);
+            String iconWithState = getResource(withState, false);
             if (!iconWithState.isEmpty()) {
                 icon = iconWithState;
             }
@@ -105,7 +105,7 @@ public class WorxLandroidIconProvider implements IconProvider {
         return new ByteArrayInputStream(icon.getBytes());
     }
 
-    private String getResource(String iconName) {
+    private String getResource(String iconName, boolean shouldExist) {
         String result = "";
 
         URL iconResource = context.getBundle().getEntry("icon/%s.svg".formatted(iconName));
@@ -115,7 +115,7 @@ public class WorxLandroidIconProvider implements IconProvider {
             } catch (IOException e) {
                 logger.warn("Unable to load resource '{}': {}", iconResource.getPath(), e.getMessage());
             }
-        } else {
+        } else if (shouldExist) {
             logger.warn("Unable to find icon '{}'", iconName);
         }
         return result;
