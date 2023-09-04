@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class Mower {
+    public static final String EMPTY_PAYLOAD = "{}";
     private static final int[] MULTI_ZONE_METER_DISABLE = { 0, 0, 0, 0 };
     private static final int[] MULTI_ZONE_METER_ENABLE = { 1, 0, 0, 0 };
     private static final int TIME_EXTENSION_DISABLE = -100;
@@ -79,14 +80,8 @@ public class Mower {
         if (product.features.schedulerTwoSlots < getFirmwareVersionAsDouble()) {
             schedules.add(new HashMap<WorxLandroidDayCodes, @Nullable ScheduledDay>(7));
         }
-        // initialize scheduledDay map for each day
-        // for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
-        // scheduledDays.put(dayCode, new ScheduledDay());
-        // if (product.features.schedulerTwoSlots < getFirmwareVersion()) {
-        // scheduledDays2.put(dayCode, new ScheduledDay());
-        // }
-        // }
         this.lastStatus = product.lastStatus;
+        requestUpdate();
     }
 
     public String getSerialNumber() {
@@ -367,13 +362,6 @@ public class Mower {
 
             planning.put(dayCode,
                     new ScheduledDay(schedule.get(0), Integer.valueOf(schedule.get(1)), "1".equals(schedule.get(2))));
-
-            // ScheduledDay scheduledDay = getScheduledDay(scDSlot, dayCode);
-            // if (scheduledDay != null) {
-            // scheduledDay.setStartTime(schedule.get(0));
-            // scheduledDay.setDuration(Integer.valueOf(schedule.get(1)));
-            // scheduledDay.setEdgecut(Integer.valueOf(schedule.get(2)) == 1);
-            // }
         }
     }
 
@@ -406,7 +394,7 @@ public class Mower {
         restoreZoneMeter = true;
 
         int meter = getZoneMeter(zoneIndex);
-        for (int index = 0; zoneIndex < 4; index++) {
+        for (int index = 0; index < 4; index++) {
             setZoneMeter(index, meter);
         }
     }
@@ -414,6 +402,11 @@ public class Mower {
     private void sendCommand(Object command) {
         logger.debug("send command: {}", command);
         bridgeHandler.publishMessage(getMqttCommandIn(), command);
+    }
+
+    public void requestUpdate() {
+        logger.debug("send polling message");
+        sendCommand(EMPTY_PAYLOAD);
     }
 
     public ZonedDateTime getLastUpdate() {

@@ -154,7 +154,6 @@
 				<option value="3">Zone 4</option>
 			</options>
 		</state>
-
 	</channel-type>
 
 	<channel-type id="action-type">

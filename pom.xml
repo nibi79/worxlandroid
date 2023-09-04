@@ -23,12 +23,7 @@
     <dependency>
       <groupId>software.amazon.awssdk.crt</groupId>
       <artifactId>aws-crt</artifactId>
-      <version>0.25.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.measure</groupId>
-      <artifactId>unit-api</artifactId>
-      <version>2.2</version>
+      <version>0.25.1</version>
     </dependency>
   </dependencies>
 

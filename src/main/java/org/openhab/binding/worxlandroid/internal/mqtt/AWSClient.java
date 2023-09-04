@@ -15,13 +15,12 @@ package org.openhab.binding.worxlandroid.internal.mqtt;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.common.ThreadPoolManager;
@@ -48,7 +47,7 @@ public class AWSClient implements MqttClientConnectionEvents {
 
     private final ScheduledExecutorService scheduler = ThreadPoolManager.getScheduledPool("AWSClient");
     private final Logger logger = LoggerFactory.getLogger(AWSClient.class);
-    private final Set<AWSTopic> subscriptions = new HashSet<>();
+    private final Map<String, Consumer<MqttMessage>> subscriptions = new HashMap<>();
     private final AWSClientCallbackI clientCallback;
 
     private Optional<MqttClientConnection> connection = Optional.empty();
@@ -61,48 +60,43 @@ public class AWSClient implements MqttClientConnectionEvents {
         this.clientCallback = clientCallback;
     }
 
-    public void initialize(String clientEndpoint, String userId, String productUuid, String accessToken) {
+    public boolean initialize(String clientEndpoint, String userId, String productUuid, String accessToken) {
         this.endpoint = clientEndpoint;
         this.clientId = "WX/USER/%s/%s/%s".formatted(userId, MQTT_USERNAME, productUuid);
-        createNewConnection(accessToken);
+        return createNewConnection(accessToken);
     }
 
-    private void createNewConnection(String token) {
+    private boolean createNewConnection(String token) {
         String[] tok = token.replaceAll("_", "/").replaceAll("-", "+").split("\\.");
         String customAuthorizerSig = tok[2];
         String jwt = tok[0] + "." + tok[1];
 
         try {
-            connection = Optional.of(AwsIotMqttConnectionBuilder.newDefaultBuilder()
+            MqttClientConnection mqttClient = AwsIotMqttConnectionBuilder.newDefaultBuilder()
                     .withCustomAuthorizer(MQTT_USERNAME, CUSTOM_AUTHORIZER_NAME, customAuthorizerSig, null,
                             MQTT_USERNAME, token)
                     .withWebsockets(true).withClientId(clientId).withCleanSession(false).withEndpoint(endpoint)
-                    .withUsername(MQTT_USERNAME).withConnectionEventCallbacks(this).withKeepAliveSecs(600)
+                    .withUsername(MQTT_USERNAME).withConnectionEventCallbacks(this).withKeepAliveSecs(300)
                     .withWebsocketHandshakeTransform(handshakeArgs -> {
                         HttpRequest httpRequest = handshakeArgs.getHttpRequest();
                         httpRequest.addHeader("x-amz-customauthorizer-name", CUSTOM_AUTHORIZER_NAME);
                         httpRequest.addHeader("x-amz-customauthorizer-signature", customAuthorizerSig);
                         httpRequest.addHeader("jwt", jwt);
                         handshakeArgs.complete(httpRequest);
-                    }).build());
-        } catch (UnsupportedEncodingException e) {
-            logger.error("Error creating MQTT connection to AWS:{}", e.getMessage());
-        }
-    }
-
-    public boolean connect() {
-        return connection.map(mqttClient -> {
-            boolean sessionPresent = false;
-            try {
-                CompletableFuture<Boolean> connected = mqttClient.connect();
-                sessionPresent = connected.get();
+                    }).build();
+            mqttClient.connect().thenAccept(b -> {
+                boolean sessionPresent = b;
+                // sessionPresent = mqttClient.connect().get();
                 logger.debug("connected to {} session!", (!sessionPresent ? "new" : "existing"));
                 onConnectionResumed(sessionPresent);
-            } catch (InterruptedException | ExecutionException e) {
-                logger.error("Exception: {}", e.getLocalizedMessage());
-            }
-            return sessionPresent;
-        }).orElse(false);
+                if (sessionPresent) {
+                    connection = Optional.of(mqttClient);
+                }
+            });
+        } catch (/* InterruptedException | ExecutionException | */UnsupportedEncodingException e) {
+            logger.error("Error establishing MQTT connection to AWS: {}", e.getMessage());
+        }
+        return connection.isPresent();
     }
 
     @Override
@@ -135,28 +129,33 @@ public class AWSClient implements MqttClientConnectionEvents {
     public void onConnectionResumed(boolean sessionPresent) {
         lastResumed = LocalDateTime.now();
         logger.debug("last connection resume {}", lastResumed);
-        clientCallback.onAWSConnectionSuccess();
+        if (sessionPresent) {
+            clientCallback.onAWSConnectionSuccess();
+        } else {
+            clientCallback.onAWSConnectionClosed();
+        }
     }
 
     public void disconnect() {
         connection.ifPresent(mqttClient -> {
-            subscriptions.stream().map(AWSTopic::getTopic).forEach(mqttClient::unsubscribe);
+            // subscriptions.keySet().stream().forEach(mqttClient::unsubscribe);
             mqttClient.disconnect();
             mqttClient.close();
         });
+        connection = Optional.empty();
     }
 
-    public void subscribe(AWSTopic awsTopic) {
+    public void subscribe(String topic, Consumer<MqttMessage> handler) {
         connection.ifPresent(mqttClient -> {
-            subscriptions.add(awsTopic);
-            mqttClient.subscribe(awsTopic.getTopic(), QOS, t -> awsTopic.onMessage(t));
+            subscriptions.put(topic, handler);
+            mqttClient.subscribe(topic, QOS, handler);
         });
     }
 
-    public void unsubscribe(AWSTopic awsTopic) {
+    public void unsubscribe(String topic) {
         connection.ifPresent(mqttClient -> {
-            subscriptions.remove(awsTopic);
-            mqttClient.unsubscribe(awsTopic.getTopic());
+            subscriptions.remove(topic);
+            mqttClient.unsubscribe(topic);
         });
     }
 
@@ -168,13 +167,10 @@ public class AWSClient implements MqttClientConnectionEvents {
     }
 
     public boolean refreshConnection(String token) {
-        disconnect();
-        connection = Optional.empty();
-
         logger.debug("reconnecting...");
 
-        createNewConnection(token);
-        boolean connected = connect();
+        disconnect();
+        boolean connected = createNewConnection(token);
         if (connected) {
             logger.debug("reconnected");
             subscriptions.forEach(this::subscribe);

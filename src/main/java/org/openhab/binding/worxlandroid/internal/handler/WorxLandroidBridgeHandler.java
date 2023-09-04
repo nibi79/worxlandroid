@@ -17,9 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -30,7 +28,6 @@ import org.openhab.binding.worxlandroid.internal.api.dto.UsersMeResponse;
 import org.openhab.binding.worxlandroid.internal.config.WebApiConfiguration;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClient;
 import org.openhab.binding.worxlandroid.internal.mqtt.AWSClientCallbackI;
-import org.openhab.binding.worxlandroid.internal.mqtt.AWSTopic;
 import org.openhab.core.auth.client.oauth2.AccessTokenRefreshListener;
 import org.openhab.core.auth.client.oauth2.AccessTokenResponse;
 import org.openhab.core.auth.client.oauth2.OAuthClientService;
@@ -45,6 +42,8 @@ import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import software.amazon.awssdk.crt.mqtt.MqttMessage;
 
 /**
  * The {@link WorxLandroidBridgeHandler} is responsible for handling commands, which are
@@ -65,7 +64,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     private final AWSClient awsClient;
     private final OAuthFactory oAuthFactory;
 
-    private Optional<ScheduledFuture<?>> reconnectJob = Optional.empty();
+    // private Optional<ScheduledFuture<?>> reconnectJob = Optional.empty();
     private String accessToken = "";
 
     public WorxLandroidBridgeHandler(Bridge bridge, WorxApiHandler apiHandler, OAuthFactory oAuthFactory) {
@@ -105,12 +104,10 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
                 UsersMeResponse user = apiHandler.retrieveUsersMe(accessToken);
                 Map<String, String> properties = new HashMap<>(apiHandler.getDeserializer().toMap(user));
                 properties.put("mqtt_endpoint", productItemStatus.mqttEndpoint);
+                properties.put("uuid", productItemStatus.uuid);
                 updateProperties(properties);
             }
-
-            awsClient.initialize(productItemStatus.mqttEndpoint, productItemStatus.userId, productItemStatus.uuid,
-                    accessToken);
-            scheduler.submit(() -> awsClient.connect());
+            oAuthClientService.refreshToken();
         } catch (IOException | WebApiException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
         } catch (OAuthException | OAuthResponseException e) {
@@ -123,17 +120,17 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         logger.debug("Landroid Bridge is read-only and does not handle commands");
     }
 
-    private void disposeReconnectJob() {
-        reconnectJob.ifPresent(job -> job.cancel(true));
-        reconnectJob = Optional.empty();
-    }
+    // private void disposeReconnectJob() {
+    // reconnectJob.ifPresent(job -> job.cancel(true));
+    // reconnectJob = Optional.empty();
+    // }
 
     @Override
     public void dispose() {
         oAuthClientService.removeAccessTokenRefreshListener(this);
         oAuthFactory.ungetOAuthService(getThing().getUID().getAsString());
         awsClient.disconnect();
-        disposeReconnectJob();
+        // disposeReconnectJob();
 
         super.dispose();
     }
@@ -142,19 +139,23 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         return getThing().getStatus() == ThingStatus.ONLINE;
     }
 
-    private boolean reconnectToWorx() {
-        logger.debug("try to reconnect to AWS...");
-        return awsClient.refreshConnection(accessToken);
+    // private void reconnectToWorx() {
+    // logger.debug("try to reconnect to AWS...");
+    // if (awsClient.refreshConnection(accessToken)) {
+    // updateStatus(ThingStatus.ONLINE);
+    // } else {
+    // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Reconnection unsuccessfull");
+    // }
+    // }
+
+    public void subcribeTopic(String topic, Consumer<MqttMessage> handler) {
+        awsClient.subscribe(topic, handler);
+        logger.debug("subscribed to topic: {}", topic);
     }
 
-    public void subcribeTopic(AWSTopic awsTopic) {
-        awsClient.subscribe(awsTopic);
-        logger.debug("subscribed to topic: {}", awsTopic.getTopic());
-    }
-
-    public void unsubcribeTopic(AWSTopic awsTopic) {
-        awsClient.unsubscribe(awsTopic);
-        logger.debug("unsubscribed from topic: {}", awsTopic.getTopic());
+    public void unsubcribeTopic(String topic) {
+        awsClient.unsubscribe(topic);
+        logger.debug("unsubscribed from topic: {}", topic);
     }
 
     public void publishMessage(String topic, String cmd) {
@@ -171,33 +172,51 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
         logger.debug("AWS connection is available");
         if (!isOnline()) {
             updateStatus(ThingStatus.ONLINE);
-            disposeReconnectJob();
-            WebApiConfiguration config = getConfigAs(WebApiConfiguration.class);
-            if (config.reconnectInterval > 0) {
-                reconnectJob = Optional.of(scheduler.scheduleWithFixedDelay(() -> reconnectToWorx(), 60,
-                        config.reconnectInterval, TimeUnit.SECONDS));
-            }
         }
     }
 
     @Override
     public void onAWSConnectionClosed() {
-        logger.debug("AWS connection closed -> reconnectToWorx");
-        boolean reconnected = reconnectToWorx();
-
-        // TODO NB stauts prüfen um log nachrichten zu vermeiden???
-        if (!reconnected && getThing().getStatus() != ThingStatus.OFFLINE) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "AWS connection closed!");
+        logger.debug("AWS connection closed -> refreshing token to reconnectToWorx");
+        try {
+            oAuthClientService.refreshToken();
+        } catch (OAuthException | IOException | OAuthResponseException e) {
+            logger.warn("Error refreshing token: {}", e.getMessage());
         }
+        // TODO NB stauts prüfen um log nachrichten zu vermeiden???
+        // if (!reconnectToWorx() && getThing().getStatus() != ThingStatus.OFFLINE) {
+        // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "AWS connection closed!");
+        // }
     }
 
     @Override
     public void onAccessTokenResponse(AccessTokenResponse tokenResponse) {
-        if (isOnline()) {
-            logger.debug("refreshConnectionToken -> reconnectToWorx");
-            this.accessToken = tokenResponse.getAccessToken();
-            reconnectToWorx();
+        accessToken = tokenResponse.getAccessToken();
+        Map<String, String> properties = editProperties();
+        awsClient.disconnect();
+        if (awsClient.initialize(Objects.requireNonNull(properties.get("mqtt_endpoint")),
+                Objects.requireNonNull(properties.get("id")), Objects.requireNonNull(properties.get("uuid")),
+                accessToken)) {
+            // updateStatus(ThingStatus.ONLINE);
+        } else {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                    "Reconnection to AWS unsuccessfull");
         }
+        // if (isOnline()) {
+        // logger.debug("refreshConnectionToken -> reconnectToWorx");
+        // reconnectToWorx();
+        // }
+        // if (awsClient.refreshConnection(accessToken)) {
+        // updateStatus(ThingStatus.ONLINE);
+        // } else {
+        // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Reconnection unsuccessfull");
+        // }
+
+        // if (config.reconnectInterval > 0) {
+        // reconnectJob = Optional.of(scheduler.scheduleWithFixedDelay(() -> reconnectToWorx(), 60,
+        // config.reconnectInterval, TimeUnit.SECONDS));
+        // }
+
     }
 
     public @Nullable ProductItemStatus retrieveDeviceStatus(String serialNumber) throws WebApiException {

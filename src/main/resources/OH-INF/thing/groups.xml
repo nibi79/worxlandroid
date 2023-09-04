@@ -92,7 +92,6 @@
 			<channel id="allocation-9" typeId="zone-type">
 				<label>Zone Allocation 10</label>
 			</channel>
-
 		</channels>
 	</channel-group-type>
 
