@@ -223,9 +223,8 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         mqttCommandIn = props.get("command_in");
                         String mqttCommandOut = props.get("command_out");
 
-                        String fwv = props.get("firmware_version");
-                        float firmwareVersion = fwv != null ? Float.parseFloat(fwv) : 0;
-
+                        String firmwareVersion = props.get("firmware_version");
+                        
                         // lock channel only when supported
                         boolean lockSupported = Boolean.parseBoolean(props.get("lock"));
                         mower.setLockSupported(lockSupported);
@@ -244,13 +243,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         boolean rainDelayStart = false;
                         String rds = props.get("rain_delay_start");
                         if (rds != null) {
-                            float rainDelayStartVersion = -1;
-                            try {
-                                rainDelayStartVersion = Float.parseFloat(rds);
-                                rainDelayStart = firmwareVersion >= rainDelayStartVersion;
-                            } catch (NumberFormatException e) {
-                                logger.debug("Cannot format 'rain_delay_start': {}", rds);
-                            }
+                            String rainDelayStartVersion = "";
+                            rainDelayStartVersion = rds;
+                            rainDelayStart = firmwareVersion.compareTo(rainDelayStartVersion) >= 0;
                         }
                         mower.setRainDelayStartSupported(rainDelayStart);
                         if (!rainDelayStart) {
@@ -280,13 +275,9 @@ public class WorxLandroidMowerHandler extends BaseThingHandler implements AWSMes
                         boolean oneTimeScheduler = false;
                         String ots = props.get("one_time_scheduler");
                         if (ots != null) {
-                            float oneTimeSchedulerVersion = -1;
-                            try {
-                                oneTimeSchedulerVersion = Float.parseFloat(ots);
-                                oneTimeScheduler = firmwareVersion >= oneTimeSchedulerVersion;
-                            } catch (NumberFormatException e) {
-                                logger.debug("Cannot format 'one_time_scheduler': {}", ots);
-                            }
+                            String oneTimeSchedulerVersion = "";
+                            oneTimeSchedulerVersion = ots;
+                            oneTimeScheduler = firmwareVersion.compareTo(oneTimeSchedulerVersion) >= 0;
                         }
                         mower.setOneTimeSchedulerSupported(oneTimeScheduler);
                         if (!oneTimeScheduler) {
