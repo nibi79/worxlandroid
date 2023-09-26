@@ -17,15 +17,26 @@
 			<channel id="online-timestamp" typeId="timestamp">
 				<label>Online Status Timestamp</label>
 			</channel>
-			<channel id="poll" typeId="switch-rw">
-				<label>Poll AWS</label>
-				<description>Enables or disables polling Worx AWS</description>
-			</channel>
 			<channel id="action" typeId="action-type"/>
 			<channel id="enable" typeId="switch-rw">
 				<label>Mowing enabled</label>
 			</channel>
 			<channel id="lock" typeId="lock-type"/>
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="aws-group-type">
+		<label>Aws</label>
+		<description>MQTT connexion to AWS</description>
+		<channels>
+			<channel id="poll" typeId="switch-rw">
+				<label>Poll AWS</label>
+				<description>Enables or disables polling Worx AWS</description>
+			</channel>
+			<channel id="connected" typeId="switch-ro">
+				<label>Connected</label>
+				<description>Connection to AWS is alive</description>
+			</channel>
 		</channels>
 	</channel-group-type>
 

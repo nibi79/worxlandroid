@@ -48,7 +48,7 @@ Following options can be set for the **Bridge Worx Landroid API**:
 |-------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | username          | Username to access the WorxLandroid API.                                                                                                  |
 | password          | Password to access the WorxLandroid API.                                                                                                  |
-| reconnectInterval | Interval for reconnecting to AWS in seconds (min="30" max="599", after 10 minutes / 600 seconds of inactivity, the connection is closed). |
+
 
 Following options can be set for the **WorxLandroid Mower**:
 
@@ -92,9 +92,15 @@ Currently following **Channels** are supported on the **Worx Landroid Mower**:
 | online      | `Switch` | common#online | |
 | lastUpdateOnlineStatus | `DateTime` | common#lastUpdateOnlineStatus | |
 | enable | `Switch` | common#enable | |
-| poll | `Switch` | common#poll | |
 | action | `String` | common#action | START, STOP, HOME |
 | lock | `Switch` | common#lock | |
+
+##### AWS
+
+| Channel   | Type       | ChannelName   |
+|-----------|---- -------|---------------|
+| poll      | `Switch` | aws#poll      |
+| connected | `Switch` | aws#connected |
 
 ##### cfgCommon
 
@@ -350,10 +356,9 @@ MowerBat_Chart*, MowerBatTemp_Chart*, MowerBatStatus_Chart* : strategy = everyMi
 ```
 Bridge worxlandroid:bridge:1 "_ Worx API" @ "node0" [
    username = "myEmailAddress",
-   password = "myPassword",
-   reconnectInterval = 550
+   password = "myPassword"
 ] {
-   mower 1 "Worx Robot tondeuse" @ "outside"    [pollingInterval= 3600, refreshStatusInterval=1200, serialNumber= "20223xxxxxB0"]
+   mower 1 "Worx Mower Robot" @ "outside"    [pollingInterval= 3600, refreshStatusInterval=1200, serialNumber= "20223xxxxxB0"]
 }
 ```
 

@@ -61,25 +61,12 @@ public class WorxApiDeserializer {
                 }).create();
     }
 
-    public <T> T deserialize(Class<T> clazz, String json) throws WebApiException {
-        try {
-            @Nullable
-            T result = gson.fromJson(json, clazz);
-            if (result != null) {
-                return result;
-            }
-            throw new WebApiException("Deserialization of '%s' resulted in null value".formatted(json));
-        } catch (JsonSyntaxException e) {
-            throw new WebApiException("Unexpected error deserializing '%s'".formatted(json), e);
-        }
-    }
-
     public String toJson(Object object) {
         return gson.toJson(object);
     }
 
     public Map<String, String> toMap(Object object) {
-        Map<String, String> fromObject = gson.fromJson(gson.toJson(object), new TypeToken<HashMap<String, String>>() {
+        Map<String, String> fromObject = gson.fromJson(toJson(object), new TypeToken<HashMap<String, String>>() {
         }.getType());
         return fromObject != null ? Map.copyOf(fromObject) : Map.of();
     }

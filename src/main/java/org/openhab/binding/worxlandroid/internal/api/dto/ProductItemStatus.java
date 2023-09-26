@@ -62,6 +62,10 @@ public class ProductItemStatus {
         public double longitude;
     }
 
+    public class AppSettings {
+        boolean cellularSetupCompleted;
+    }
+
     public class City {
         public int id;
         public int countryId;
@@ -111,7 +115,7 @@ public class ProductItemStatus {
     public String registeredAt;
     public boolean online;
     public String mqttEndpoint;
-    public String appSettings;
+    public AppSettings appSettings;
     public int protocol;
     public String pendingRadioLinkValidation;
     public List<String> capabilities;

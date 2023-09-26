@@ -45,16 +45,20 @@ public class WorxLandroidBindingConstants {
     public static final String GROUP_METRICS = "metrics";
     public static final String GROUP_RAIN = "rain";
     public static final String GROUP_WIFI = "wifi";
+    public static final String GROUP_AWS = "aws";
 
     // List channel ids
     // common
     public static final String CHANNEL_ONLINE_TIMESTAMP = "online-timestamp";
-    public static final String CHANNEL_POLL = "poll";
     public static final String CHANNEL_ACTION = "action";
     public static final String CHANNEL_ENABLE = "enable";
     public static final String CHANNEL_ONLINE = "online";
     public static final String CHANNEL_LOCK = "lock";
     public static final String CHANNEL_RSSI = "rssi";
+
+    // AWS
+    public static final String CHANNEL_POLL = "poll";
+    public static final String CHANNEL_CONNECTED = "connected";
 
     // cfgCommon
     public static final String CHANNEL_TIMESTAMP = "timestamp";
@@ -82,7 +86,7 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNEL_TEMPERATURE = "temperature";
     public static final String CHANNEL_VOLTAGE = "voltage";
     public static final String CHANNEL_LEVEL = "level";
-    public static final String CHANNEL_CHARGE_CYCLE = "carge-cycle";
+    public static final String CHANNEL_CHARGE_CYCLE = "charge-cycle";
     public static final String CHANNEL_CHARGE_CYCLE_CURRENT = "charge-cycle-current";
     public static final String CHANNEL_CHARGING = "charging";
 

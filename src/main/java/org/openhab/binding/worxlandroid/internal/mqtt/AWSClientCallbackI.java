@@ -31,4 +31,9 @@ public interface AWSClientCallbackI {
      * callback method on connection closed
      */
     public void onAWSConnectionClosed();
+
+    /**
+     * callback method on connection failed
+     */
+    public void onAWSConnectionFailed();
 }

@@ -40,9 +40,16 @@ import com.google.gson.reflect.TypeToken;
 @NonNullByDefault
 @Component(service = WorxApiHandler.class)
 public class WorxApiHandler {
-    private static final String APIURL_BASE = "https://api.worxlandroid.com/api/v2/";
-    private static final String APIURL_PRODUCTITEMS = APIURL_BASE + "product-items";
-    private static final String APIURL_USER_ME = APIURL_BASE + "users/me";
+    private static final String URL_BASE = "https://api.worxlandroid.com/api/v2/";
+    private static final String URL_PRODUCT_ITEMS = URL_BASE + "product-items";
+    private static final String URL_USERS_ME = URL_BASE + "users/me";
+
+    private static final Type PRODUCT_ITEM_STATUS_LIST = new TypeToken<List<ProductItemStatus>>() {
+    }.getType();
+    private static final Type PRODUCT_ITEM_STATUS = new TypeToken<ProductItemStatus>() {
+    }.getType();
+    private static final Type USERS_ME = new TypeToken<UsersMeResponse>() {
+    }.getType();
 
     private final Logger logger = LoggerFactory.getLogger(WorxApiHandler.class);
     private final HttpClient httpClient;
@@ -55,7 +62,7 @@ public class WorxApiHandler {
         this.deserializer = deserializer;
     }
 
-    private <T> T callWebApiGet(String url, String accessToken, Type type) throws WebApiException {
+    private <T> T webApiGet(String url, String accessToken, Type type) throws WebApiException {
         Request request = httpClient.newRequest(url).method("GET");
         request.header("Authorization", "Bearer %s".formatted(accessToken));
         request.header("Content-Type", "application/json; utf-8");
@@ -65,16 +72,11 @@ public class WorxApiHandler {
             ContentResponse response = request.send();
             if (response.getStatus() == 200) {
                 String result = response.getContentAsString();
-
-                // hiding secret data for log
-                logger.debug("Worx Landroid WebApi Response: {}",
-                        result.replaceAll("_token\":\"[^\"]*\"", "_token\":\"***hidden for log***\"")
-                                .replaceAll("pkcs12\":\"[^\"]*\"", "pkcs12\":\"***hidden for log***\""));
+                logger.debug("Worx Landroid Api Response: {}", result);
                 return deserializer.deserialize(type, result);
-            } else {
-                throw new WebApiException(
-                        String.format("Error calling Worx Landroid WebApi! HTTP Status = %s", response.getStatus()));
             }
+            throw new WebApiException(
+                    "Error calling Worx Landroid Api! HTTP Status = %d".formatted(response.getStatus()));
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
             throw new WebApiException(e);
         }
@@ -84,21 +86,15 @@ public class WorxApiHandler {
         return deserializer;
     }
 
-    public List<ProductItemStatus> retrieveDeviceStatus(String accessToken) throws WebApiException {
-        Type type = new TypeToken<List<ProductItemStatus>>() {
-        }.getType();
-        return callWebApiGet("%s?status=1".formatted(APIURL_PRODUCTITEMS), accessToken, type);
+    public List<ProductItemStatus> retrieveDeviceStatus(String token) throws WebApiException {
+        return webApiGet("%s?status=1".formatted(URL_PRODUCT_ITEMS), token, PRODUCT_ITEM_STATUS_LIST);
     }
 
-    public ProductItemStatus retrieveDeviceStatus(String accessToken, String serialNumber) throws WebApiException {
-        Type type = new TypeToken<ProductItemStatus>() {
-        }.getType();
-        return callWebApiGet("%s/%s?status=1".formatted(APIURL_PRODUCTITEMS, serialNumber), accessToken, type);
+    public ProductItemStatus retrieveDeviceStatus(String token, String serialNumber) throws WebApiException {
+        return webApiGet("%s/%s?status=1".formatted(URL_PRODUCT_ITEMS, serialNumber), token, PRODUCT_ITEM_STATUS);
     }
 
-    public UsersMeResponse retrieveUsersMe(String accessToken) throws WebApiException {
-        Type type = new TypeToken<UsersMeResponse>() {
-        }.getType();
-        return callWebApiGet(APIURL_USER_ME, accessToken, type);
+    public UsersMeResponse retrieveMe(String token) throws WebApiException {
+        return webApiGet(URL_USERS_ME, token, USERS_ME);
     }
 }

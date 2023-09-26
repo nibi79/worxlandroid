@@ -17,6 +17,7 @@
 			<channel-group id="config" typeId="config-group-type"/>
 			<channel-group id="multi-zones" typeId="multi-zones-group-type"/>
 			<channel-group id="schedule" typeId="sched-group-type"/>
+			<channel-group id="aws" typeId="aws-group-type"/>
 			<channel-group id="sunday" typeId="day-sched-group-type">
 				<label>Sunday Schedule</label>
 			</channel-group>

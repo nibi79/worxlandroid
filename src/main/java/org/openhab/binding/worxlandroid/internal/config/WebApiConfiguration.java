@@ -18,17 +18,15 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * The {@link WebApiConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
- * @author Gaël L'hopital - Added NonNullByDefault, removed setters
+ * @author Gaël L'hopital - Added NonNullByDefault, removed setters, removed reconnectInterval
  */
 @NonNullByDefault
 public class WebApiConfiguration {
     public String username = "";
     public String password = "";
-    public int reconnectInterval = 0;
 
     @Override
     public String toString() {
-        return "WebApiConfiguration [username='%s', password='*****', reconnectInterval='%d']".formatted(username,
-                reconnectInterval);
+        return "WebApiConfiguration [username='%s', password='*****']".formatted(username);
     }
 }
