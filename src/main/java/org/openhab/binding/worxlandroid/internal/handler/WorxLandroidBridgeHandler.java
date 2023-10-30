@@ -50,10 +50,8 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class WorxLandroidBridgeHandler extends BaseBridgeHandler
-        implements AccessTokenRefreshListener, ThingHandlerHelper
-// AWSClientCallbackI,
-{
-    private static final String URL_OAUTH_TOKEN = "https://id.eu.worx.com/" + "oauth/token";
+        implements AccessTokenRefreshListener, ThingHandlerHelper {
+    private static final String URL_OAUTH_TOKEN = "https://id.worx.com/oauth/token";
     private static final String CLIENT_ID = "013132A8-DB34-4101-B993-3C8348EA0EBC";
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidBridgeHandler.class);
@@ -66,6 +64,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     private int retryCount = 3;
     private int retryDelayS = 1;
     private Optional<ScheduledFuture<?>> tokenRefreshJob = Optional.empty();
+    private Optional<ScheduledFuture<?>> connectionJob = Optional.empty();
 
     public WorxLandroidBridgeHandler(Bridge bridge, WorxApiHandler apiHandler, OAuthFactory oAuthFactory) {
         super(bridge);
@@ -91,9 +90,13 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
             return;
         }
 
+        scheduler.execute(() -> initiateConnection(config.username, config.password));
+    }
+
+    private void initiateConnection(String username, String password) {
+        stopConnectionJob();
         try {
-            accessToken = oAuthClientService
-                    .getAccessTokenByResourceOwnerPasswordCredentials(config.username, config.password, "*")
+            accessToken = oAuthClientService.getAccessTokenByResourceOwnerPasswordCredentials(username, password, "*")
                     .getAccessToken();
 
             if (firstLaunch()) {
@@ -104,7 +107,20 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
             updateStatus(ThingStatus.ONLINE);
         } catch (IOException | WebApiException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
-        } catch (OAuthException | OAuthResponseException e) {
+        } catch (OAuthResponseException e) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/oauth-connection-error");
+        } catch (OAuthException e) {
+            Throwable cause = e.getCause();
+            if (cause != null) {
+                String message = cause.getMessage();
+                if (message != null && message.contains("http code 403")) {
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                            "@text/oauth-connection-delayed");
+                    connectionJob = Optional
+                            .of(scheduler.schedule(() -> initiateConnection(username, password), 1, TimeUnit.HOURS));
+                    return;
+                }
+            }
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/oauth-connection-error");
         }
     }
@@ -116,6 +132,7 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
     @Override
     public void dispose() {
+        stopConnectionJob();
         stopTokenRefreshJob();
 
         oAuthClientService.removeAccessTokenRefreshListener(this);
@@ -126,6 +143,11 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
     private void stopTokenRefreshJob() {
         tokenRefreshJob.ifPresent(job -> job.cancel(true));
         tokenRefreshJob = Optional.empty();
+    }
+
+    private void stopConnectionJob() {
+        connectionJob.ifPresent(job -> job.cancel(true));
+        connectionJob = Optional.empty();
     }
 
     @Override
@@ -166,6 +188,14 @@ public class WorxLandroidBridgeHandler extends BaseBridgeHandler
 
     public List<ProductItemStatus> retrieveAllDevices() throws WebApiException {
         return apiHandler.retrieveDeviceStatus(accessToken);
+    }
+
+    public boolean resetBladeTime(String serialNumber) {
+        return apiHandler.resetBladeTime(accessToken, serialNumber);
+    }
+
+    public boolean resetBatteryCycles(String serialNumber) {
+        return apiHandler.resetBatteryCycles(accessToken, serialNumber);
     }
 
     @Override

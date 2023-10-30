@@ -27,6 +27,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public class ScheduledDay {
     public static final ScheduledDay BLANK = new ScheduledDay("00:00", 0, false);
+
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     private static final int DEFAULT_DURATION = 15;
 
@@ -81,7 +82,7 @@ public class ScheduledDay {
         setDuration(newStatus && duration == 0 ? durationRestore : 0);
     }
 
-    public Object[] getArray() {
+    public Object[] asArray() {
         return new Object[] { startTime.format(TIME_FORMAT), duration, edgecut ? 1 : 0 };
     }
 }

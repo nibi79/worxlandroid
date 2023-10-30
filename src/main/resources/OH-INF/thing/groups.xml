@@ -108,16 +108,16 @@
 
 	<channel-group-type id="battery-group-type">
 		<label>Battery</label>
-		<description>Data battery channels of your mower</description>
+		<description>Battery channels of your mower</description>
 		<channels>
 			<channel id="temperature" typeId="battery-temp-type"/>
 			<channel id="voltage" typeId="voltage-type"/>
 			<channel id="level" typeId="system.battery-level"/>
-			<channel id="charge-cycle" typeId="number-ro">
-				<label>Battery Charge Cycle Total</label>
+			<channel id="charge-cycles" typeId="number-ro">
+				<label>Charge Cycles</label>
 			</channel>
-			<channel id="charge-cycle-current" typeId="number-ro">
-				<label>Battery Charge Cycle Current</label>
+			<channel id="charge-cycles-total" typeId="number-ro">
+				<label>Total Charge Cycles</label>
 			</channel>
 			<channel id="charging" typeId="charging-type"/>
 		</channels>
@@ -141,15 +141,15 @@
 
 	<channel-group-type id="metrics-group-type">
 		<label>Metrics</label>
-		<description>Data st channels of your mower</description>
+		<description>Stat channels of your mower</description>
 		<channels>
-			<channel id="total-blade-time" typeId="metrics-duration">
-				<label>Total Blade Time</label>
-			</channel>
-			<channel id="current-blade-time" typeId="metrics-duration">
+			<channel id="blade-time" typeId="metrics-duration">
 				<label>Current Blade Time</label>
 			</channel>
-			<channel id="total-distance" typeId="distance-type"/>
+			<channel id="blade-time-total" typeId="metrics-duration">
+				<label>Total Blade Time</label>
+			</channel>
+			<channel id="distance" typeId="distance-type"/>
 			<channel id="total-time" typeId="metrics-duration">
 				<label>Total Time</label>
 			</channel>

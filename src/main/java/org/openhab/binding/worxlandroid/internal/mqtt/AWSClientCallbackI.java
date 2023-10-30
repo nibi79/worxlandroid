@@ -13,6 +13,7 @@
 package org.openhab.binding.worxlandroid.internal.mqtt;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * {@link AWSClientCallbackI} Callback for AWS connection events
@@ -35,5 +36,5 @@ public interface AWSClientCallbackI {
     /**
      * callback method on connection failed
      */
-    public void onAWSConnectionFailed();
+    public void onAWSConnectionFailed(@Nullable String message);
 }

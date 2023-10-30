@@ -21,6 +21,8 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpMethod;
 import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus;
 import org.openhab.binding.worxlandroid.internal.api.dto.UsersMeResponse;
 import org.openhab.core.io.net.http.HttpClientFactory;
@@ -62,10 +64,15 @@ public class WorxApiHandler {
         this.deserializer = deserializer;
     }
 
-    private <T> T webApiGet(String url, String accessToken, Type type) throws WebApiException {
-        Request request = httpClient.newRequest(url).method("GET");
-        request.header("Authorization", "Bearer %s".formatted(accessToken));
-        request.header("Content-Type", "application/json; utf-8");
+    private Request buildRequest(String url, String accessToken, HttpMethod method) {
+        Request request = httpClient.newRequest(url).method(method);
+        request.header(HttpHeader.AUTHORIZATION, "Bearer %s".formatted(accessToken));
+        request.header(HttpHeader.CONTENT_TYPE, "application/json; utf-8");
+        return request;
+    }
+
+    private <T> T apiGet(String url, String accessToken, Type type) throws WebApiException {
+        Request request = buildRequest(url, accessToken, HttpMethod.GET);
 
         logger.debug("URI: {}", request.getURI().toString());
         try {
@@ -82,19 +89,39 @@ public class WorxApiHandler {
         }
     }
 
+    private boolean apiPost(String url, String accessToken) {
+        Request request = buildRequest(url, accessToken, HttpMethod.POST);
+
+        logger.debug("URI: {}", request.getURI().toString());
+        try {
+            return request.send().getStatus() == 200;
+        } catch (InterruptedException | TimeoutException | ExecutionException e) {
+            logger.error("Error posting at {}: {}", request.getURI().toString(), e.getMessage());
+        }
+        return false;
+    }
+
     public WorxApiDeserializer getDeserializer() {
         return deserializer;
     }
 
     public List<ProductItemStatus> retrieveDeviceStatus(String token) throws WebApiException {
-        return webApiGet("%s?status=1".formatted(URL_PRODUCT_ITEMS), token, PRODUCT_ITEM_STATUS_LIST);
+        return apiGet("%s?status=1".formatted(URL_PRODUCT_ITEMS), token, PRODUCT_ITEM_STATUS_LIST);
     }
 
     public ProductItemStatus retrieveDeviceStatus(String token, String serialNumber) throws WebApiException {
-        return webApiGet("%s/%s?status=1".formatted(URL_PRODUCT_ITEMS, serialNumber), token, PRODUCT_ITEM_STATUS);
+        return apiGet("%s/%s?status=1".formatted(URL_PRODUCT_ITEMS, serialNumber), token, PRODUCT_ITEM_STATUS);
     }
 
     public UsersMeResponse retrieveMe(String token) throws WebApiException {
-        return webApiGet(URL_USERS_ME, token, USERS_ME);
+        return apiGet(URL_USERS_ME, token, USERS_ME);
+    }
+
+    public boolean resetBladeTime(String token, String serialNumber) {
+        return apiPost("%s/%s/counters/blade/reset".formatted(URL_PRODUCT_ITEMS, serialNumber), token);
+    }
+
+    public boolean resetBatteryCycles(String token, String serialNumber) {
+        return apiPost("%s/%s/counters/battery/reset".formatted(URL_PRODUCT_ITEMS, serialNumber), token);
     }
 }

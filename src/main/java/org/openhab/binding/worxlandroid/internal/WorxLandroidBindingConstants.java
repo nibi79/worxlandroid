@@ -86,8 +86,8 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNEL_TEMPERATURE = "temperature";
     public static final String CHANNEL_VOLTAGE = "voltage";
     public static final String CHANNEL_LEVEL = "level";
-    public static final String CHANNEL_CHARGE_CYCLE = "charge-cycle";
-    public static final String CHANNEL_CHARGE_CYCLE_CURRENT = "charge-cycle-current";
+    public static final String CHANNEL_CHARGE_CYCLES = "charge-cycles";
+    public static final String CHANNEL_CHARGE_CYCLES_TOTAL = "charge-cycles-total";
     public static final String CHANNEL_CHARGING = "charging";
 
     // datDmp
@@ -96,9 +96,9 @@ public class WorxLandroidBindingConstants {
     public static final String CHANNEL_YAW = "yaw";
 
     // datSt
-    public static final String CHANNEL_TOTAL_BLADE_TIME = "total-blade-time";
-    public static final String CHANNEL_CURRENT_BLADE_TIME = "current-blade-time";
-    public static final String CHANNEL_TOTAL_DISTANCE = "total-distance";
+    public static final String CHANNEL_BLADE_TIME = "blade-time";
+    public static final String CHANNEL_BLADE_TIME_TOTAL = "blade-time-total";
+    public static final String CHANNEL_DISTANCE = "distance";
     public static final String CHANNEL_TOTAL_TIME = "total-time";
 
     // datRain

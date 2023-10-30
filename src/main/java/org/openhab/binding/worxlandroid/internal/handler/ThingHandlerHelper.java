@@ -109,7 +109,7 @@ public interface ThingHandlerHelper {
 
     public default void updateChannelEnum(String group, String channelId, @Nullable Enum<?> value) {
         String name = value != null ? value.name() : null;
-        updateChannelString(group, channelId, name == null || name.equals("UNKNOWN") ? null : name);
+        updateChannelString(group, channelId, name == null || "UNKNOWN".equals(name) ? null : name);
     }
 
     public default void updateChannelDecimal(String group, String channelId, @Nullable Number value) {

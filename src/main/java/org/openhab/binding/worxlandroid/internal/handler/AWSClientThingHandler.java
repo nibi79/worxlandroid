@@ -15,6 +15,8 @@ package org.openhab.binding.worxlandroid.internal.handler;
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.*;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -48,6 +50,7 @@ import software.amazon.awssdk.crt.mqtt.MqttMessage;
 @NonNullByDefault
 public abstract class AWSClientThingHandler extends BaseThingHandler
         implements AWSClientCallbackI, ThingHandlerHelper, AccessTokenRefreshListener {
+    private static Duration MIN_PUBLISH_DELAY_S = Duration.ofSeconds(2);
 
     private final Logger logger = LoggerFactory.getLogger(AWSClientThingHandler.class);
     private final AWSClient awsClient;
@@ -58,6 +61,9 @@ public abstract class AWSClientThingHandler extends BaseThingHandler
     protected String userId = "";
     protected String topic = "";
     protected String token = "";
+
+    private Instant lastPublishTS = Instant.MIN;
+    private int lastReqHash = 0;
 
     public AWSClientThingHandler(Thing thing, WorxApiDeserializer deserializer) {
         super(thing);
@@ -118,17 +124,19 @@ public abstract class AWSClientThingHandler extends BaseThingHandler
 
     @Override
     public void onAWSConnectionClosed() {
-        logger.debug("AWS connection closed -> refreshing token to reconnectToWorx");
-        updateChannelOnOff(GROUP_AWS, CHANNEL_CONNECTED, awsClient.isConnected());
+        // Don't try to reconnect if the connection is closed by the thing being disable
+        if (thing.getStatus() == ThingStatus.ONLINE) {
+            updateChannelOnOff(GROUP_AWS, CHANNEL_CONNECTED, awsClient.isConnected());
 
-        WorxLandroidBridgeHandler bridgeHandler = getBridgeHandler(getBridge(), WorxLandroidBridgeHandler.class);
-        if (bridgeHandler != null) {
-            bridgeHandler.requestTokenRefresh();
+            WorxLandroidBridgeHandler bridgeHandler = getBridgeHandler(getBridge(), WorxLandroidBridgeHandler.class);
+            if (bridgeHandler != null) {
+                bridgeHandler.requestTokenRefresh();
+            }
         }
     }
 
     @Override
-    public void onAWSConnectionFailed() {
+    public void onAWSConnectionFailed(@Nullable String message) {
         updateChannelOnOff(GROUP_AWS, CHANNEL_CONNECTED, awsClient.isConnected());
         updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE, "No AWS Connection");
     }
@@ -144,6 +152,16 @@ public abstract class AWSClientThingHandler extends BaseThingHandler
     }
 
     public void publishMessage(String topic, String cmd) {
+        Instant now = Instant.now();
+        int requestHash = topic.hashCode() + cmd.hashCode();
+        if (requestHash == lastReqHash) {
+            if (now.isBefore(lastPublishTS.plus(MIN_PUBLISH_DELAY_S))) {
+                logger.debug("Won't post again too soon");
+                return;
+            }
+        }
+        lastPublishTS = now;
+        lastReqHash = requestHash;
         logger.debug("publish on topic: '{}' - message: '{}'", topic, cmd);
         awsClient.publish(topic, cmd);
     }
@@ -185,11 +203,7 @@ public abstract class AWSClientThingHandler extends BaseThingHandler
             logger.debug("Some data missing to initiate AWS connection");
             return;
         }
-        try {
-            awsClient.connect(endpoint, userId, uuid, token);
-        } catch (WebApiException e) {
-            logger.warn("Error connection to AWS");
-        }
+        awsClient.connect(endpoint, userId, uuid, token);
         updateStatus(ThingStatus.ONLINE);
         updateChannelOnOff(GROUP_AWS, CHANNEL_CONNECTED, awsClient.isConnected());
     }

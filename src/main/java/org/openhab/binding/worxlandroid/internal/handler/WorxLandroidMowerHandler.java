@@ -75,8 +75,6 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class WorxLandroidMowerHandler extends AWSClientThingHandler {
-    private static final String BATTERY_CHARGE_CYCLES_RESET = "batteryChargeCyclesReset";
-    private static final String BLADE_WORK_TIME_RESET = "bladeWorkTimeReset";
     private static final String EMPTY_PAYLOAD = "{}";
 
     private final Logger logger = LoggerFactory.getLogger(WorxLandroidMowerHandler.class);
@@ -195,21 +193,23 @@ public class WorxLandroidMowerHandler extends AWSClientThingHandler {
      */
     private void startScheduledJobs(WorxLandroidBridgeHandler bridgeHandler, Mower theMower,
             MowerConfiguration config) {
-        refreshJob = Optional
-                .ofNullable(config.refreshStatusInterval <= 0 ? null : scheduler.scheduleWithFixedDelay(() -> {
-                    try {
-                        ProductItemStatus product = bridgeHandler.retrieveDeviceStatus(config.serialNumber);
-                        updateChannelDateTime(GROUP_COMMON, CHANNEL_ONLINE_TIMESTAMP, ZonedDateTime.now());
-                        updateChannelOnOff(GROUP_COMMON, CHANNEL_ONLINE, product != null && product.online);
-                        updateStatus(product != null ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
-                    } catch (WebApiException e) {
-                        logger.debug("Refreshing Thing {} failed, handler might be OFFLINE", config.serialNumber);
-                    }
-                }, 3, config.refreshStatusInterval, TimeUnit.SECONDS));
+        if (config.refreshStatusInterval > 0) {
+            refreshJob = Optional.of(scheduler.scheduleWithFixedDelay(() -> {
+                try {
+                    ProductItemStatus product = bridgeHandler.retrieveDeviceStatus(config.serialNumber);
+                    updateChannelDateTime(GROUP_COMMON, CHANNEL_ONLINE_TIMESTAMP, ZonedDateTime.now());
+                    updateChannelOnOff(GROUP_COMMON, CHANNEL_ONLINE, product != null && product.online);
+                    updateStatus(product != null ? ThingStatus.ONLINE : ThingStatus.OFFLINE);
+                } catch (WebApiException e) {
+                    logger.debug("Refreshing Thing {} failed, handler might be OFFLINE", config.serialNumber);
+                }
+            }, 3, config.refreshStatusInterval, TimeUnit.SECONDS));
+        }
 
-        pollingJob = Optional.ofNullable(config.pollingInterval <= 0 ? null
-                : scheduler.scheduleWithFixedDelay(() -> sendCommand(theMower, EMPTY_PAYLOAD), 5,
-                        config.pollingInterval, TimeUnit.SECONDS));
+        if (config.pollingInterval > 0) {
+            pollingJob = Optional.of(scheduler.scheduleWithFixedDelay(() -> sendCommand(theMower, EMPTY_PAYLOAD), 5,
+                    config.pollingInterval, TimeUnit.SECONDS));
+        }
     }
 
     @Override
@@ -244,16 +244,8 @@ public class WorxLandroidMowerHandler extends AWSClientThingHandler {
             } else if (CHANNEL_DELAY.equals(channelId)) {
                 int delaySec = commandToInt(command, Units.SECOND);
                 sendCommand(theMower, new SetRainDelay(delaySec));
-            } else if (CHANNEL_CURRENT_BLADE_TIME.equals(channelId)) {
-                theMower.getStats().ifPresent(stats -> {
-                    logger.debug("Storing current blade time");
-                    thing.setProperty(BLADE_WORK_TIME_RESET, Long.toString(stats.totalBladeTime));
-                });
-            } else if (CHANNEL_CHARGE_CYCLE_CURRENT.equals(channelId)) {
-                theMower.getBattery().ifPresent(battery -> {
-                    logger.debug("Storing current charge cycles");
-                    thing.setProperty(BATTERY_CHARGE_CYCLES_RESET, Long.toString(battery.chargeCycle));
-                });
+            } else if (CHANNEL_BLADE_TIME.equals(channelId) || CHANNEL_CHARGE_CYCLES.equals(channelId)) {
+                resetStat(channelId, theMower.getSerialNumber());
             } else {
                 logger.debug("command for channel {} not supported: {}", channelId, command);
             }
@@ -393,11 +385,6 @@ public class WorxLandroidMowerHandler extends AWSClientThingHandler {
 
     private void sendCommand(Mower theMower, Object command) {
         logger.debug("send command: {}", command);
-
-        // WorxLandroidBridgeHandler bridgeHandler = getWorxLandroidBridgeHandler();
-        // if (bridgeHandler != null) {
-        // bridgeHandler.publishMessage(theMower.getMqttCommandIn(), command);
-        // }
         publishMessage(theMower.getMqttCommandIn(), command);
     }
 
@@ -416,37 +403,25 @@ public class WorxLandroidMowerHandler extends AWSClientThingHandler {
         updateChannelEnum(GROUP_COMMON, CHANNEL_ERROR_CODE, theMower.getPayloadDat().errorCode);
         updateChannelDecimal(GROUP_MULTI_ZONES, CHANNEL_LAST_ZONE, theMower.getLastZone());
 
+        updateChannelDecimal(GROUP_BATTERY, CHANNEL_CHARGE_CYCLES, theMower.getCurrentChargeCycles());
+        updateChannelDecimal(GROUP_BATTERY, CHANNEL_CHARGE_CYCLES_TOTAL, theMower.getTotalChargeCycles());
+        updateChannelQuantity(GROUP_METRICS, CHANNEL_BLADE_TIME, theMower.getCurrentBladeTime(), Units.MINUTE);
+        updateChannelQuantity(GROUP_METRICS, CHANNEL_BLADE_TIME_TOTAL, theMower.getTotalBladeTime(), Units.MINUTE);
+
         theMower.getBattery().ifPresent(battery -> {
             updateChannelQuantity(GROUP_BATTERY, CHANNEL_TEMPERATURE, battery.temp != -1 ? battery.temp : null,
                     SIUnits.CELSIUS);
             updateChannelQuantity(GROUP_BATTERY, CHANNEL_VOLTAGE, battery.voltage != -1 ? battery.voltage : null,
                     Units.VOLT);
             updateChannelDecimal(GROUP_BATTERY, CHANNEL_LEVEL, battery.level);
-
-            long cyclesCurrent = battery.chargeCycle;
-            updateChannelDecimal(GROUP_BATTERY, CHANNEL_CHARGE_CYCLE, cyclesCurrent);
-
-            String cyclesReset = getThing().getProperties().get(BATTERY_CHARGE_CYCLES_RESET);
-            cyclesCurrent -= (cyclesReset != null && !cyclesReset.isEmpty()) ? Long.valueOf(cyclesReset) : 0;
-            updateChannelDecimal(GROUP_BATTERY, CHANNEL_CHARGE_CYCLE_CURRENT, cyclesCurrent);
-
             updateChannelOnOff(GROUP_BATTERY, CHANNEL_CHARGING, battery.charging);
         });
 
         theMower.getStats().ifPresent(stats -> {
-            if (stats.totalBladeTime != -1) {
-                long bladeTime = stats.totalBladeTime;
-                updateChannelQuantity(GROUP_METRICS, CHANNEL_TOTAL_BLADE_TIME, bladeTime, Units.MINUTE);
-
-                String timeReset = getThing().getProperties().get(BLADE_WORK_TIME_RESET);
-                bladeTime -= timeReset != null && !timeReset.isEmpty() ? Long.valueOf(timeReset) : 0;
-                updateChannelQuantity(GROUP_METRICS, CHANNEL_CURRENT_BLADE_TIME, bladeTime, Units.MINUTE);
-            }
-
-            updateChannelQuantity(GROUP_METRICS, CHANNEL_TOTAL_DISTANCE,
-                    stats.totalDistance != -1 ? stats.totalDistance : null, SIUnits.METRE);
-            updateChannelQuantity(GROUP_METRICS, CHANNEL_TOTAL_TIME, stats.totalTime != -1 ? stats.totalTime : null,
-                    Units.MINUTE);
+            updateChannelQuantity(GROUP_METRICS, CHANNEL_DISTANCE,
+                    stats.distanceCovered != -1 ? stats.distanceCovered : null, SIUnits.METRE);
+            updateChannelQuantity(GROUP_METRICS, CHANNEL_TOTAL_TIME,
+                    stats.mowerWorkTime != -1 ? stats.mowerWorkTime : null, Units.MINUTE);
         });
 
         int rssi = theMower.getPayloadDat().wifiQuality;
@@ -585,5 +560,18 @@ public class WorxLandroidMowerHandler extends AWSClientThingHandler {
             updateStateCfg(theMower);
             updateStateDat(theMower);
         });
+    }
+
+    private boolean resetStat(String channelId, String serialNumber) {
+        WorxLandroidBridgeHandler bridgeHandler = getBridgeHandler(getBridge(), WorxLandroidBridgeHandler.class);
+        if (bridgeHandler != null) {
+            logger.debug("Resetting {}", channelId);
+            if (CHANNEL_BLADE_TIME.equals(channelId)) {
+                bridgeHandler.resetBladeTime(serialNumber);
+            } else {
+                bridgeHandler.resetBatteryCycles(serialNumber);
+            }
+        }
+        return true;
     }
 }

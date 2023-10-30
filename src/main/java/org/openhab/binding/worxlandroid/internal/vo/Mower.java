@@ -59,7 +59,7 @@ public class Mower {
     private final int[] zoneMeter;
     private final int[] zoneMeterRestore;
     private final int[] allocations = new int[10];
-    private final List<Map<WorxLandroidDayCodes, @Nullable ScheduledDay>> schedules = new ArrayList<Map<WorxLandroidDayCodes, @Nullable ScheduledDay>>();
+    private final List<Map<WorxLandroidDayCodes, @Nullable ScheduledDay>> schedules = new ArrayList<>();
 
     private boolean multiZoneEnable;
     private int timeExtension;
@@ -146,7 +146,7 @@ public class Mower {
         Object[] result = new Object[7];
         for (WorxLandroidDayCodes dayCode : WorxLandroidDayCodes.values()) {
             ScheduledDay schedule = schedules.get(dayCode);
-            result[dayCode.code] = schedule != null ? schedule.getArray() : ScheduledDay.BLANK.getArray();
+            result[dayCode.code] = schedule != null ? schedule.asArray() : ScheduledDay.BLANK.asArray();
         }
         return result;
     }
@@ -368,6 +368,22 @@ public class Mower {
 
     public int getLastZone() {
         return getAllocation(getPayloadDat().lastZone);
+    }
+
+    public long getCurrentBladeTime() {
+        return getTotalBladeTime() - product.bladeWorkTimeReset;
+    }
+
+    public long getTotalBladeTime() {
+        return lastStatus.payload.dat.st.bladeWorkTime;
+    }
+
+    public int getCurrentChargeCycles() {
+        return product.batteryChargeCycles - product.batteryChargeCyclesReset;
+    }
+
+    public int getTotalChargeCycles() {
+        return lastStatus.payload.dat.battery.chargeCycle;
     }
 
     public WorxLandroidStatusCodes getStatusCode() {

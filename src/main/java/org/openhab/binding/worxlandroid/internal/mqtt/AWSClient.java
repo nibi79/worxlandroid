@@ -17,13 +17,13 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.worxlandroid.internal.api.WebApiException;
 import org.openhab.core.common.ThreadPoolManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,15 +63,15 @@ public class AWSClient implements MqttClientConnectionEvents {
         this.clientCallback = clientCallback;
     }
 
-    public void connect(String endpoint, String userId, String productUuid, String token) throws WebApiException {
+    public void connect(String endpoint, String userId, String productUuid, String token) {
         String[] tok = token.replaceAll("_", "/").replaceAll("-", "+").split("\\.");
 
         try {
             MqttClientConnection connection = AwsIotMqttConnectionBuilder.newDefaultBuilder()
-                    .withCustomAuthorizer(MQTT_USERNAME, AUTHORIZER_NAME, tok[2], null, MQTT_USERNAME, token)
+                    // .withCustomAuthorizer(MQTT_USERNAME, AUTHORIZER_NAME, tok[2], null, MQTT_USERNAME, token)
                     .withClientId("WX/USER/%s/%s/%s".formatted(userId, MQTT_USERNAME, productUuid))
-                    .withCleanSession(false).withEndpoint(endpoint).withUsername(MQTT_USERNAME)
-                    .withConnectionEventCallbacks(this).withKeepAliveSecs(300).withWebsockets(true)
+                    .withEndpoint(endpoint).withUsername(MQTT_USERNAME).withCleanSession(false).withKeepAliveSecs(300)
+                    .withConnectionEventCallbacks(this).withWebsockets(true)
                     .withWebsocketHandshakeTransform(handshakeArgs -> {
                         HttpRequest httpRequest = handshakeArgs.getHttpRequest();
                         httpRequest.addHeader("x-amz-customauthorizer-name", AUTHORIZER_NAME);
@@ -79,10 +79,10 @@ public class AWSClient implements MqttClientConnectionEvents {
                         httpRequest.addHeader("jwt", tok[0] + "." + tok[1]);
                         handshakeArgs.complete(httpRequest);
                     }).build();
-            connection.connect();
+            connection.connect().get();
             this.mqttClient = connection;
-        } catch (MqttException | UnsupportedEncodingException e) {
-            throw new WebApiException("Error establishing MQTT connection to AWS", e);
+        } catch (MqttException | UnsupportedEncodingException | InterruptedException | ExecutionException e) {
+            clientCallback.onAWSConnectionFailed(e.getMessage());
         }
     }
 
@@ -133,8 +133,7 @@ public class AWSClient implements MqttClientConnectionEvents {
     public void onConnectionFailure(@NonNullByDefault({}) OnConnectionFailureReturn data) {
         connected = false;
         if (data.getErrorCode() == 5134) {
-            // Likely we're banned for 24h
-            clientCallback.onAWSConnectionFailed();
+            clientCallback.onAWSConnectionFailed("Error code 5134: banned 24h");
         } else {
             logger.debug("{}", data.toString());
             clientCallback.onAWSConnectionClosed();

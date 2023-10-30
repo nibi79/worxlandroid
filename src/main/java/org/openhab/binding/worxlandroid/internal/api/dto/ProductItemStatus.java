@@ -135,14 +135,17 @@ public class ProductItemStatus {
     public boolean autoSchedule;
     public boolean improvement;
     public boolean diagnostic;
-    public int distanceCovered;
-    public int mowerWorkTime;
-    public int bladeWorkTime;
-    public int bladeWorkTimeReset;
+    public long distanceCovered;
+    public long mowerWorkTime;
+
+    public long bladeWorkTime;
+    public long bladeWorkTimeReset;
     public ZonedDateTime bladeWorkTimeResetAt;
+
     public int batteryChargeCycles;
     public int batteryChargeCyclesReset;
     public ZonedDateTime batteryChargeCyclesResetAt;
+
     public ZonedDateTime createdAt;
     public ZonedDateTime updatedAt;
     public LastStatus lastStatus;

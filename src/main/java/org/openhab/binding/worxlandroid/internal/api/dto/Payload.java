@@ -95,12 +95,13 @@ public class Payload {
 
     public class Stat {
         @SerializedName("b")
-        public int totalBladeTime = -1;
+        public int bladeWorkTime = -1;
         @SerializedName("d")
-        public int totalDistance = -1;
+        public int distanceCovered = -1;
         @SerializedName("wt")
-        public int totalTime = -1;
-        public int bl;
+        public int mowerWorkTime = -1;
+        @SerializedName("bl")
+        public int lawnPerimeter;
     }
 
     public class Cfg {
