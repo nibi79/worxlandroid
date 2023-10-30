@@ -14,60 +14,42 @@ package org.openhab.binding.worxlandroid.internal.discovery;
 
 import static org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants.THING_TYPE_MOWER;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.worxlandroid.internal.WorxLandroidBindingConstants;
-import org.openhab.binding.worxlandroid.internal.WorxLandroidBridgeHandler;
-import org.openhab.binding.worxlandroid.internal.webapi.WorxLandroidWebApiImpl;
-import org.openhab.binding.worxlandroid.internal.webapi.response.ProductItemsResponse;
+import org.openhab.binding.worxlandroid.internal.api.WebApiException;
+import org.openhab.binding.worxlandroid.internal.api.dto.ProductItemStatus;
+import org.openhab.binding.worxlandroid.internal.config.MowerConfiguration;
+import org.openhab.binding.worxlandroid.internal.handler.WorxLandroidBridgeHandler;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
-import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.ThingUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 /**
  * The {@link MowerDiscoveryService} is a service for discovering your mowers through Worx Landroid API
  *
  * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Added representation property and serialNumber configuration element
  */
 @NonNullByDefault
 public class MowerDiscoveryService extends AbstractDiscoveryService {
-
-    private final Logger logger = LoggerFactory.getLogger(MowerDiscoveryService.class);
-
-    @Nullable
-    private WorxLandroidBridgeHandler bridgeHandler = null;
-
     /**
      * Maximum time to search for devices in seconds.
      */
-    private static final int SEARCH_TIME = 20;
+    private static final int SEARCH_TIME_SEC = 20;
 
-    public MowerDiscoveryService() {
-        super(WorxLandroidBindingConstants.SUPPORTED_THING_TYPES, SEARCH_TIME);
-    }
+    private final Logger logger = LoggerFactory.getLogger(MowerDiscoveryService.class);
+    private final WorxLandroidBridgeHandler bridgeHandler;
 
-    public MowerDiscoveryService(WorxLandroidBridgeHandler bridgeHandler) throws IllegalArgumentException {
-        super(SEARCH_TIME);
+    public MowerDiscoveryService(WorxLandroidBridgeHandler bridgeHandler) {
+        super(WorxLandroidBindingConstants.SUPPORTED_THING_TYPES, SEARCH_TIME_SEC);
         this.bridgeHandler = bridgeHandler;
-    }
-
-    /**
-     * Public method for triggering mower discovery
-     */
-    public void discoverMowers() {
-        startScan();
     }
 
     @Override
@@ -77,46 +59,21 @@ public class MowerDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
-
-        if (bridgeHandler == null) {
-            return;
-        }
-        // Trigger no scan if offline
-        if (bridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
-            return;
-        }
-
         try {
-            WorxLandroidWebApiImpl apiHandler = bridgeHandler.getWorxLandroidWebApiImpl();
+            List<ProductItemStatus> productItemsStatusResponse = bridgeHandler.retrieveAllDevices();
+            productItemsStatusResponse.forEach(mower -> {
 
-            ProductItemsResponse productItemsResponse = apiHandler.retrieveUserDevices();
+                DiscoveryResult discoveryResult = DiscoveryResultBuilder
+                        .create(new ThingUID(THING_TYPE_MOWER, bridgeHandler.getThing().getUID(), mower.id))
+                        .withRepresentationProperty(MowerConfiguration.SERIAL_NUMBER).withLabel(mower.name)
+                        .withProperty(MowerConfiguration.SERIAL_NUMBER, mower.serialNumber)
+                        .withBridge(bridgeHandler.getThing().getUID()).build();
 
-            if (productItemsResponse.getJsonResponse().isJsonArray()) {
-                JsonArray mowers = productItemsResponse.getJsonResponse().getAsJsonArray();
-                ThingUID bridgeUID = bridgeHandler.getThing().getUID();
-
-                for (JsonElement mowerElement : mowers) {
-                    if (mowerElement.isJsonObject()) {
-                        JsonObject mower = mowerElement.getAsJsonObject();
-
-                        String serialNumber = mower.get("serial_number").getAsString();
-
-                        ThingUID thingUID = new ThingUID(THING_TYPE_MOWER, bridgeUID, serialNumber);
-
-                        Map<String, Object> properties = null;
-
-                        DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
-                                .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
-                                .withLabel(mower.get("name").getAsString()).build();
-
-                        thingDiscovered(discoveryResult);
-
-                        logger.debug("Discovered a mower thing with ID '{}'", serialNumber);
-                    }
-                }
-            }
-        } catch (Exception npe) {
-            logger.error("Error in WebApiException", npe);
+                thingDiscovered(discoveryResult);
+                logger.debug("Discovered a mower thing with ID '{}'", mower.serialNumber);
+            });
+        } catch (WebApiException npe) {
+            logger.error("Error in WebApiException : {}", npe.getMessage());
         }
     }
 

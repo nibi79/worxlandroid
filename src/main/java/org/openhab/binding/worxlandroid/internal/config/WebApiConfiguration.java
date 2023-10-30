@@ -10,29 +10,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.codes;
+package org.openhab.binding.worxlandroid.internal.config;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link WorxLandroidActionCodes} hosts action codes
+ * The {@link WebApiConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Added NonNullByDefault, removed setters, removed reconnectInterval
  */
 @NonNullByDefault
-public enum WorxLandroidActionCodes {
-    START(1, "start"),
-    STOP(2, "stop"),
-    HOME(3, "home"),
-    ZONETRAINING(4, "zonetraining"),
-    LOCK(5, "lock"),
-    UNLOCK(6, "unlock");
+public class WebApiConfiguration {
+    public String username = "";
+    public String password = "";
 
-    public final int code;
-    public final String description;
-
-    WorxLandroidActionCodes(int code, String description) {
-        this.code = code;
-        this.description = description;
+    @Override
+    public String toString() {
+        return "WebApiConfiguration [username='%s', password='*****']".formatted(username);
     }
 }

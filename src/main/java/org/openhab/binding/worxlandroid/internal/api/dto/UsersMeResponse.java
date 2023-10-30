@@ -10,29 +10,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.worxlandroid.internal.codes;
+package org.openhab.binding.worxlandroid.internal.api.dto;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * The {@link WorxLandroidActionCodes} hosts action codes
+ * The {@link UsersMeResponse} class
  *
  * @author Nils - Initial contribution
+ *
  */
 @NonNullByDefault
-public enum WorxLandroidActionCodes {
-    START(1, "start"),
-    STOP(2, "stop"),
-    HOME(3, "home"),
-    ZONETRAINING(4, "zonetraining"),
-    LOCK(5, "lock"),
-    UNLOCK(6, "unlock");
-
-    public final int code;
-    public final String description;
-
-    WorxLandroidActionCodes(int code, String description) {
-        this.code = code;
-        this.description = description;
-    }
+public class UsersMeResponse {
+    public String id = "";
+    public String user_type = "";
+    public boolean pushNotifications;
+    public String location = "";
+    public String actionsOnGooglePinCode = "";
+    public String createdAt = "";
+    public String updatedAt = "";
 }
