@@ -76,7 +76,7 @@ public class Mower {
         this.zoneMeterRestore = new int[getMultiZoneCount()];
 
         schedules.add(new HashMap<WorxLandroidDayCodes, @Nullable ScheduledDay>(7));
-        if (product.features.schedulerTwoSlots < getFirmwareVersionAsDouble()) {
+        if (product.capabilities.contains("scheduler_two_slots")) {
             schedules.add(new HashMap<WorxLandroidDayCodes, @Nullable ScheduledDay>(7));
         }
         setStatus(product.lastStatus.payload);
@@ -114,19 +114,19 @@ public class Mower {
     }
 
     public boolean lockSupported() {
-        return product.features.lock;
+        return product.capabilities.contains("lock");
     }
 
     public boolean rainDelaySupported() {
-        return product.features.rainDelay;
+        return product.capabilities.contains("rain_delay");
     }
 
     public boolean rainDelayStartSupported() {
-        return product.features.rainDelayStart < getFirmwareVersionAsDouble();
+        return product.capabilities.contains("rain_delay_start");
     }
 
     public boolean multiZoneSupported() {
-        return product.features.multiZone;
+        return product.capabilities.contains("multi_zone");
     }
 
     public boolean scheduler2Supported() {
@@ -134,7 +134,7 @@ public class Mower {
     }
 
     public boolean oneTimeSchedulerSupported() {
-        return product.features.oneTimeScheduler < getFirmwareVersionAsDouble();
+        return product.capabilities.contains("one_time_scheduler");
     }
 
     public @Nullable ScheduledDay getScheduledDay(int scDSlot, WorxLandroidDayCodes dayCode) {
@@ -273,7 +273,7 @@ public class Mower {
     }
 
     public int getMultiZoneCount() {
-        return multiZoneSupported() ? product.features.multiZoneZones : 0;
+        return multiZoneSupported() ? product.lastStatus.payload.cfg.multizoneAllocations.size() : 0;
     }
 
     public String getMqttCommandIn() {

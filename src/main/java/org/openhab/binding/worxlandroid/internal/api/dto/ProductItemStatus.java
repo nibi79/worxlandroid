@@ -25,29 +25,6 @@ import java.util.Map;
  */
 public class ProductItemStatus {
 
-    public class Features {
-        public double autoLock;
-        public double bluetoothControl;
-        public boolean bluetoothPairing;
-        public String chassis;
-        public double digitalFenceSettings;
-        public String displayType;
-        public String inputType;
-        public boolean lock;
-        public boolean mqtt;
-        public boolean multiZone;
-        public boolean multiZonePercentage;
-        public int multiZoneZones;
-        public double oneTimeScheduler;
-        public double pauseOverWire;
-        public boolean rainDelay;
-        public double rainDelayStart;
-        public double safeGoHome;
-        public double schedulerTwoSlots;
-        public boolean unrestrictedMowingTime;
-        public String wifiPairing;
-    }
-
     public class Accessories {
         public boolean ultrasonic;
     }
@@ -120,7 +97,6 @@ public class ProductItemStatus {
     public String pendingRadioLinkValidation;
     public List<String> capabilities;
     public List<String> capabilitiesAvailable;
-    public Features features;
     public Accessories accessories;
     public MqttTopics mqttTopics;
     public boolean warrantyRegistered;
