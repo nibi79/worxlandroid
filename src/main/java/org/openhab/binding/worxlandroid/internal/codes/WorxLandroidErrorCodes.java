@@ -12,62 +12,55 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
+import com.google.gson.annotations.SerializedName;
+
 /**
  * The {@link WorxLandroidErrorCodes} hosts error codes
  *
  * @author Nils - Initial contribution
  */
-public enum WorxLandroidErrorCodes implements Codes {
-
-    UNKNOWN(-1, "UNKNOWN"),
-    NO_ERR(0, "No error!"),
-    TRAPPED(1, "Trapped"),
-    LIFTED(2, "Lifted"),
-    WIRE_MISSING(3, "Wire missing"),
-    OUTSIDE_WIRE(4, "Outside wire"),
-    RAINING(5, "Raining"),
-    CLOSE_DOOR_TO_MOW(6, "Close door to mow"),
-    CLOSE_DOOR_TO_GO_HOME(7, "Close door to go home"),
-    BLADE_MOTOR_BLOCKED(8, "Blade motor blocked"),
-    WHEEL_MOTOR_BLOKED(9, "Wheel motor blocked"),
-    TRAPPED_TIMEOUT(10, "Trapped timeout"),
-    UPSIDE_DOWN(11, "Upside down"),
-    BATTERY_LOW(12, "Battery low"),
-    REVERSE_WIRE(13, "Reverse wire"),
-    CHARGE_ERROR(14, "Charge error"),
-    TIMEOUT_FINDING_HOME(15, "Timeout finding home"),
-    MOWER_LOCKED(16, "Mower locked"),
-    BATTERY_OVER_TEMPERATURE(17, "Battery over temperature");
-
-    private final int code;
-    private final String description;
-
-    WorxLandroidErrorCodes(int code, String description) {
-        this.code = code;
-        this.description = description;
-    }
-
-    @Override
-    public int getCode() {
-        return this.code;
-    }
-
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    /**
-     *
-     * @param code
-     * @return
-     */
-    public static WorxLandroidErrorCodes getByCode(int code) {
-        return Codes.lookup(WorxLandroidErrorCodes.class, code);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s | ErrorCode: %d - %s", this.name(), this.getCode(), this.getDescription());
-    }
+@NonNullByDefault
+public enum WorxLandroidErrorCodes {
+    @SerializedName("-1")
+    UNKNOWN,
+    @SerializedName("0")
+    NO_ERR,
+    @SerializedName("1")
+    TRAPPED,
+    @SerializedName("2")
+    LIFTED,
+    @SerializedName("3")
+    WIRE_MISSING,
+    @SerializedName("4")
+    OUTSIDE_WIRE,
+    @SerializedName("5")
+    RAINING,
+    @SerializedName("6")
+    CLOSE_DOOR_TO_MOW,
+    @SerializedName("7")
+    CLOSE_DOOR_TO_GO_HOME,
+    @SerializedName("8")
+    BLADE_MOTOR_BLOCKED,
+    @SerializedName("9")
+    WHEEL_MOTOR_BLOKED,
+    @SerializedName("10")
+    TRAPPED_TIMEOUT,
+    @SerializedName("11")
+    UPSIDE_DOWN,
+    @SerializedName("12")
+    BATTERY_LOW,
+    @SerializedName("13")
+    REVERSE_WIRE,
+    @SerializedName("14")
+    CHARGE_ERROR,
+    @SerializedName("15")
+    TIMEOUT_FINDING_HOME,
+    @SerializedName("16")
+    MOWER_LOCKED,
+    @SerializedName("17")
+    BATTERY_OVER_TEMPERATURE,
+    @SerializedName("20")
+    MOWER_OUTSIDE_WIRE;
 }

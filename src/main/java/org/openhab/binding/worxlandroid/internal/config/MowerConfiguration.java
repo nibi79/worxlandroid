@@ -12,45 +12,25 @@
  */
 package org.openhab.binding.worxlandroid.internal.config;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link MowerConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Nils - Initial contribution
+ * @author Gaël L'hopital - Added serialNumber configuration element
  */
+@NonNullByDefault
 public class MowerConfiguration {
+    public static final String SERIAL_NUMBER = "serialNumber";
 
+    public String serialNumber = "";
     public int refreshStatusInterval = 600;
     public int pollingInterval = 3600;
-    public int reconnectInterval = 0;
-
-    public int getRefreshStatusInterval() {
-        return refreshStatusInterval;
-    }
-
-    public void setRefreshStatusInterval(int refreshStatusInterval) {
-        this.refreshStatusInterval = refreshStatusInterval;
-    }
-
-    public int getPollingInterval() {
-        return pollingInterval;
-    }
-
-    public void setPollingInterval(int pollingInterval) {
-        this.pollingInterval = pollingInterval;
-    }
-
-    public int getReconnectInterval() {
-        return reconnectInterval;
-    }
-
-    public void setReconnectInterval(int reconnectInterval) {
-        this.reconnectInterval = reconnectInterval;
-    }
 
     @Override
     public String toString() {
-        return String.format(
-                "MowerConfiguration [pollingInterval='%d', refreshStatusInterval='%d', reconnectInterval='%d']",
-                pollingInterval, refreshStatusInterval, reconnectInterval);
+        return "MowerConfiguration [serialNumber='%s', pollingInterval='%d', refreshStatusInterval='%d']"
+                .formatted(serialNumber, pollingInterval, refreshStatusInterval);
     }
 }

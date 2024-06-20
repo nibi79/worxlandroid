@@ -12,41 +12,36 @@
  */
 package org.openhab.binding.worxlandroid.internal.codes;
 
+import java.time.DayOfWeek;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
- * The {@link WorxLandroidDayCodes} hosts action codes
+ * The {@link WorxLandroidDayCodes} hosts Landroid days of week
  *
  * @author Nils - Initial contribution
  */
-public enum WorxLandroidDayCodes implements Codes {
+@NonNullByDefault
+public enum WorxLandroidDayCodes {
+    SUNDAY(0, DayOfWeek.SUNDAY),
+    MONDAY(1, DayOfWeek.MONDAY),
+    TUESDAY(2, DayOfWeek.TUESDAY),
+    WEDNESDAY(3, DayOfWeek.WEDNESDAY),
+    THURSDAY(4, DayOfWeek.THURSDAY),
+    FRIDAY(5, DayOfWeek.FRIDAY),
+    SATURDAY(6, DayOfWeek.SATURDAY);
 
-    SUNDAY(0, "Sunday"),
-    MONDAY(1, "Monday"),
-    TUESDAY(2, "Tuesday"),
-    WEDNESDAY(3, "Wednesday"),
-    THURSDAY(4, "Thursday"),
-    FRIDAY(5, "Friday"),
-    SATURDAY(6, "Saturday");
+    public final int code;
+    public final DayOfWeek dayOfWeek;
 
-    private final int code;
-    private final String description;
-
-    WorxLandroidDayCodes(int code, String description) {
+    WorxLandroidDayCodes(int code, DayOfWeek dayOfWeek) {
         this.code = code;
-        this.description = description;
+        this.dayOfWeek = dayOfWeek;
     }
 
-    @Override
-    public int getCode() {
-        return this.code;
-    }
-
-    @Override
     public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s | DayCode: %d - %s", this.name(), this.getCode(), this.getDescription());
+        return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US);
     }
 }
